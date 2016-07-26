@@ -10,17 +10,17 @@
 [![OpenCollective](https://opencollective.com/redux-saga/backers/badge.svg)](#backers)
 [![OpenCollective](https://opencollective.com/redux-saga/sponsors/badge.svg)](#sponsors)
 
-`redux-saga` is a library that aims to make application side effects (i.e. asynchronous things like data fetching and impure things like accessing the browser cache) easier to manage, more efficient to execute, simple to test, and better at handling failures.
+`redux-saga` 是一個針對在 React/Redux 應用程式中，可以更容易建立 side effect 的 library（例如：非同步的事件像是資料的 fetch 和存取瀏覽器的快取），執行效率更高，更容易測試，在處理錯誤時更容易。
 
-The mental model is that a saga is like a separate thread in your application that's solely responsible for side effects. `redux-saga` is a redux middleware, which means this thread can be started, paused and cancelled from the main application with normal redux actions, it has access to the full redux application state and it can dispatch redux actions as well.
+想法上，redux-saga 像是一個獨立的 thread 在你的應用程式，專門負責 side effect。`redux-saga` 是 redux 的 middleware，意思說這個 thread 可以被啟動、暫停和取消從主要的應用程式標準的 redux action，它可以存取整個 redux 應用程式的 state 和 dispatch。
 
-It uses an ES6 feature called Generators to make those asynchronous flows easy to read, write and test. *(if you're not familiar with them [here are some introductory links](https://redux-saga.js.org/docs/ExternalResources.html))* By doing so, these asynchronous flows look like your standard synchronous JavaScript code. (kind of like `async`/`await`, but generators have a few more awesome features we need)
+使用 ES6 的 Generators 功能讓非同步的流程可以更容易閱讀、撰寫和測試，*如果你還不熟悉的話，[這裡有一些介紹的連結](https://redux-saga.js.org/docs/ExternalResources.html)*。透過這樣的方式，這些非同步的流程看起來就像標準 JavaScript 同步程式碼（像是 `async`/`await`，但是 generators 還有一些更棒而且我們需要的功能）。
 
-You might've used `redux-thunk` before to handle your data fetching. Contrary to redux thunk, you don't end up in callback hell, you can test your asynchronous flows easily and your actions stay pure.
+你可能已經使用 `redux-thunk` 來處理你資料的 fetch。不同於 redux thunk，你不會再出現 callback hell 了，你可以簡單測試非同步的流程並保持你的 action 是 pure 的。
 
-# Getting started
+# 入門
 
-## Install
+## 安裝
 
 ```sh
 $ npm install --save redux-saga
@@ -31,11 +31,11 @@ or
 $ yarn add redux-saga
 ```
 
-Alternatively, you may use the provided UMD builds directly in the `<script>` tag of an HTML page. See [this section](#using-umd-build-in-the-browser).
+或者，你可以直接在 HTML 頁面 `<script>` 標籤使用提供的 UMD build。參考[這個章節](#using-umd-build-in-the-browser)。
 
-## Usage Example
+## 使用範例
 
-Suppose we have a UI to fetch some user data from a remote server when a button is clicked. (For brevity, we'll just show the action triggering code.)
+假設我們有一個 UI，當按下按鈕時，從遠端伺服器取得一些使用者的資料（為了簡單表示，我們只是顯示觸發 action 的程式）。
 
 ```javascript
 class UserComponent extends React.Component {
@@ -48,7 +48,7 @@ class UserComponent extends React.Component {
 }
 ```
 
-The Component dispatches a plain Object action to the Store. We'll create a Saga that watches for all `USER_FETCH_REQUESTED` actions and triggers an API call to fetch the user data.
+Component dispatch 一個原生 action 物件到 Store。我們將建立一個 Saga 來觀察所有 `USER_FETCH_REQUESTED` action 並觸發呼叫一個 API 取得使用者資料。
 
 #### `sagas.js`
 
@@ -56,7 +56,7 @@ The Component dispatches a plain Object action to the Store. We'll create a Saga
 import { call, put, takeEvery, takeLatest } from 'redux-saga/effects'
 import Api from '...'
 
-// worker Saga: will be fired on USER_FETCH_REQUESTED actions
+// 工作的 Saga：當 action 是 USER_FETCH_REQUESTED 時被觸發
 function* fetchUser(action) {
    try {
       const user = yield call(Api.fetchUser, action.payload.userId);
@@ -67,19 +67,17 @@ function* fetchUser(action) {
 }
 
 /*
-  Starts fetchUser on each dispatched `USER_FETCH_REQUESTED` action.
-  Allows concurrent fetches of user.
+  在每次 dispatch `USER_FETCH_REQUESTED` action 時，啟動 fetchUser。
+  允許並行取得使用者。
 */
 function* mySaga() {
   yield takeEvery("USER_FETCH_REQUESTED", fetchUser);
 }
 
 /*
-  Alternatively you may use takeLatest.
+  另外你也可以使用 takeLatest。
 
-  Does not allow concurrent fetches of user. If "USER_FETCH_REQUESTED" gets
-  dispatched while a fetch is already pending, that pending fetch is cancelled
-  and only the latest one will be run.
+  但不允許並行取得使用者。當一個 fetch 已經在 pending 時，如果取得 dispatch「USER_FETCH_REQUESTED」，正在等待的 fetch 會被取消，只執行最新的發出的 USER_FETCH_REQUESTED。
 */
 function* mySaga() {
   yield takeLatest("USER_FETCH_REQUESTED", fetchUser);
@@ -88,7 +86,7 @@ function* mySaga() {
 export default mySaga;
 ```
 
-To run our Saga, we'll have to connect it to the Redux Store using the `redux-saga` middleware.
+為了要執行 Saga，我們將使用 `redux-saga` middleware 來連結 Redux Store。
 
 #### `main.js`
 
@@ -99,30 +97,30 @@ import createSagaMiddleware from 'redux-saga'
 import reducer from './reducers'
 import mySaga from './sagas'
 
-// create the saga middleware
+// 建立 saga middleware
 const sagaMiddleware = createSagaMiddleware()
-// mount it on the Store
+// 將 saga middleware mount 在 Store 上
 const store = createStore(
   reducer,
   applyMiddleware(sagaMiddleware)
 )
 
-// then run the saga
+// 然後執行 saga
 sagaMiddleware.run(mySaga)
 
-// render the application
+// render 應用程式
 ```
 
-# Documentation
+# 文件
 
-- [Introduction](https://redux-saga.js.org/docs/introduction/BeginnerTutorial.html)
-- [Basic Concepts](https://redux-saga.js.org/docs/basics/index.html)
-- [Advanced Concepts](https://redux-saga.js.org/docs/advanced/index.html)
-- [Recipes](https://redux-saga.js.org/docs/recipes/index.html)
-- [External Resources](https://redux-saga.js.org/docs/ExternalResources.html)
-- [Troubleshooting](https://redux-saga.js.org/docs/Troubleshooting.html)
-- [Glossary](https://redux-saga.js.org/docs/Glossary.html)
-- [API Reference](https://redux-saga.js.org/docs/api/index.html)
+- [介紹](http://yelouafi.github.io/redux-saga/docs/introduction/index.html)
+- [基本概念](http://yelouafi.github.io/redux-saga/docs/basics/index.html)
+- [進階概念](http://yelouafi.github.io/redux-saga/docs/advanced/index.html)
+- [Recipes](http://yelouafi.github.io/redux-saga/docs/recipes/index.html)
+- [外部資源](http://yelouafi.github.io/redux-saga/docs/ExternalResources.html)
+- [疑難排解](http://yelouafi.github.io/redux-saga/docs/Troubleshooting.html)
+- [術語表](http://yelouafi.github.io/redux-saga/docs/Glossary.html)
+- [API 參考](http://yelouafi.github.io/redux-saga/docs/api/index.html)
 
 # Translation
 
@@ -132,30 +130,26 @@ sagaMiddleware.run(mySaga)
 - [Korean](https://github.com/mskims/redux-saga-in-korean)
 - [Russian](https://github.com/redux-saga/redux-saga/blob/master/README_ru.md)
 
-# Using umd build in the browser
+# 在瀏覽器使用 umd build 版本
 
-There is also a **umd** build of `redux-saga` available in the `dist/` folder. When using the umd build `redux-saga` is available as `ReduxSaga` in the window object. This enables you to create Saga middleware without using ES6 `import` syntax like this:
+在 `dist/` 資料夾也有一個 `redux-saga` 的 **umd** build 可以使用。當使用 umd build 的 `redux-saga`，`ReduxSaga` 作為在 window 的全域變數。這能讓你在建立 Saga middleware 不需要使用 ES6 的 `import` 語法：
 
-```javascript
-var sagaMiddleware = ReduxSaga.default()
-```
+umd 版本在你不使用 Webpack 或 Browserify 相當的有用。你可以從 [unpkg](https://unpkg.com/) 直接存取。
 
-The umd version is useful if you don't use Webpack or Browserify. You can access it directly from [unpkg](https://unpkg.com/).
-
-The following builds are available:
+以下的 build 都是可用的：
 
 - [https://unpkg.com/redux-saga/dist/redux-saga.js](https://unpkg.com/redux-saga/dist/redux-saga.js)
 - [https://unpkg.com/redux-saga/dist/redux-saga.min.js](https://unpkg.com/redux-saga/dist/redux-saga.min.js)
 
-**Important!** If the browser you are targeting doesn't support *ES2015 generators*, you must provide a valid polyfill, such as [the one provided by `babel`](https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser-polyfill.min.js). The polyfill must be imported before **redux-saga**:
+**重要！**如果你的目標瀏覽器不支援 *ES2015 generators*，你必須提供一個有效的 polyfill，像是 [`babel` 所提供的](https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser-polyfill.min.js)。polyfill 必須被 import 在 **redux-saga** 之前：
 
 ```javascript
 import 'babel-polyfill'
-// then
+// 接著
 import sagaMiddleware from 'redux-saga'
 ```
 
-# Building examples from sources
+# 從原始碼中來建立範例
 
 ```sh
 $ git clone https://github.com/redux-saga/redux-saga.git
@@ -164,63 +158,63 @@ $ npm install
 $ npm test
 ```
 
-Below are the examples ported (so far) from the Redux repos.
+以下的範例都是從 Redux repos 所移植（到目前為止）過來的：
 
-### Counter examples
+### Counter 範例
 
-There are three counter examples.
+這裡有三個 counter 的範例。
 
 #### counter-vanilla
 
-Demo using vanilla JavaScript and UMD builds. All source is inlined in `index.html`.
+這個範例使用原生的 JavaScript 和 UMD build。所有的原始碼都在 `index.html` 內。
 
-To launch the example, just open `index.html` in your browser.
+如果要啟動範例，只要在你的瀏覽器打開 `index.html`。
 
-> Important: your browser must support Generators. Latest versions of Chrome/Firefox/Edge are suitable.
+> 重要：你的瀏覽器必須支援 Generators。最新版本的 Chrome 和 Firefox、Edge 已經支援。
 
 #### counter
 
-Demo using `webpack` and high-level API `takeEvery`.
+這個範例使用 `webpack` 和高階的 `takeEvery` API。
 
 ```sh
 $ npm run counter
 
-# test sample for the generator
+# generators 的測試 sample
 $ npm run test-counter
 ```
 
 #### cancellable-counter
 
-Demo using low-level API to demonstrate task cancellation.
+這個範例使用底層的 API 來證明 task 被取消。
 
 ```sh
 $ npm run cancellable-counter
 ```
 
-### Shopping Cart example
+### Shopping Cart 範例
 
 ```sh
 $ npm run shop
 
-# test sample for the generator
+# generators 的測試 sample
 $ npm run test-shop
 ```
 
-### async example
+### async 範例
 
 ```sh
 $ npm run async
 
-# test sample for the generators
+# generators 的測試 sample
 $ npm run test-async
 ```
 
-### real-world example (with webpack hot reloading)
+### real-world 範例（使用 webpack 和 hot reloading）
 
 ```sh
 $ npm run real-world
 
-# sorry, no tests yet
+# 抱歉，還沒有測試。
 ```
 
 ### TypeScript
