@@ -1,41 +1,41 @@
-# Beginner Tutorial
+# 新手教學
 
-## Objectives of this tutorial
+## 這個教學的目標
 
-This tutorial attempts to introduce redux-saga in a (hopefully) accessible way.
+這個教學嘗試（希望）透過平易近人的方式來介紹 redux-saga。
 
-For our getting started tutorial, we are going to use the trivial Counter demo from the Redux repo. The application is quite simple but is a good fit to illustrate the basic concepts of redux-saga without being lost in excessive details.
+我們使用 Redux repo 中簡單的 Counter 範例作為我們的入門教學。這個應用程式相對是簡單的，但是很適合來說明 redux-saga 的基本概念，才不會讓你迷失在過多的細節裡。
 
-### The initials setup
+### 初始步驟
 
-Before we start, clone the [tutorial repository](https://github.com/yelouafi/redux-saga-beginner-tutorial).
+在開始之前，請先 clone [教學的 repository](https://github.com/yelouafi/redux-saga-beginner-tutorial)。
 
-> The final code of this tutorial is located in the `sagas` branch.
+> 這個教學最終完成的程式碼位在 `sagas` 的 branch。
 
-Then in the command line, run:
+然後在 command line 執行：
 
 ```sh
 $ cd redux-saga-beginner-tutorial
 $ npm install
 ```
 
-To start the application, run:
+要啟動這個應用程式，請執行：
 
 ```sh
 $ npm start
 ```
 
-We are starting with the simplest use case: 2 buttons to `Increment` and `Decrement` a counter. Later, we will introduce asynchronous calls.
+我們先從最簡單的範例：兩個按鈕 `Increment` 和 `Decrement` 的計數器。在這之後，我們將會介紹非同步的呼叫。
 
-If things go well, you should see 2 buttons `Increment` and `Decrement` along with a message below showing `Counter: 0`.
+如果一切順利的話，你應該會看到兩個按鈕 `Increment` 和 `Decrement`，還有一個在下方顯示的訊息 `Counter: 0`。
 
-> In case you encountered an issue with running the application. Feel free to create an issue on the [tutorial repo](https://github.com/yelouafi/redux-saga-beginner-tutorial/issues).
+> 你在執行應用程式如果遇到一個問題，請在這個[教學 repo](https://github.com/yelouafi/redux-saga-beginner-tutorial/issues) 建立一個 issue。
 
 ## Hello Sagas!
 
-We are going to create our first Saga. Following the tradition, we will write our 'Hello, world' version for Sagas.
+我們已經建立了我們的第一個 Saga。根據傳統，我們將撰寫我們 Saga 版本的 'Hello, world'。
 
-Create a file `sagas.js` then add the following snippet:
+建立一個 `saga.js` 的檔案，然後加入以下的程式碼片段：
 
 ```javascript
 export function* helloSaga() {
@@ -43,14 +43,14 @@ export function* helloSaga() {
 }
 ```
 
-So nothing scary, just a normal function (except for the `*`). All it does is print a greeting message into the console.
+所以這沒什麼好怕的，只是一個正常的 function（除了有一個 `*`）。它所做的就是列印一個歡迎的訊息到 console。
 
-In order to run our Saga, we need to:
+為了執行我們的 Saga，我們需要：
 
-- create a Saga middleware with a list of Sagas to run (so far we have only one `helloSaga`)
-- connect the Saga middleware to the Redux store
+- 建立一個 Saga middleware 與我們要執行的 Saga（目前我們只有一個 `helloSaga`）
+- 連結 Saga middleware 到 Redux store
 
-We will make the changes to `main.js`:
+我們將改變我們的 `main.js`：
 
 ```javascript
 // ...
@@ -67,20 +67,20 @@ const store = createStore(
 )
 sagaMiddleware.run(helloSaga)
 
-// rest unchanged
+// 休息不改變（rest unchange）
 ```
 
-First we import our Saga from the `./sagas` module. Then we create a middleware using the factory function `createSagaMiddleware` exported by the `redux-saga` library.
+首先我們 import 我們的 Saga 從 `./sagas` module。然後使用 `redux-saga` library 匯出的 `createSagaMiddleware` factory function 建立一個 middleware。
 
-Before running our `helloSaga`, we must connect our middleware to the Store using `applyMiddleware`. Then we can use the `sagaMiddleware.run(helloSaga)` to start our Saga.
+在執行我們的 `helloSaga` 之前，我們必須使用 `applyMiddleware` 連結我們的 middleware 到 Store。然後我們可以使用 `sagaMiddleware.run(helloSaga)` 來啟動我們的 Saga。
 
-So far, our Saga does nothing special. It just logs a message then exits.
+到目前為止，我們的 Saga 沒有什麼特別的。它只是 log 一個訊息然後離開。
 
-## Making Asynchronous calls
+## 進行非同步的呼叫
 
-Now let's add something closer to the original Counter demo. To illustrate asynchronous calls, we will add another button to increment the counter 1 second after the click.
+現在讓我們加入一些東西來更接近原始的 Counter 範例。為了要說明非同步的呼叫，我們將加入另一個按鈕，在按下一秒後來增加 counter。
 
-First thing's first, we'll provide an additional callback `onIncrementAsync` to the UI component.
+首先，我們將提供一個額外的 callback `onIncrementAsync` 到 UI component。
 
 ```javascript
 const Counter = ({ value, onIncrement, onDecrement, onIncrementAsync }) =>
@@ -92,9 +92,9 @@ const Counter = ({ value, onIncrement, onDecrement, onIncrementAsync }) =>
   </div>
 ```
 
-Next we should connect the `onIncrementAsync` of the Component to a Store action.
+接下來我們應該連結 Component 的 `onIncrementAsync` 到 Store action。
 
-We will modify the `main.js` module as follows
+我們將根據以下修改 `main.js` module：
 
 ```javascript
 function render() {
@@ -107,50 +107,50 @@ function render() {
 }
 ```
 
-Note that unlike in redux-thunk, our component dispatches a plain object action.
+注意，這不像 redux-thunk，我們 component dispatch 一個純物件的 action。
 
-Now we will introduce another Saga to perform the asynchronous call. Our use case is as follows:
+現在我們將介紹另一個 Saga 來執行非同步呼叫。我們使用的方式如下：
 
-> On each `INCREMENT_ASYNC` action, we want to start a task that will do the following
+> 在每個 `INCREMENT_ASYNC` action，我們需要啟動一個 task 來做以下的事：
 
-> - Wait 1 second then increment the counter
+> - 等待一秒然後 counter 加一
 
-Add the following code to the `sagas.js` module:
+加入以下的程式碼到 `sagas.js` module：
 
 ```javascript
 import { takeEvery, delay } from 'redux-saga'
 import { put } from 'redux-saga/effects'
 
-// Our worker Saga: will perform the async increment task
+// 我們工作的 Saga：將執行非同步的 increment task
 export function* incrementAsync() {
   yield delay(1000)
   yield put({ type: 'INCREMENT' })
 }
 
-// Our watcher Saga: spawn a new incrementAsync task on each INCREMENT_ASYNC
+// 我們觀察的 Saga：在每個 INCREMENT_ASYNC 產生一個新的 incrementAsync task
 export function* watchIncrementAsync() {
   yield* takeEvery('INCREMENT_ASYNC', incrementAsync)
 }
 ```
 
-Time for some explanations. 
+該是花一些時間解釋的時候了。
 
-We import `delay`, a utility function that returns a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) that will resolve after a specified number of milliseconds. We'll use this function to *block* the Generator.
+我們 import 一個 utility funciton `delay`，它回傳一個 [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)，在指定內的毫秒數後 resolve。我們將使用這個 function 來 *block* Generator。
 
-Sagas are implemented as [Generator functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) that *yield* objects to the redux-saga middleware. The yielded objects are a kind of instruction to be interpreted by the middleware. When a Promise is yielded to the middleware, the middleware will suspend the Saga until the Promise completes. In the above example, the `incrementAsync` Saga is suspended until the Promise returned by `delay` resolves, which will happen after 1 second.
+Saga 被實作為 [Generator function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*)，*yield* 物件到 redux-saga middleware。被 yield 的物件是一種指令，透過 middleware 被解讀。當一個 Promise 被 yield 到 middleware，middleware 將暫停 Saga，直到 Promise 完成。在上面的範例中，`incrementAsync` Saga 被暫停，直到 Promise 透過 `delay` 回傳 resolve；它將發生在一秒後。
 
-Once the Promise is resolved, the middleware will resume the Saga, executing code until the next yield. In this example, the next statement is another yielded object: the result of calling `put({type: 'INCREMENT'})`, which instructs the middleware to dispatch an `INCREMENT` action.
+一旦 Promise 被 resolve，middleware 將恢復 Saga，執行程式碼直到下一次的 yield。在這個範例中，下一個 statement 是另一個被 yield 的物件：呼叫 `put({type: 'INCREMENT'})` 的結果，它說明了 middleware dispatch 一個 `INCREMENT` 的 action。
 
-`put` is one example of what we call an *Effect*. Effects are simple JavaScript objects which contain instructions to be fulfilled by the middleware. When a middleware retrieves an Effect yielded by a Saga, the Saga is paused until the Effect is fulfilled.
+`put` 是我們呼叫一個 *Effect* 的範例。Effect 是一些簡單的 JavaScrpt 物件，包含由 middleware 實現的說明。當一個 middleware 透過 Saga 取得一個被 yield 的 Effect，Saga 會被暫停，直到 Effect 被完成。
 
-So to summarize, the `incrementAsync` Saga sleeps for 1 second via the call to `delay(1000)`, then dispatches an `INCREMENT` action.
+所以讓我們總結一下，`incrementAsync` Saga 藉由呼叫 `delay(1000)` sleep 一秒後，然後 dispatch 一個 `INCREMENT` action。
 
-Next, we created another Saga `watchIncrementAsync`. We use `takeEvery`, a helper function provided by `redux-saga`, to listen for dispatched `INCREMENT_ASYNC` actions and run `incrementAsync` each time.
+接下來，我們建立另一個 `watchIncrementAsync` Saga。我們使用由 `redux-saga` 提供的 `takeEvery` helper function，來監聽被 dispatch 的 `INCREMENT_ASYNC` action 並每次執行 `incrementAsync`。
 
-Now we have 2 Sagas, and we need to start them both at once. To do that, we'll add a `rootSaga` that is responsible for starting our other Sagas. In the same file `sagas.js`, add the following code:
+現在我們有兩個 Saga，而且我們需要一次啟動他們兩個。如果要這麼做，我們將加入一個 `rootSaga` 負責啟動我們其他的 Saga。在相同的 `sagas.js` 檔案裡，加入以下程式碼：
 
 ```javascript
-// single entry point to start all Sagas at once
+// 單一進入點，一次啟動所有 Saga
 export default function* rootSaga() {
   yield [
     helloSaga(),
@@ -159,7 +159,7 @@ export default function* rootSaga() {
 }
 ```
 
-This Saga yields an array with the results of calling our two sagas, `helloSaga` and `watchIncrementAsync`. This means the two resulting Generators will be started in parallel. Now we only have to invoke `sagaMiddleware.run` on the root Saga in `main.js`.
+這個 Saga yield 一個陣列，呼叫我們的兩個 saga：`helloSaga` 和 `watchIncrementAsync` 的結果。意思說這兩個 Generators 將會被平行啟動。現在我們只有在 `main.js` 的 root Saga 調用 `sagaMiddleware.run`。
 
 ```javascript
 // ...
@@ -172,11 +172,11 @@ sagaMiddleware.run(rootSaga)
 // ...
 ```
 
-## Making our code testable
+## 讓我們的程式碼可以測試
 
-We want to test our `incrementAsync` Saga to make sure it performs the desired task.
+我們需要測試我們的 `incrementAsync` Saga 以確保它所需要執行的 task。
 
-Create another file `saga.spec.js`:
+建立另一個 `saga.spec.js` 檔案：
 
 ```javascript
 import test from 'tape';
@@ -186,28 +186,24 @@ import { incrementAsync } from './sagas'
 test('incrementAsync Saga test', (assert) => {
   const gen = incrementAsync()
 
-  // now what ?
+  // 怎麼辦呢？
 });
 ```
 
-Since `incrementAsync` is a Generator function, when we run it outside the middleware,
-Each time you invoke `next` on the generator, you get an object of the following shape
+由於 `incrementAsync` 是一個 Generator function，當我們在 middleware 外執行它，每次調用 generator 的 `next`，你可以取得以下形狀的物件：
 
 ```javascript
 gen.next() // => { done: boolean, value: any }
 ```
 
-The `value` field contains the yielded expression, i.e. the result of the expression after
-the `yield`. The `done` field indicates if the generator has terminated or if there are still
-more 'yield' expressions.
+`value` 欄位包含被 yield 後的表達式，例如：在 `yield` 後的表達式結果。`done` 欄位說明如果 generator 是否結束或是還有 `yield` 的表達式。
 
-In the case of `incrementAsync`, the generator yields 2 values consecutively:
+在 `incrementAsync` 的情況下，generator 連續 yield 兩個值：
 
 1. `yield delay(1000)`
 2. `yield put({type: 'INCREMENT'})`
 
-So if we invoke the next method of the generator 3 times consecutively we get the following
-results:
+所以，如果我們連續調用三次 generator 的 next 方法，我們會得到以下的結果：
 
 ```javascript
 gen.next() // => { done: false, value: <result of calling delay(1000)> }
@@ -215,13 +211,9 @@ gen.next() // => { done: false, value: <result of calling put({type: 'INCREMENT'
 gen.next() // => { done: true, value: undefined }
 ```
 
-The first 2 invocations return the results of the yield expressions. On the 3rd invocation
-since there is no more yield the `done` field is set to true. And since the `incrementAsync`
-Generator doesn't return anything (no `return` statement), the `value` field is set to
-`undefined`.
+前面兩次調用回傳 yield 表達式的結果。在第三次的調用由於沒有其他的 yield 了，所以 `done` 欄位被設為 true。而且 `incrementAsync` Generator 不會回傳任何東西（沒有 `return` 語句），`value` 欄位被設定為 `undefined`。
 
-So now, in order to test the logic inside `incrementAsync`, we'll simply have to iterate
-over the returned Generator and check the values yielded by the generator.
+所以現在呢，為了測試 `incrementAsync` 內的邏輯，我們只需要對每個回傳 Generator 做簡單的迭代並檢查 yield 後的值。
 
 ```javascript
 import test from 'tape';
@@ -239,11 +231,9 @@ test('incrementAsync Saga test', (assert) => {
 });
 ```
 
-The issue is how do we test the return value of `delay`? We can't do a simple equality test
-on Promises. If `delay` returned a *normal* value, things would've been be easier to test.
+這裡有個問題是我們要怎麼測試 `delay` 的回傳值？我們不能在 Promise 上只做簡單的相等測試。如果 `delay` 回傳一個*標準*值，這樣會更容易的測試。
 
-Well, `redux-saga` provides a way to make the above statement possible. Instead of calling
-`delay(1000)` directly inside `incrementAsync`, we'll call it *indirectly*:
+好吧，`redux-saga` 提供了一種方式讓上面的語句變得可能。不是在 `incrementAsync` 內直接呼叫 `delay(1000)`，我們將*間接*的呼叫它：
 
 ```javascript
 // ...
@@ -251,26 +241,26 @@ import { put, call } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 
 export function* incrementAsync() {
-  // use the call Effect
+  // 使用 call Effect
   yield call(delay, 1000)
   yield put({ type: 'INCREMENT' })
 }
 ```
 
-Instead of doing `yield delay(1000)`, we're now doing `yield call(delay, 1000)`. What's the difference?
+我們現在做的是 `yield call(delay, 1000)`，而不是直接 `yield delay(1000)`。這有什麼不同呢？
 
-In the first case, the yield expression `delay(1000)` is evaluated before it gets passed to the caller of `next` (the caller could be the middleware when running our code. It could also be our test code which runs the Generator function and iterates over the returned Generator). So what the caller gets is a Promise, like in the test code above.
+在第一個情況下，yield 表達式 `delay(1000)` 被傳送到 `next` 的 caller 已經被執行了（當執行我們的程式碼時，caller 可能是 middleware。它可能是我們執行測試程式碼的 Generator function 和迭代後回傳的 Generator）。所以當 caller 得到一個 Promise，像是上面的測試程式碼一樣。
 
-In the second case, the yield expression `call(delay, 1000)` is what gets passed to the caller of `next`. `call` just like `put`, returns an Effect which instructs the middleware to call a given function with the given arguments. In fact, neither `put` nor `call` performs any dispatch or asynchronous call by themselves, they simply return plain JavaScript objects.
+在第二個情況下, yield 表達式 `call(delay, 1000)` 被傳送到 `next` 的 caller。`call` 就像 `put`，回傳指示給 middleware 去呼叫給定的 function 與給定的參數的 Effect。事實上，`put` 和 `call` 透過他們本身執行任何 dispatch 或非同步的呼叫，它們只是簡單回傳純 JavaScript 的物件。
 
 ```javascript
 put({type: 'INCREMENT'}) // => { PUT: {type: 'INCREMENT'} }
 call(delay, 1000)        // => { CALL: {fn: delay, args: [1000]}}
 ```
 
-What happens is that the middleware examines the type of each yielded Effect then decides how to fulfill that Effect. If the Effect type is a `PUT` then it will dispatch an action to the Store. If the Effect is a `CALL` then it'll call the given function.
+這裡的情況是：middleware 檢查每個 yield Effect 的類型，然後決定實現哪個 Effect。如果 Effect 的類型是一個 `PUT`，然後它將 dispatch 一個 action 到 Store。如果 Effect 是一個 `CALL`，它將呼叫給定的 function。
 
-This separation between Effect creation and Effect execution makes it possible to test our Generator in a surprisingly easy way:
+這種將建立 Effect 和執行 Effect 分離的作法，使得我們用令人驚訝的簡單方式來測試我們的 Generator：
 
 ```javascript
 import test from 'tape';
@@ -304,12 +294,12 @@ test('incrementAsync Saga test', (assert) => {
 });
 ```
 
-Since `put` and `call` return plain objects, we can reuse the same functions in our test code. And to test the logic of `incrementAsync`, we simply iterate over the generator and do `deepEqual` tests on its values.
+由於 `put` 和 `call` 回傳純物件，我們可以在我們的測試程式重複使用相同的 function。在 `incrementAsync` 測試的邏輯，我們只是迭代 generator 並對他們的值做 `deepEqual` 測試。
 
-In order to run the above test, run:
+為了執行上面的測試，輸入：
 
 ```sh
 $ npm test
 ```
 
-which should report the results on the console.
+測試結果會在 console 上。
