@@ -4,7 +4,7 @@
 * [介紹](/docs/introduction/README.md)
   * [新手教學](/docs/introduction/BeginnerTutorial.md)
   * [Saga 的背景](/docs/introduction/SagaBackground.md)
-* [基本概念](/docs/basics/README.md)
+* [基礎概念](/docs/basics/README.md)
   * [使用 Saga Helpers](/docs/basics/UsingSagaHelpers.md)
   * [宣告 Effect](/docs/basics/DeclarativeEffects.md)
   * [Dispatch action](/docs/basics/DispatchingActions.md)
