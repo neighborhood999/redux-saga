@@ -68,7 +68,7 @@ function* fetchUser(action) {
 
 /*
   在每次 dispatch `USER_FETCH_REQUESTED` action 時，啟動 fetchUser。
-  允許並行取得使用者。
+  允許併發取得使用者。
 */
 function* mySaga() {
   yield takeEvery("USER_FETCH_REQUESTED", fetchUser);
@@ -77,7 +77,7 @@ function* mySaga() {
 /*
   另外你也可以使用 takeLatest。
 
-  但不允許並行取得使用者。當一個 fetch 已經在 pending 時，如果取得 dispatch「USER_FETCH_REQUESTED」，
+  但不允許併發取得使用者。當一個 fetch 已經在 pending 時，如果取得 dispatch「USER_FETCH_REQUESTED」，
   正在等待的 fetch 會被取消，只執行最新的發出的 USER_FETCH_REQUESTED。
 */
 function* mySaga() {
