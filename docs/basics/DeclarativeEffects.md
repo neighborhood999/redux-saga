@@ -1,14 +1,14 @@
-# Declarative Effects
+# 宣告 Effects
 
-In `redux-saga`, Sagas are implemented using Generator functions. To express the Saga logic we yield plain JavaScript Objects from the Generator. We call those Objects *Effects*. An Effect is simply an object which contains some information to be interpreted by the middleware. You can view Effects like instructions to the middleware to perform some operation (invoke some asynchronous function, dispatch an action to the store).
+在 `redux-saga` 中，Saga 都是使用 Generator function 實作的。我們從 Generator yield 純 JavaScript 物件來表達 Saga 的邏輯。我們稱這些物件為 *Effects*。一個 Effect 是一個簡單的物件，它包含了一些給 middleware 解釋執行的資訊。你可以把 Effect 看作是給 middleware 執行一些操作的說明（調用一些非同步的 function，dispatch 一個 action 到 store）。
 
-To create Effects, you use the functions provided by the library in the `redux-saga/effects` package.
+你可以使用在 library 內提供的 `redux-saga/effects` package 的 function 來建立 Effect。
 
-In this section and the following, we will introduce some basic Effects. And see how the concept allows the Sagas to be easily tested.
+在這個部份和接下來的部份，我們將介紹一些基礎的 Effect，而且可以看到這些概念讓 Saga 變得更容易測試。
 
-Sagas can yield Effects in multiple forms. The simplest way is to yield a Promise.
+Saga 可以 yield 多種形式的 Effect。最簡單的方式就是 yield Promise。
 
-For example suppose we have a Saga that watches a `PRODUCTS_REQUESTED` action. On each matching action, it starts a task to fetch a list of products from a server.
+例如假設我們有一個 Saga 觀察一個 `PRODUCTS_REQUESTED` action。在每次 match 到 action 時，它啟動一個 task 來從伺服器取得一些產品。
 
 ```javascript
 import { takeEvery } from 'redux-saga/effects'
@@ -24,36 +24,36 @@ function* fetchProducts() {
 }
 ```
 
-In the example above, we are invoking `Api.fetch` directly from inside the Generator (In Generator functions, any expression at the right of `yield` is evaluated then the result is yielded to the caller).
+在上面的範例中，我們從 Generator 內直接調用了 `Api.fetch`（在 Generator function，任何在 yield 右邊的表達式都會被求值，然後結果被 yield 到 caller）。
 
-`Api.fetch('/products')` triggers an AJAX request and returns a Promise that will resolve with the resolved response, the AJAX request will be executed immediately. Simple and idiomatic, but...
+`Api.fetch('/products')` 觸發一個 AJAX 請求並回傳一個 Promise，Promise 將 resolve 並 resovle response，AJAX 請求將直接執行。簡單且直覺的，但是...
 
-Suppose we want to test the generator above:
+假設我們要測試上面的 generator：
 
 ```javascript
 const iterator = fetchProducts()
-assert.deepEqual(iterator.next().value, ??) // what do we expect ?
+assert.deepEqual(iterator.next().value, ??) // 我們期望都到的是？
 ```
 
-We want to check the result of the first value yielded by the generator. In our case it's the result of running `Api.fetch('/products')` which is a Promise . Executing the real service during tests is neither a viable nor practical approach, so we have to *mock* the `Api.fetch` function, i.e. we'll have to replace the real function with a fake one which doesn't actually run the AJAX request but only checks that we've called `Api.fetch` with the right arguments (`'/products'` in our case).
+我們想要檢查 generator yield 後第一個結果的值。在我們這個情況執行 `Api.fetch('/products')` 的結果是一個 Promise。在測試時，執行真正的服務不是一個實際可行的方法，所以我們需要 *mock* `Api.fetch` function，也就是說，我們將有一個替換真實 function 而不實際執行 AJAX 請求，確認我們呼叫 `Api.fetch` 與它的參數 （在這情況中，這裡的參數是 `'/products'`）。
 
-Mocks make testing more difficult and less reliable. On the other hand, functions that simply return values are easier to test, since we can use a simple `equal()` to check the result. This is the way to write the most reliable tests.
+Mock 讓測試更加困難而且不可靠。另一方面，那些回傳數值的 function 更容易的測試，因此我們可以指簡單的使用 `equal()` 來測試結果。這種方式可以撰寫更加可靠的測試。
 
-Not convinced? I encourage you to read [Eric Elliott's article](https://medium.com/javascript-scene/what-every-unit-test-needs-f6cd34d9836d#.4ttnnzpgc):
+不相信嗎？我建議你去閱讀 [Eric Elliott 的文章](https://medium.com/javascript-scene/what-every-unit-test-needs-f6cd34d9836d#.4ttnnzpgc)：
 
-> (...)`equal()`, by nature answers the two most important questions every unit test must answer,
-but most don’t:
-- What is the actual output?
-- What is the expected output?
+> (...)`equal()`，自然的回答這兩個重要的問題，是每個單元測試必須回答的，
+但大多數不是這樣：
+- 實際的輸出是什麼？
+- 期望的輸出是什麼？
 >
-> If you finish a test without answering those two questions, you don’t have a real unit test. You have a sloppy, half-baked test.
+> 如果你完成一個測試沒有回答這兩個問題，就不是一個真實的單元測試。你的測試只是一個馬虎、不成熟的測試。
 
-What we actually need is just to make sure the `fetchProducts` task yields a call with the right function and the right arguments.
+實際上我們需要確保 `fetchProducts` task yield 一個呼叫正確的 function 和正確的參數。
 
-Instead of invoking the asynchronous function directly from inside the Generator, **we can yield only a description of the function invocation**. i.e. We'll simply yield an object which looks like
+不是從 Generator 內直接調用非同步 function，**我們可以只 yield 一個 function 調用的描述**。也就是說我們簡單 yield 一個物件，看起來像是：
 
 ```javascript
-// Effect -> call the function Api.fetch with `./products` as argument
+// Effect -> 呼叫 function Api.fetch 與 `./products` 作為參數
 {
   CALL: {
     fn: Api.fetch,
@@ -62,9 +62,9 @@ Instead of invoking the asynchronous function directly from inside the Generator
 }
 ```
 
-Put another way, the Generator will yield plain Objects containing *instructions*, and the `redux-saga` middleware will take care of executing those instructions and giving back the result of their execution to the Generator. This way, when testing the Generator, all we need to do is to check that it yields the expected instruction by doing a simple `deepEqual` on the yielded Object.
+另一種方式，Generator 將 yield 包含純物件的*說明*，`redux-saga` middleware 將確保執行那些指令並將它們執行的結果給到 Generator。透過這種方式，在測試 Generator 的時候，我們只需要將 yield 後的物件透過簡單的 `deepEqual` 確認 yield 是否為期望的指令。
 
-For this reason, the library provides a different way to perform asynchronous calls.
+根據這樣的原因，library 提供了一個不同的執行非同步呼叫方式。
 
 ```javascript
 import { call } from 'redux-saga/effects'
@@ -75,9 +75,9 @@ function* fetchProducts() {
 }
 ```
 
-We're using now the `call(fn, ...args)` function. **The difference from the preceding example is that now we're not executing the fetch call immediately, instead, `call` creates a description of the effect**. Just as in Redux you use action creators to create a plain object describing the action that will get executed by the Store, `call` creates a plain object describing the function call. The redux-saga middleware takes care of executing the function call and resuming the generator with the resolved response.
+我們現在使用 `call(fn, ...args)` function。**不同於前面的範例，我們現在不直接執行 fetch 呼叫，相反的，透過 `call` 建立一個 effect 的描述**。就像在 Redux 你可以使用 action creator 來建立一個純物件描述 action，透過 Store 接收後被執行，`call` 建立一個純物件來描述 function 的呼叫。redux-saga middleware 確認執行 function 的呼叫，並在 resolve response 時恢復 generator。
 
-This allows us to easily test the Generator outside the Redux environment. Because `call` is just a function which returns a plain Object.
+這讓我們在 Redux 外的環境更容易的測試 Generator。因為 `call` 只是一個 function，回傳一個純物件。
 
 ```javascript
 import { call } from 'redux-saga/effects'
@@ -85,7 +85,7 @@ import Api from '...'
 
 const iterator = fetchProducts()
 
-// expects a call instruction
+// 期望一個 call 的指令
 assert.deepEqual(
   iterator.next().value,
   call(Api.fetch, '/products'),
@@ -93,25 +93,25 @@ assert.deepEqual(
 )
 ```
 
-Now we don't need to mock anything, and a simple equality test will suffice.
+現在我們不需要 mock 任何東西，一個簡單的相等測試就足夠了。
 
-The advantage of those *declarative calls* is that we can test all the logic inside a Saga by simply iterating over the Generator and doing a `deepEqual` test on the values yielded successively. This is a real benefit, as your complex asynchronous operations are no longer black boxes, and you can test in detail their operational logic no matter how complex it is.
+這些*宣告的呼叫*的優點是，我們透過簡單的迭代 Generator，並在 yield 成功後得到的值做 `deepEqual` 測試，就可以測試所有在 Saga 的邏輯。這是真實的好處，你複雜的非同步操作不再是黑盒，不管它多麼複雜，你都可以測試每一個項目的操作邏輯。
 
-`call` also supports invoking object methods, you can provide a `this` context to the invoked functions using the following form:
+`call` 也支援調用物件的方法，使用以下的形式，你可以提供一個 `this` context 到調用的 function：
 
 ```javascript
-yield call([obj, obj.method], arg1, arg2, ...) // as if we did obj.method(arg1, arg2 ...)
+yield call([obj, obj.method], arg1, arg2, ...) // 如同我們使用 obj.method(arg1, arg2 ...)
 ```
 
-`apply` is an alias for the method invocation form
+`apply` 是這個調用方法形式的別名：
 
 ```javascript
 yield apply(obj, obj.method, [arg1, arg2, ...])
 ```
 
-`call` and `apply` are well suited for functions that return Promise results. Another function `cps` can be used to handle Node style functions (e.g. `fn(...args, callback)` where `callback` is of the form `(error, result) => ()`). `cps` stands for Continuation Passing Style.
+`call` 和 `apply` 非常適合回傳 Promise 結果的 function。另一個 function `cps` 可以備用來處理 Node 風格的 function（例如：`fn(...args, callback)`，這個 `callback` 是 `(error, result) => ()` 的形式）。`cps` 是代表 Continuation Passing Style。
 
-For example:
+例如：
 
 ```javascript
 import { cps } from 'redux-saga/effects'
@@ -119,7 +119,7 @@ import { cps } from 'redux-saga/effects'
 const content = yield cps(readFile, '/path/to/file')
 ```
 
-And of course you can test it just like you test `call`:
+當然你可以測試它，就像測試 `call` 一樣：
 
 ```javascript
 import { cps } from 'redux-saga/effects'
@@ -128,4 +128,4 @@ const iterator = fetchSaga()
 assert.deepEqual(iterator.next().value, cps(readFile, '/path/to/file') )
 ```
 
-`cps` also supports the same method invocation form as `call`.
+`cps` 與 `call` 一樣，支援相同的調用方法形式。
