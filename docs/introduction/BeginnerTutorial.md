@@ -196,7 +196,7 @@ test('incrementAsync Saga test', (assert) => {
 gen.next() // => { done: boolean, value: any }
 ```
 
-`value` 欄位包含被 yield 後的表達式，例如：在 `yield` 後的表達式結果。`done` 欄位說明如果 generator 是否結束或是還有 `yield` 的表達式。
+`value` 欄位包含被 yield 後的表達式，也就是說在 `yield` 後的表達式結果。`done` 欄位說明如果 generator 是否結束或是還有 `yield` 的表達式。
 
 在 `incrementAsync` 的情況下，generator 連續 yield 兩個值：
 
