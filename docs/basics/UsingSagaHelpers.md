@@ -4,7 +4,7 @@
 
 helper function 建立在頂部較低層的 API 上。在進階部份我們會看到這些 function 可以被實現。
 
-第一個 function `takeEvery` 會是我們很熟悉的，它提供類似於 `redux-thunk` 的行為。
+第一個 function `takeEvery` 是我們很熟悉的，它提供類似於 `redux-thunk` 的行為。
 
 讓我們說明常見的 AJAX 範例。在每次按下 Fetch 的按鈕，我們 dispatch 一個 `FETCH_REQUESTED` 的 aciton。我們透過啟動這個 task，將從伺服器取得一些資料，來處理這個 action。
 
