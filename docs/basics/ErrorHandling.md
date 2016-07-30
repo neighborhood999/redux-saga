@@ -1,10 +1,10 @@
-# Error handling
+# 錯誤處理
 
-In this section we'll see how to handle the failure case from the previous example. Let's suppose that our API function `Api.fetch` returns a Promise which gets rejected when the remote fetch fails for some reason.
+在這個部份我們將可以看到在先前的範例該如何處理失敗的情況。讓我假設我們的 API function fetch 因為某些原因失敗所以被 reject 並回傳一個 Promise。
 
-We want to handle those errors inside our Saga by dispatching a `PRODUCTS_REQUEST_FAILED` action to the Store.
+我們想要在我們的 Saga 內處理一些錯誤，透過 dispatch 一個 `PRODUCTS_REQUEST_FAILED` action 到 Store。
 
-We can catch errors inside the Saga using the familiar `try/catch` syntax.
+我們在 Saga 內捕捉錯誤使用我們熟悉的 `try/catch` 語法。
 
 ```javascript
 import Api from './path/to/api'
@@ -23,7 +23,7 @@ function* fetchProducts() {
 }
 ```
 
-In order to test the failure case, we'll use the `throw` method of the Generator
+為了測試失敗的情況，我們將使用 Generator 的 `throw` 方法：
 
 ```javascript
 import { call, put } from 'redux-saga/effects'
@@ -31,17 +31,17 @@ import Api from '...'
 
 const iterator = fetchProducts()
 
-// expects a call instruction
+// 預期一個 call 的指令
 assert.deepEqual(
   iterator.next().value,
   call(Api.fetch, '/products'),
   "fetchProducts should yield an Effect call(Api.fetch, './products')"
 )
 
-// create a fake error
+// 建立一個假的錯誤
 const error = {}
 
-// expects a dispatch instruction
+// 預期 dispatch 一個指令
 assert.deepEqual(
   iterator.throw(error).value,
   put({ type: 'PRODUCTS_REQUEST_FAILED', error }),
@@ -49,9 +49,9 @@ assert.deepEqual(
 )
 ```
 
-In this case, we're passing the `throw` method a fake error. This will cause the Generator to break the current flow and execute the catch block.
+在這個情況中，我們用 `throw` 方法傳送一個假的錯誤。因為這會將 Generator 目前的流程中斷，並執行 catch 區塊。
 
-Of course, you're not forced to handle your API errors inside `try`/`catch` blocks. You can also make your API service return a normal value with some error flag on it. For example, you can catch Promise rejections and map them to an object with an error field.
+當然，你不一定要強迫在 `try`/`catch` 區塊中處理你的 API 錯誤。你也可以讓 API 服務回傳正常的值與一些錯誤的旗標。例如，你可以捕捉 Promise 的 reject，並將它們映射到一個物件的錯誤欄位。
 
 ```javascript
 import Api from './path/to/api'
