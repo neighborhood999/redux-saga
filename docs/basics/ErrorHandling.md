@@ -4,7 +4,7 @@
 
 我們想要在我們的 Saga 內處理一些錯誤，透過 dispatch 一個 `PRODUCTS_REQUEST_FAILED` action 到 Store。
 
-我們在 Saga 內捕捉錯誤使用我們熟悉的 `try/catch` 語法。
+我們在 Saga 內使用我們熟悉的 `try/catch` 捕捉錯誤語法。
 
 ```javascript
 import Api from './path/to/api'
