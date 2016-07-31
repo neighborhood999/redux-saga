@@ -15,7 +15,7 @@ function* fetchProducts(dispatch) {
 
 然而，這個解決方式和在 Generator 直接調用 function 一樣，存在一些缺點（我們先前有討論到）。如果我們想要測試 `fetchProducts` 在接收 AJAX 回應後執行 dispatch，我們將需要再次 mock `dispatch` function。
 
-相反的，我們需要相同的宣告的解決方式。只要建立一個物件來告訴 middleware 我們需要 dispatch 一些 action，並讓 middleware 執行真實的 dispatch。我們可以用同樣的測試方式來測試 Generator 的 dispatch：透過檢查 yield 後的 Effect 並確認它是不是包含正確的指令。
+相反的，我們需要相同的宣告解決方式。只要建立一個物件來告訴 middleware 我們需要 dispatch 一些 action，並讓 middleware 執行真實的 dispatch。我們可以用同樣的測試方式來測試 Generator 的 dispatch：透過檢查 yield 後的 Effect 並確認它是不是包含正確的指令。
 
 為了這個目的，library 提供了另一個 `put` function，可以建立 dispatch 的 Effect。
 
@@ -30,7 +30,7 @@ function* fetchProducts() {
 }
 ```
 
-現在，我們可以像前面一樣簡單的測試 Generator：
+現在我們可以像前面一樣簡單的測試 Generator：
 
 ```javascript
 import { call, put } from 'redux-saga/effects'
