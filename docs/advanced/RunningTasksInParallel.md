@@ -1,23 +1,23 @@
-# Running Tasks In Parallel
+# 同時執行多個任務
 
-The `yield` statement is great for representing asynchronous control flow in a simple and linear style, but we also need to do things in parallel. We can't simply write:
+`yield` 語句可以很簡單的表達非同步的控制流程，但是我們也需要做一些同步的事情。我們不能只簡單撰寫：
 
 ```javascript
-// wrong, effects will be executed in sequence
+// 錯誤寫法，effect 將按照順序的被執行
 const users  = yield call(fetch, '/users'),
       repos = yield call(fetch, '/repos')
 ```
 
-Because the 2nd effect will not get executed until the first call resolves. Instead we have to write:
+因為第二個 effect 將直到第一個呼叫 resolve 後才執行，所以我們應該這樣撰寫：
 
 ```javascript
 import { all, call } from 'redux-saga/effects'
 
-// correct, effects will get executed in parallel
-const [users, repos]  = yield all([
+// 正確寫法，effect 將同步被執行
+const [users, repos]  = yield [
   call(fetch, '/users'),
   call(fetch, '/repos')
 ])
 ```
 
-When we yield an array of effects, the generator is blocked until all the effects are resolved or as soon as one is rejected (just like how `Promise.all` behaves).
+當我們 yield 一個 effect 的陣列，generator 是被阻塞的，直到所有 effect 都被 resolve 或者是被 reject（就像 `Promise.all` 的行為）。
