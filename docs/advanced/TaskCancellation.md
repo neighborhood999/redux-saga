@@ -1,12 +1,12 @@
-# Task cancellation
+# 取消 Task
 
-We saw already an example of cancellation in the [Non blocking calls](NonBlockingCalls.md) section. In this section we'll review cancellation in more detail.
+我們在[非阻塞呼叫](NonBlockingCalls.md)部份已經看過取消的範例。在這個部份我們將回顧更多取消 task 的細節。
 
-Once a task is forked, you can abort its execution using `yield cancel(task)`.
+一旦 task 被 fork，你可以使用 `yield cancel(task)` 中止它。
 
-To see how it works, let's consider a simple example: A background sync which can be started/stopped by some UI commands. Upon receiving a `START_BACKGROUND_SYNC` action, we fork a background task that will periodically sync some data from a remote server.
+我們來看一下它是如何運作的，讓我們考慮一個簡單的範例：可以透過一些 UI 的 command 啟動或暫停背景同步。接收一個 `START_BACKGROUND_SYNC` action，我們 fork 一個背景 task 將定期的從遠端資料庫同步一些資料。
 
-The task will execute continually until a `STOP_BACKGROUND_SYNC` action is triggered. Then we cancel the background task and wait again for the next `START_BACKGROUND_SYNC` action.
+task 將持續執行直到一個 `STOP_BACKGROUND_SYNC` action 被觸發。然後我們取消背景 task 並等待下一次的 `START_BACKGROUND_SYNC` action。   
 
 ```javascript
 import { take, put, call, fork, cancel, cancelled } from 'redux-saga/effects'
@@ -29,52 +29,52 @@ function* bgSync() {
 
 function* main() {
   while ( yield take(START_BACKGROUND_SYNC) ) {
-    // starts the task in the background
+    // 在背景啟動 task
     const bgSyncTask = yield fork(bgSync)
 
-    // wait for the user stop action
+    // 等待 user 的 stop action
     yield take(STOP_BACKGROUND_SYNC)
-    // user clicked stop. cancel the background task
-    // this will cause the forked bgSync task to jump into its finally block
+    // user 按下暫停，取消背景任務
+    // 這將導致被 fork 的 bgSync task 跳到它最後的 finally 區塊
     yield cancel(bgSyncTask)
   }
 }
 ```
 
-In the above example, cancellation of `bgSyncTask` will cause the Generator to jump to the finally block. Here you can use `yield cancelled()` to check if the Generator has been cancelled or not.
+在上方的範例中，`bgSyncTask` 的取消將造成 Generator 跳到 finally 的區塊。這裡你可以使用 `yield cancelled()` 來確認 Generator 是否被取消了。
 
-Cancelling a running task will also cancel the current Effect where the task is blocked at the moment of cancellation.
+在取消一個執行的 task 同時也取消目前被阻塞的 Effect。
 
-For example, suppose that at a certain point in an application's lifetime, we have this pending call chain:
+例如，在一個應用程式的生命週期的某個時候，我們有一個 pending 的 call chain（鏈結）：
 
 ```javascript
 function* main() {
   const task = yield fork(subtask)
   ...
-  // later
+  // 接著
   yield cancel(task)
 }
 
 function* subtask() {
   ...
-  yield call(subtask2) // currently blocked on this call
+  yield call(subtask2) // 在這個 call 目前被阻塞
   ...
 }
 
 function* subtask2() {
   ...
-  yield call(someApi) // currently blocked on this call
+  yield call(someApi) // 在這個 call 目前被阻塞
   ...
 }
 ```
 
-`yield cancel(task)` triggers a cancellation on `subtask`, which in turn triggers a cancellation on `subtask2`.
+`yield cancel(task)` 在 `subtask` 觸發一個取消，反過來又將在 `subtask2` 觸發一個取消。
 
-So we saw that Cancellation propagates downward (in contrast returned values and uncaught errors propagates upward). You can see it as a *contract* between the caller (which invokes the async operation) and the callee (the invoked operation). The callee is responsible for performing the operation. If it has completed (either success or error) the outcome propagates up to its caller and eventually to the caller of the caller and so on. That is, callees are responsible for *completing the flow*.
+現在我們看到取消不斷的往下傳播（相反的，被回傳的值和沒有捕捉的錯誤不斷往上）。你可以看到 caller（調用非同步的操作）和 callee（被調用的操作）之間的*對照*。callee 是負責執行操作。如果它完成了（不管是成功或失敗）結果將會往上到它的 caller，最終到 caller 的調用方。就是這樣，callee 是負責*完成流程*。
 
-Now if the callee is still pending and the caller decides to cancel the operation, it triggers a kind of a signal that propagates down to the callee (and possibly to any deep operations called by the callee itself). All deeply pending operations will be cancelled.
+現在如果 callee 一直處於等待，而且 caller 決定取消操作，它將觸發一種訊號將往下傳播到 callee（以及透過 callee 本身被呼叫的任何深層操作）。所有深層等待的操作將被取消。
 
-There is another direction where the cancellation propagates to as well: the joiners of a task (those blocked on a `yield join(task)`) will also be cancelled if the joined task is cancelled. Similarly, any potential callers of those joiners will be cancelled as well (because they are blocked on an operation that has been cancelled from outside).
+如果加入的 task 被取消的話，task 的 joiner（那些被阻塞的 `yield join(task)`）將也會被取消。同樣的，任何那些 joiner 潛在的 caller 將會被取消（因為他們阻塞的操作已經從外面被取消）。
 
 ## Testing generators with fork effect
 
@@ -110,14 +110,14 @@ describe('main', () => {
 
 You can also use mock task's functions `setRunning`, `setResult` and `setError` to set mock task's state. For example `mockTask.setRunning(false)`.
 
-### Note
+### 注意
 
-It's important to remember that `yield cancel(task)` doesn't wait for the cancelled task to finish (i.e. to perform its finally block). The cancel effect behaves like fork. It returns as soon as the cancel was initiated. Once cancelled, a task should normally return as soon as it finishes its cleanup logic.
+很重要的是，記得 `yield cancel(task)` 不會等待被取消的 task 結束（也就是說執行到 final 區塊）。cancel effect 的行為像是 fork，它初始 cancel 後並回傳，一旦被取消後，task 應該執行清除邏輯並回傳。
 
-## Automatic cancellation
+## 自動取消
 
-Besides manual cancellation there are cases where cancellation is triggered automatically
+除了手動取消之外，也有一些是被觸發而自動取消的情況
 
-1. In a `race` effect. All race competitors, except the winner, are automatically cancelled.
+1. 在一個 `rafe` effect，除了 winner 之外，所有 race 競爭者都會被取消。
 
-2. In a parallel effect (`yield all([...])`). The parallel effect is rejected as soon as one of the sub-effects is rejected (as implied by `Promise.all`). In this case, all the other sub-effects are automatically cancelled.
+2. 在一個併行的 effect（`yield [...]`）中，一旦其中一個子 effect 被 reject，併行的 effect 會被 reject（像是 `Promise.all` 一樣）。在這個情況，所有其他的子 effect 都會自動的被取消。

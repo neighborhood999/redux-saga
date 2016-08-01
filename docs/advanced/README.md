@@ -8,7 +8,7 @@
 * [在多個 Effect 之間啟動一個 race](/docs/advanced/RacingEffects.md)
 * [使用 yield* 對 Saga 做排序](/docs/advanced/SequencingSagas.md)
 * [組合 Saga](/docs/advanced/ComposingSagas.md)
-* [任務取消](/docs/advanced/TaskCancellation.md)
+* [取消 Task](/docs/advanced/TaskCancellation.md)
 * [redux-saga 的 fork 模型](ForkModel.md)
 * [常見的併發模式](/docs/advanced/Concurrency.md)
 * [Saga 測試的範例](/docs/advanced/Testing.md)
