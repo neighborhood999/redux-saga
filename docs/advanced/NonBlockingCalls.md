@@ -72,7 +72,7 @@ function* loginFlow() {
 
 ### 但是上面的方法仍然存在一個小問題
 
-假設當 `loginFlow` 再等待以下的呼叫被 reslove：
+假設當 `loginFlow`  在等待以下的呼叫被 reslove：
 
 ```javascript
 function* loginFlow() {
@@ -103,7 +103,7 @@ LOGOUT.................................................. missed!
 ........................................................
 ```
 
-當 `loginFlow` 在 `authorize` 呼叫後被阻塞，最終的呼叫和 response 發生的 `LOGOUT` 將被跳過，因為 `loginFlow` 還沒有執行 `yield take('LOGOUT')` 。
+當 `loginFlow` 在 `authorize` 呼叫後被阻塞，最終的呼叫和 response 發生的 `LOGOUT` 將被跳過，因為 `loginFlow` 還沒有執行 `yield take('LOGOUT')`。
 
 問題在上面 `call` 的程式碼， 它是一個阻塞的 Effect，也就是說 Generator 在呼叫結束之前，不能執行或處理任何東西。但在我們的情況中，我們不只想要 `loginFlow` 執行呼叫認證，也希望能觀察發生在呼叫的之間最終的 `LOGOUT` action。因為 `LOGOUT` 和 `authorize` 是*同時*呼叫的。
 
