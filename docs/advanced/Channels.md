@@ -1,19 +1,18 @@
-# Using Channels
+# 使用 Channel
 
-Until now we've used the `take` and `put` effects to communicate with the Redux Store. Channels generalize those Effects to communicate with external event sources or between Sagas themselves. They can also be used to queue specific actions from the Store.
+到目前為止，我們使用了 `take` 和 `put` effect 來和 Redux Store 溝通。Channels 概括了這些 Effect 與外部事件來源或 Saga 它們之間的溝通。它們也可以從 Store 指定隊列的 action。
 
-In this section, we'll see:
+在這個部份，我們將會看到：
 
-- How to use the `yield actionChannel` Effect to buffer specific actions from the Store.
+- 如何從 Store 使用 `yield actionChannel` Effect 來緩衝指定的 action。
 
-- How to use the `eventChannel` factory function to connect `take` Effects to external event sources.
+- 如何使用 `eventChannel` factory function 連結 `take` Effect 到外部的事件來源。
 
-- How to create a channel using the generic `channel` factory function and use it in `take`/`put` Effects to
-communicate between two Sagas.
+- 如何使用通用的 `channel` factory function 建立一個 channel，並使用在 `take`/`put` Effect 與兩個 Saga 之間做溝通。
 
-## Using the `actionChannel` Effect
+## 使用 `actionChannel` Effect
 
-Let's review the canonical example:
+讓我們回顧一下經典的範例：
 
 ```javascript
 import { take, fork, ... } from 'redux-saga/effects'
@@ -28,36 +27,38 @@ function* watchRequests() {
 function* handleRequest(payload) { ... }
 ```
 
-The above example illustrates the typical *watch-and-fork* pattern. The `watchRequests` saga is using `fork` to avoid blocking and thus not missing any action from the store. A `handleRequest` task is created on each `REQUEST` action. So if there are many actions fired at a rapid rate there can be many `handleRequest` tasks executing concurrently.
+上方的範例說明典型的 *watch-and-fork* 的模式。`watchRequests` saga 使用 `fork` 來避免阻塞，因此不會錯過任何來自 store 的 action。一個 `handleRequest` task 是在每次取得 `REQUEST` action 被建立。所以如果有許多 action 在一個 race 被觸發，可以同時有許多 `handleRequest` task。
 
-Imagine now that our requirement is as follows: we want to process `REQUEST` serially. If we have at any moment four actions, we want to handle the first `REQUEST` action, then only after finishing this action we process the second action and so on...
+想像現在我們需要以下的功能：我們想要每次處理一個 `REQUEST`。意思是，如果我們在一個時間點有四個 action，我們想要一個一個處理 `REQUEST` action，處理完第一個 action 後，再接著處理第二個 action...
 
-So we want to *queue* all non-processed actions, and once we're done with processing the current request, we get the next message from the queue.
+So what we want is to *queue* all non processed actions, and once we're done with processing the current request, we get the next message from the queue.所以我們想要的是*隊列*所有還沒被處理的 action，一旦我們處理完成目前的 request，我們可以從隊列取得下一個訊息。
 
-Redux-Saga provides a little helper Effect `actionChannel`, which can handle this for us. Let's see how we can rewrite the previous example with it:
+library 提供一個 `actionChannel` helper Effect，讓我們可以處理這些東西。讓我們來看如何使用它重新撰寫先前的範例：
 
 ```javascript
 import { take, actionChannel, call, ... } from 'redux-saga/effects'
 
 function* watchRequests() {
-  // 1- Create a channel for request actions
+  // 1- 建立一個 channel 來 request action
   const requestChan = yield actionChannel('REQUEST')
   while (true) {
-    // 2- take from the channel
+    // 2- 從 channel 取得
     const {payload} = yield take(requestChan)
-    // 3- Note that we're using a blocking call
+    // 3- 注意，我們使用一個阻塞的呼叫
     yield call(handleRequest, payload)
   }
 }
 
 function* handleRequest(payload) { ... }
 ```
+不同的
+第一件事情建立一個 action channel。我們使用 `yield actionChannel(pattern)`，這個 pattern 被解讀成我們先前提到的 `take(pattern)` 並使用相同的規則。在這兩個形式不同的地方是，如果 Saga 還沒準備好接收它們的話（例如一個被阻塞的 API 呼叫），`actionChannel` **可以緩衝傳入的訊息**。
 
-The first thing is to create the action channel. We use `yield actionChannel(pattern)` where pattern is interpreted using the same rules we mentioned previously with `take(pattern)`. The difference between the 2 forms is that `actionChannel` **can buffer incoming messages** if the Saga is not yet ready to take them (e.g. blocked on an API call).
+接下來的是 `yield take(requestChan)`。除了使用一個 `pattern` 從 Redux Store 接收指定的 action 之外，`take` 也可以被用在 channel（在上面我們從指定的 Redux Store 建立 channel 物件）。.`take` 可以阻塞 Saga，直到在 channel 有一個訊息。如果有一個訊息被儲存在基礎緩衝區，take 也可以立即的恢復。
 
 Next is the `yield take(requestChan)`. Besides usage with a `pattern` to take specific actions from the Redux Store, `take` can also be used with channels (above we created a channel object from specific Redux actions). The `take` will block the Saga until a message is available on the channel. The take may also resume immediately if there is a message stored in the underlying buffer.
 
-The important thing to note is how we're using a blocking `call`. The Saga will remain blocked until `call(handleRequest)` returns. But meanwhile, if other `REQUEST` actions are dispatched while the Saga is still blocked, they will queued internally by `requestChan`. When the Saga resumes from `call(handleRequest)` and executes the next `yield take(requestChan)`, the take will resolve with the queued message.
+預設上，`actionChannel` 沒有限制緩衝所有傳入的訊息。如果你想要更多的緩衝控制，你可提供一個 Buffer 的參數到 effect creator。library 提供一些普遍的 buffer（none、dropping、sliding），但你也可以提供你自己的 buffer 實作，更多細節請參考 API 文件。
 
 By default, `actionChannel` buffers all incoming messages without limit. If you want a more control over the buffering, you can supply a Buffer argument to the effect creator. Redux-Saga provides some common buffers (none, dropping, sliding) but you can also supply your own buffer implementation. [See API docs](../api#buffers) for more details.
 
@@ -73,11 +74,11 @@ function* watchRequests() {
 }
 ```
 
-## Using the `eventChannel` factory to connect to external events
+## 使用 `eventChannel` factory 連結外部的事件
 
-Like `actionChannel` (Effect), `eventChannel` (a factory function, not an Effect) creates a Channel for events but from event sources other than the Redux Store.
+像是 `actionChannel`（Effect），`eventChannel`（一個 factory function，而不是一個 Effect）為事件建立一個 Channel，來自 Redux Store 以外的事件來源。
 
-This simple example creates a Channel from an interval:
+這是一個從 interval 建立 Channel 的範例：
 
 ```javascript
 import { eventChannel, END } from 'redux-saga'
@@ -89,11 +90,11 @@ function countdown(secs) {
         if (secs > 0) {
           emitter(secs)
         } else {
-          // this causes the channel to close
+          // 這裡造成 channel 關閉
           emitter(END)
         }
       }, 1000);
-      // The subscriber must return an unsubscribe function
+      // 訂閱者必須回傳取消訂閱功能
       return () => {
         clearInterval(iv)
       }
@@ -102,26 +103,26 @@ function countdown(secs) {
 }
 ```
 
-The first argument in `eventChannel` is a *subscriber* function. The role of the subscriber is to initialize the external event source (above using `setInterval`), then routes all incoming events from the source to the channel by invoking the supplied `emitter`. In the above example we're invoking `emitter` on each second.
+`eventChannel` 第一個參數是一個 *subscriber* function。訂閱者的規則是初始化外部的來源（上面使用 `setInterval`），透過提供的 `emitter` 路由所有傳入的事件，從來源到 channel。在上面的範例我們在每秒調用 `emitter`。
 
-> Note: You need to sanitize your event sources as to not pass null or undefined through the event channel. While it's fine to pass numbers through, we'd recommend structuring your event channel data like your redux actions. `{ number }` over `number`.
+> 注意：你需要清除你的事件來源，不是通過事件 channel 傳送 null 或 undefined。雖然可以透過數字傳送，但我們推薦像是 redux action 一樣，組織你的事件 channel 資料。
 
-Note also the invocation `emitter(END)`. We use this to notify any channel consumer that the channel has been closed, meaning no other messages will come through this channel.
+注意，也可以調用 `emitter(END)`。channel 已經被關閉時，我們使用這個來通知這任何 channel consumer，意思是沒有其他的訊息可以可以通過這個 channel。
 
-Let's see how we can use this channel from our Saga. (This is taken from the cancellable-counter example in the repo.)
+讓我看一下如何從 Saga 使用這個 channel。（這個範例是來自 repo 的 cancellable-counter ）
 
 ```javascript
 import { take, put, call } from 'redux-saga/effects'
 import { eventChannel, END } from 'redux-saga'
 
-// creates an event Channel from an interval of seconds
+// 從每秒間隔建立一個事件 Channel
 function countdown(seconds) { ... }
 
 export function* saga() {
   const chan = yield call(countdown, value)
   try {    
     while (true) {
-      // take(END) will cause the saga to terminate by jumping to the finally block
+      // take(END) 將造成 saga 終止，跳到 finally 區塊
       let seconds = yield take(chan)
       console.log(`countdown: ${seconds}`)
     }
@@ -131,17 +132,17 @@ export function* saga() {
 }
 ```
 
-So the Saga is yielding a `take(chan)`. This causes the Saga to block until a message is put on the channel. In our example above, it corresponds to when we invoke `emitter(secs)`. Note also we're executing the whole `while (true) {...}` loop inside a `try/finally` block. When the interval terminates, the countdown function closes the event channel by invoking `emitter(END)`. Closing a channel has the effect of terminating all Sagas blocked on a `take` from that channel. In our example, terminating the Saga will cause it to jump to its `finally` block (if provided, otherwise the Saga simply terminates).
+所以 Saga 是 yield 一個 `take(chan)`。這會造成 Saga 阻塞直到一個訊息被放在 channel。在我們上面的範例，它對應到當我們調用 `emitter(secs)`。注意我們還在在一個 `try/finally` 區塊執行整個 `while (true {...}` 迴圈。當間隔終止時，countdown function 透過調用 `emitter(END)`關閉 channel。在 channel 的 `take` effect 關閉 channel 終止所有被阻塞的 Saga，在我們的範例，終止 Saga 將造成它跳到 `finally` 區塊（如果有提供的話，否則 Saga 只是簡單的終止）。
 
-The subscriber returns an `unsubscribe` function. This is used by the channel to unsubscribe before the event source complete. Inside a Saga consuming messages from an event channel, if we want to *exit early* before the event source complete (e.g. Saga has been cancelled) you can call `chan.close()` to close the channel and unsubscribe from the source.
+訂閱者回傳一個 `unsubscribe` function。這是被用來在事件來源完成之前，透過 channel 取消訂閱。在 Saga 內使用來自事件 channel 的訊息，如果我們想要在事件來源完成之前*提早離開*（例如：Saga 已經被取消），你可以從來源呼叫 `chan.close()` 關閉 channel 並取消訂閱。
 
-For example, we can make our Saga support cancellation:
+例如，我們可以讓我們的 Saga 支援取消：
 
 ```javascript
 import { take, put, call, cancelled } from 'redux-saga/effects'
 import { eventChannel, END } from 'redux-saga'
 
-// creates an event Channel from an interval of seconds
+// 在每秒間隔建立一個事件 Channel
 function countdown(seconds) { ... }
 
 export function* saga() {
@@ -213,14 +214,14 @@ export function* watchOnPings() {
 }
 ```
 
-> Note: messages on an eventChannel are not buffered by default. You have to provide a buffer to the eventChannel factory in order to specify buffering strategy for the channel (e.g. `eventChannel(subscriber, buffer)`).
-[See the API docs](../api#buffers) for more info.
+> 注意：預設上，訊息在一個 eventChannel 不會被緩衝。你可以提供一個緩衝到 eventChannel factory 來指定 channel 的緩衝策略（例如：`eventChannel(subscriber, buffer)`）。
+更多資訊請參考 [API 文件](../api#buffers)。
 
-### Using channels to communicate between Sagas
+### 使用 channel 在 Saga 之間溝通
 
-Besides action channels and event channels. You can also directly create channels which are not connected to any source by default. You can then manually `put` on the channel. This is handy when you want to use a channel to communicate between sagas.
+除了 action channel 和事件 channel 之外，你也可以直接建立 channel，預設上可以不用連結任何的來源。你可以在 channel 手動的 `put`。當你想要使用 channel 在 saga 之間溝通是非常方便的。
 
-To illustrate, let's review the former example of request handling.
+為了說明，讓我們回顧先前的請求操作範例：
 
 ```javascript
 import { take, fork, ... } from 'redux-saga/effects'
@@ -235,21 +236,21 @@ function* watchRequests() {
 function* handleRequest(payload) { ... }
 ```
 
-We saw that the watch-and-fork pattern allows handling multiple requests simultaneously, without limit on the number of worker tasks executing concurrently. Then, we used the `actionChannel` effect to limit the concurrency to one task at a time.
+我們可以看到 watch-and-fork pattern 允許我們同時操作多個請求，在併行下，沒有工作 task 的數量限制。然後我們使用 `actionChannel` effect 來限制併發一次執行一個 task。
 
-So let's say that our requirement is to have a maximum of three tasks executing at the same time. When we get a request and there are less than three tasks executing, we process the request immediately, otherwise we queue the task and wait for one of the three *slots* to become free.
+因此，我們的要求是在同一時間內執行三個 task。當我們取得一個 request ，而且執行的 task 小於三個，我們會立即的處理 request，但是如果我們已經有三個 task 執行了，我們將 task 隊列，並等待其中一個 *slots* 完成。
 
-Below is an example of a solution using channels:
+下面的範例使用 channel 解決：
 
 ```javascript
 import { channel } from 'redux-saga'
 import { take, fork, ... } from 'redux-saga/effects'
 
 function* watchRequests() {
-  // create a channel to queue incoming requests
+  // 建立一個 channel 隊列傳入的請求
   const chan = yield call(channel)
 
-  // create 3 worker 'threads'
+  // 建立三個 worker thread
   for (var i = 0; i < 3; i++) {
     yield fork(handleRequest, chan)
   }
@@ -263,13 +264,13 @@ function* watchRequests() {
 function* handleRequest(chan) {
   while (true) {
     const payload = yield take(chan)
-    // process the request
+    // 處理請求
   }
 }
 ```
 
-In the above example, we create a channel using the `channel` factory. We get back a channel which by default buffers all messages we put on it (unless there is a pending taker, in which the taker is resumed immediately with the message).
+在上面的範例中，我們使用 `channel` factory 建立一個 channel。我們取回一個 channel，預設上我們放入所有緩衝的訊息（除非有一個正在等待的 taker，如果有訊息的話立即恢復 taker）。
 
-The `watchRequests` saga then forks three worker sagas. Note the created channel is supplied to all forked sagas. `watchRequests` will use this channel to *dispatch* work to the three worker sagas. On each `REQUEST` action the Saga will simply put the payload on the channel. The payload will then be taken by any *free* worker. Otherwise it will be queued by the channel until a worker Saga is ready to take it.
+`watchRequests` saga fork 三個 worker saga。注意，建立的 channel 提供給所有被 fork 的 saga。`watchRequests` 將使用這個 channel 來 *dispatch* 工作到三個 worker saga。在每個 `REQUEST` action，Saga 將簡單的在 channel 放入 payload。任何**空閒**的 worker 會接收 payload，也就是說它將透過 channel 被隊列，直到一個 woker Saga 準備接收它。
 
-All the three workers run a typical while loop. On each iteration, a worker will take the next request, or will block until a message is available. Note that this mechanism provides an automatic load-balancing between the 3 workers. Rapid workers are not slowed down by slow workers.
+所有的 worker 執行一個典型的 while 迴圈。在每次迭代 worker 將取得下一次的 request，或者將阻塞直到得到訊息。注意，這個機制在三個 worker 之間提供一個自動載入平衡。
