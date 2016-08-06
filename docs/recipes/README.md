@@ -45,14 +45,14 @@ function* watchInput() {
 }
 ```
 
-The `delay` function implements a simple debounce using a Promise.
+The `delay` function 使用 Promise 實作一個簡單的 debounce。
 ```
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 ```
 
-In the above example `handleInput` waits for 500ms before performing its logic. If the user types something during this period we'll get more `INPUT_CHANGED` actions. Since `handleInput` will still be blocked in the `delay` call, it'll be cancelled by `watchInput` before it can start performing its logic.
+在上面的範例，`handleInput` 在執行邏輯之前等待 500 毫秒。如果使用者在這個期間輸入了一些文字我們將得到更多 `INPUT_CHANGED` action。由於 `handleInput` 將被阻塞在 `delay`，透過 `watchInput` 在執行它的邏輯之前被取消。
 
-Example above could be rewritten with redux-saga `takeLatest` helper:
+上面的範例可以使用 redux-saga 的 `takeLatest` help 重新撰寫：
 
 ```javascript
 
@@ -66,14 +66,14 @@ function* handleInput({ input }) {
 }
 
 function* watchInput() {
-  // will cancel current running handleInput task
+  // 將取消目前執行的 handleInput task
   yield takeLatest('INPUT_CHANGED', handleInput);
 }
 ```
 
-## Retrying XHR calls
+## 嘗試 XHR 呼叫
 
-To retry a XHR call for a specific amount of times, use a for loop with a delay:
+為了嘗試指定次數的 XHR 呼叫，使用一個 for 迴圈和 delay：
 
 ```javascript
 
@@ -91,7 +91,7 @@ function* updateApi(data) {
       }
     }
   }
-  // attempts failed after 5 attempts
+  // 嘗試 5 秒後失敗
   throw new Error('API request failed');
 }
 
@@ -115,9 +115,9 @@ export default function* updateResource() {
 
 ```
 
-In the above example the `apiRequest` will be retried for 5 times, with a delay of 2 seconds in between. After the 5th failure, the exception thrown will get caught by the parent saga, which will dispatch the `UPDATE_ERROR` action.
+在上面的範例，`apiRequest` 將重新嘗試五次，在這之間每次延遲兩秒。After the 5th failure, 在第五次失敗後，透過父 saga 將取得例外，我們將 dispatch `UPDATE_ERROR` action。
 
-If you want unlimited retries, then the `for` loop can be replaced with a `while (true)`. Also instead of `take` you can use `takeLatest`, so only the last request will be retried. By adding an `UPDATE_RETRY` action in the error handling, we can inform the user that the update was not successfull but it will be retried.
+如果你不想要限制重新嘗試，你可以將 `for` 回圈替換成 `while (true)`。將 `take` 替換成 `takeLatest`，所以只嘗試最後一次的請求。在錯誤處理加入一個 `UPDATE_RETRY` action ，我們可以通知使用者更新沒有成功，但是它會重新嘗試。
 
 ```javascript
 import { delay } from 'redux-saga'
