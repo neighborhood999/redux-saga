@@ -10,7 +10,7 @@ Effect 是一個純 JavaScript 物件，包含一些透過 saga middleware 被�
 
 ### Task
 
-Task 像是一個執行再背景的處理程序。在基於 redux-saga 的應用程式，你可以同時執行多個 task，透過 `fork` function 建立 task。
+Task 像是一個執行在背景的處理程序。基於 redux-saga 的應用程式，你可以同時執行多個 task，透過 `fork` function 建立 task。
 
 ```javascript
 import {fork} from "redux-saga/effects"
@@ -40,8 +40,8 @@ function* saga() {
 
   yield put(...)                   // 非阻塞：將 dispatch 內部 scheduler
 
-  const task = yield fork(otherSaga, ...args)  // 非阻塞: 不等待 otherSaga
-  yield cancel(task)                           // 非阻塞： 立即恢復
+  const task = yield fork(otherSaga, ...args)  // 非阻塞:不等待 otherSaga
+  yield cancel(task)                           // 非阻塞：立即恢復
   // 或
   yield join(task)                              // 阻塞：等待 task 終止
 }
@@ -49,11 +49,11 @@ function* saga() {
 
 ### Watcher 和 Worker
 
-指的是一種組織的控制流程，使用兩個獨立的 Saga。
+使用兩個獨立的 Saga 組織控制流程。
 
-- watcher： 觀察被 dispatch 的 action 並在每個 action fork 一個 worker
+- watcher：觀察被 dispatch 的 action 並在每個 action fork 一個 worker
 
-- worker： 處理 action 並終止
+- worker：處理 action 並終止
 
 example
 
