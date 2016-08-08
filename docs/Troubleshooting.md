@@ -21,7 +21,7 @@ function* logActions() {
 
 加入 `yield` 將暫停 generator，並將控制回傳給 Redux Saga middleware 執行 effect。在 `take()` 的情況中，Redux Saga 等待下一個符合的 action，並恢復 generator。
 
-為了修正上面的範例，只要 `yield` `take()` 回傳的 effect：
+為了修正上面的範例，只要 `yield take()` 回傳的 effect：
 
 ```js
 import { take } from 'redux-saga/effects'
