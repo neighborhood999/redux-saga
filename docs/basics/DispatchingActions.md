@@ -1,8 +1,8 @@
 # Dispatch action 到 store
 
-在先前的範例我們更進一步的，在每次儲存後，我們想要 dispatch 一些 action 來通知 Store fetch 已經成功了（目前我們先忽略失敗的情況）。
+在先前的範例讓我們更進一步，在每次儲存後，我們想要 dispatch 一些 action 來通知 Store fetch 已經成功了（目前我們先忽略失敗的情況）。
 
-我們可以傳送 Store 的 `dispatch` function 到 Generator。然後在取得回應後，Generator 可以調用它：
+我們可以傳送 Store 的 `dispatch` function 到 Generator，然後在取得回應後，Generator 可以調用它：
 
 ```javascript
 // ...
