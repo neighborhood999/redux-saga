@@ -1,6 +1,6 @@
 # 宣告 Effects
 
-在 `redux-saga` 中，Saga 都是使用 Generator function 實作的。我們從 Generator yield 純 JavaScript 物件來表達 Saga 的邏輯。我們稱這些物件為 *Effects*。一個 Effect 是一個簡單的物件，它包含了一些給 middleware 解釋執行的資訊。你可以把 Effect 看作是給 middleware 執行一些操作的說明（調用一些非同步的 function，dispatch 一個 action 到 store）。
+在 `redux-saga` 中，Saga 都是使用 Generator function 實作的。我們從 Generator yield 純 JavaScript 物件來表達 Saga 的邏輯。我們稱這些物件為 *Effects*。一個 Effect 是一個簡單的物件，它包含了一些由 middleware 解譯的資訊。你可以把 Effect 看作是給 middleware 執行一些操作的說明（調用一些非同步的 function，dispatch 一個 action 到 store）。
 
 你可以使用在 library 內提供的 `redux-saga/effects` package 的 function 來建立 Effect。
 
@@ -8,7 +8,7 @@
 
 Saga 可以 yield 多種形式的 Effect。最簡單的方式就是 yield Promise。
 
-例如假設我們有一個 Saga 觀察一個 `PRODUCTS_REQUESTED` action。在每次 match 到 action 時，它啟動一個 task 來從伺服器取得一些產品。
+例如，假設我們有一個 Saga 觀察一個 `PRODUCTS_REQUESTED` action。在每次發出的 action 符合 takeEvery 的 action 時，它啟動一個 task 來從伺服器取得一些產品。
 
 ```javascript
 import { takeEvery } from 'redux-saga/effects'
@@ -26,7 +26,7 @@ function* fetchProducts() {
 
 在上面的範例中，我們從 Generator 內直接調用了 `Api.fetch`（在 Generator function，任何在 yield 右邊的表達式都會被求值，然後結果被 yield 到 caller）。
 
-`Api.fetch('/products')` 觸發一個 AJAX 請求並回傳一個 Promise，Promise 將 resolve 並 resovle response，AJAX 請求將直接執行。簡單且直覺的，但是...
+`Api.fetch('/products')` 觸發一個 AJAX 請求並回傳一個 Promise，Promise 將被 resolve 並 resovle response，AJAX 請求將直接執行。簡單且直覺的，但是...
 
 假設我們要測試上面的 generator：
 
@@ -37,7 +37,7 @@ assert.deepEqual(iterator.next().value, ??) // 我們期望都到的是？
 
 我們想要檢查 generator yield 後第一個結果的值。在我們這個情況執行 `Api.fetch('/products')` 的結果是一個 Promise。在測試時，執行真正的服務不是一個實際可行的方法，所以我們需要 *mock* `Api.fetch` function，也就是說，我們將有一個替換真實 function 而不實際執行 AJAX 請求，確認我們呼叫 `Api.fetch` 與它的參數 （在這情況中，這裡的參數是 `'/products'`）。
 
-Mock 讓測試更加困難而且不可靠。另一方面，那些回傳數值的 function 更容易的測試，因此我們可以指簡單的使用 `equal()` 來測試結果。這種方式可以撰寫更加可靠的測試。
+Mock 讓測試更加困難而且不可靠。另一方面，那些只回傳數值的 function 更容易的測試，因此我們可以簡單的使用 `equal()` 來測試結果。這種方式可以撰寫更加可靠的測試。
 
 不相信嗎？我建議你去閱讀 [Eric Elliott 的文章](https://medium.com/javascript-scene/what-every-unit-test-needs-f6cd34d9836d#.4ttnnzpgc)：
 
