@@ -1,8 +1,8 @@
 ## 在多個 Effect 之間啟動一個 race
 
-有時候我同時啟動多個 task，但是我們不想要等待它們，我們只需要得到一個 *winner*：第一個被 resolve 的 task（或是 reject）。`race` Effect 提供一種在多個 Effect 之間的 race 觸發方式。
+有時候同時啟動多個 task，但是我們不想要等待它們，我們只需要得到一個 *winner*：第一個被 resolve 的 task（或是 reject）。`race` Effect 提供一種在多個 Effect 之間的 race 觸發方式。
 
-以下的範例顯示一個觸發遠端 fetch 請求的 task，並限制在一秒後 response。
+以下的範例顯示一個觸發遠端 fetch 請求的 task，並限制在一秒後 response：
 
 ```javascript
 import { race, take, put } from 'redux-saga/effects'

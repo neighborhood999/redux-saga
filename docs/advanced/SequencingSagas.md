@@ -1,6 +1,6 @@
 # 使用 yield* 對 Saga 做排序
 
-你可以使用內建的 `yield*` 操作符，在保持順序的方式來組合多個 Saga。這可以讓你用一個簡單的程式風格來排序你的 *marcro-tasks*。
+你可以使用內建的 `yield*` 操作符，透過保持順序的方式來組合多個 Saga，可以讓你用一個簡單的程式風格來排序你的 *marcro-tasks*。
 
 ```javascript
 function* playLevelOne() { ... }
