@@ -4,9 +4,9 @@
 
 一旦 task 被 fork，你可以使用 `yield cancel(task)` 中止它。
 
-我們來看一下它是如何運作的，讓我們考慮一個簡單的範例：可以透過一些 UI 的 command 啟動或暫停背景同步。接收一個 `START_BACKGROUND_SYNC` action，我們 fork 一個背景 task 將定期的從遠端資料庫同步一些資料。
+我們來看一下它是如何運作的，讓我們考慮一個簡單的範例：可以透過一些 UI 的 command 啟動或暫停背景同步，接收一個 `START_BACKGROUND_SYNC` action，我們 fork 一個背景 task 將定期的從遠端資料庫同步一些資料。
 
-task 將持續執行直到一個 `STOP_BACKGROUND_SYNC` action 被觸發。然後我們取消背景 task 並等待下一次的 `START_BACKGROUND_SYNC` action。   
+task 將持續執行直到一個 `STOP_BACKGROUND_SYNC` action 被觸發，然後我們取消背景 task 並等待下一次的 `START_BACKGROUND_SYNC` action。   
 
 ```javascript
 import { take, put, call, fork, cancel, cancelled } from 'redux-saga/effects'

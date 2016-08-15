@@ -1,8 +1,8 @@
 # Pull 未來的 action
 
-到目前為止，我們使用了 `takeEvery` helpler function，為了在每次進來的 action 發起一個任務。這個有點模仿 redux-thunk 的行為：舉例來說，在每次 Component 調用一個 `fetchProducts` Action Creator，Action Creator 將 dispatch 一個 thunk 來執行控制流程。
+到目前為止，為了在每次進來的 action 發起一個任務，我們使用了 `takeEvery` helpler function。這有點模仿 redux-thunk 的行為：舉例來說，在每次 Component 調用一個 `fetchProducts` Action Creator，Action Creator 將 dispatch 一個 thunk 來執行控制流程。
 
-實際上，`takeEvery` 只是在一個強大的底層 API 建立一個 helper function。在這個部份我們將看到一個新的 Effect：`take`，透過 action 完整控制的觀察過程，讓建立複雜的控制流程變成可能。
+實際上，`takeEvery` 是在一個強大的低階 API 建立一個 helper function。在這個部份我們將看到一個新的 Effect：`take`，透過 action 完整控制的觀察過程，讓建立複雜的控制流程變成可能。
 
 ## 一個簡單的 logger
 
@@ -39,13 +39,13 @@ function* watchAndLog() {
 }
 ```
 
-`take` 就像 `take` 和 `put` 讓我們看起來很簡單。它建立其他控制的物件，告訴 middleware 等待指定的 action。與 `call` Effect 的情況相同，middleware 會暫停 Generator 直到 Promise resolve。在 `take` 的情況它將暫定 Generator 直到符合的 action 被 dispatch。以上的範例 `watchAndLog` 處於暫停的狀態，直到任何的 action 被 dispatch。
+`take` 就像 `call` 和 `put` 讓我們看起來很簡單。它建立其他控制的物件，告訴 middleware 等待指定的 action。與 `call` Effect 的情況相同，middleware 會暫停 Generator 直到 Promise resolve。在 `take` 的情況它將暫停 Generator 直到符合的 action 被 dispatch。以上的範例 `watchAndLog` 處於暫停的狀態，直到任何的 action 被 dispatch。
 
-注意我們執行一個無窮的迴圈 `while (true)`。記住這是一個 Generator function，它沒有一個執行到完成（run-to-completion）的行為。我們的 Generator 在每次迭代時被阻塞，來等待一個 action 發生。
+注意我們執行一個無窮的迴圈 `while (true)`。記住這是一個 Generator function，它沒有一個執行到完成（run-to-completion）的行為。我們的 Generator 在每次迭代時被阻塞，並等待一個 action 發生。
 
 我們使用 `take` 撰寫程式碼有一個微妙的影響。在 `takeEvery` 的情況中，當他們被呼叫時，被調用的 task 無法控制，在每次符合的 action 發生時不斷的被調用，它們也無法控制什麼時候該停止觀察。
 
-在 `take` 的情況中，控制的方式剛好相反。不是將 action *push* 到處理的 task，Saga 是透過本身去 *pull* action。看起來像是 Saga 執行一個正常的 function 呼叫 `action = getNextAction()`，當 resolve 時 action 會被 dispatch。
+在 `take` 的情況中，控制的方式剛好相反，不是將 action *push* 到處理的 task，Saga 是透過本身去 *pull* action。看起來像是 Saga 執行一個正常的 function 呼叫 `action = getNextAction()`，當 resolve 時 action 會被 dispatch。
 
 這樣的反轉控制讓我們可以用傳統的 *push* 方法來實現不同的控制流程。
 

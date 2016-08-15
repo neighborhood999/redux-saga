@@ -15,9 +15,9 @@ function* loginFlow() {
 }
 ```
 
-讓我們來實作並完成這個實際的登入/登出的邏輯。假設我們在遠端伺服器有一個 API，允許我們授權使用者。如果認證成功，伺服器將回傳一個認證的 token ，我們的應用程式使用 DOM storage 將 token 儲存（假設我們的 API 提供其他的 DOM storage 服務）。
+讓我們來實作並完成這個實際的登入和登出的邏輯。假設我們在遠端伺服器有一個 API，允許我們授權使用者；如果認證成功，伺服器將回傳一個認證的 token，我們的應用程式使用 DOM storage 將 token 儲存（假設我們的 API 提供其他的 DOM storage 服務）。
 
-當使用者登出時，我們將簡單的刪除先前儲存的認證 token。
+當使用者登出時，我們將刪除先前儲存的認證 token。
 
 ### 初步嘗試
 
@@ -25,7 +25,7 @@ function* loginFlow() {
 
 所以讓我們試試看吧：
 
-> 注意：以下的程式碼有一些小問題。請務必將這個部份的解說讀完。
+> 注意：以下的程式碼有一些小問題，請務必將這個部份的解說讀完。
 
 ```javascript
 import { take, call, put } from 'redux-saga/effects'
@@ -58,11 +58,11 @@ function* loginFlow() {
 
 `loginflow` 內的 `while (true)` 迴圈實作了一個完整的流程，意思說一旦我們流程到了最後一個步驟（`LOGOUT`），我們透過等待一個新的 `LOGIN_REQUEST` action 來開始一個新的迭代。
 
-`loginFlow` 首先等待一個 `LOGIN_REQUEST` action，然後在 action payload（`user` 和 `password`）取得認證，並使用 `call` 到 `authorize` 的 task。
+`loginFlow` 首先等待一個 `LOGIN_REQUEST` action，然後在 action 的 payload（`user` 和 `password`）取得認證，並使用 `call` 到 `authorize` 的 task。
 
-正如你所注意到的，`call` 不只可以調用一個 function 並回傳 Promise，我們也可以用來調用其他的 Generator function。在上面的範例中，**`loginFlow` 將等待一個 authorize 直到他終止被回傳**（也就是說在執行 api 呼叫後，dispatch action 並回傳 token 到 `loginFlow`）。
+正如你所注意到的，`call` 不只可以調用一個 function 並回傳 Promise，我們也可以用來調用其他的 Generator function。在上面的範例中，**`loginFlow` 將等待一個 authorize 直到它結束後回傳**（也就是說在執行 api 呼叫後，dispatch action 並回傳 token 到 `loginFlow`）。
 
-如果 API 呼叫成功，`authorize` 將 dispatch 一個 `LOGIN_SUCCESS` action 然後回傳取得的 token。如果結果失敗的話，將調用一個 `LOGIN_ERROR` action。
+如果 API 呼叫成功，`authorize` 將 dispatch 一個 `LOGIN_SUCCESS` action 然後回傳取得的 token；如果失敗的話，將調用一個 `LOGIN_ERROR` action。
 
 如果呼叫到 `authorize` 成功的話，`loginFlow` 將在 DOM storage 儲存回傳的 token 並等待一個 `LOGOUT` action。當使用者登出時，我們移除儲存的 token 並等待一個新的使用者登入。
 
@@ -156,7 +156,7 @@ function* loginFlow() {
 }
 ```
 
-我們也做了 `yield take(['LOGOUT', 'LOGIN_ERROR'])`。意思我說們觀察兩個併發的 action：
+我們也做了 `yield take(['LOGOUT', 'LOGIN_ERROR'])`，意思我說們觀察兩個併發的 action：
 
 - 如果在使用登出之前 `authorize` task 成功，它將 dispatch 一個 `LOGIN_SUCCESS` action 並結束 task。我們的 `loginFlow` saga 將只會等待一個未來的 `LOGOUT` action（因為 `LOGIN_ERROR` 永遠不會發生）。
 
@@ -192,7 +192,7 @@ function* loginFlow() {
 
 我們*幾乎*要完成了（併發不是這麼簡單的；你需要認真以待）。
 
-假設當我們接收一個 `LOGIN_REQUEST` action，我們的 reducer 設定一些 `isLoginPending` 的 flag 為 true，並在 UI 顯示一些訊息或 spinner。如果我們在 API 呼叫期間取得一個 `LOGOUT` 並簡單透過 *kill* 方式來中止 task（就是 task 被停止），然後我們可能又以不一致的 state 結束了。我們有一個 `isLoginPending` 設為 true，而且我們的 reducer 正在等待一個結果的 action（`LOGIN_SUCCESS` 或 `LOGIN_ERROR`）。
+假設當我們接收一個 `LOGIN_REQUEST` action，我們的 reducer 設定一些 `isLoginPending` 的 flag 為 true，並在 UI 顯示一些訊息或 spinner。如果我們在 API 呼叫期間取得一個 `LOGOUT` 並簡單透過 *kill* 方式來中止 task（就是停止 task），然後我們可能以不一致的 state 結束了。我們有一個 `isLoginPending` 設為 true，而且我們的 reducer 正在等待一個結果的 action（`LOGIN_SUCCESS` 或 `LOGIN_ERROR`）。
 
 幸運的是，`cancel` Effect 不會殘酷的 kill 我們的 `authroize` task，相反的它會給予一個機會執行清除的邏輯。在 `finally` 區塊可以取消 task 或處理任何的取消邏輯（以及任何其他類型的完成）。因為最後區塊執行在完成的任何類型（正常的回傳、錯誤、或強制取消），如果你想要特殊的處理取消的方式，這裡有一個 Effect 被 `cancel`：
 
