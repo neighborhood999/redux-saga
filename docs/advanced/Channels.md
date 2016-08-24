@@ -161,8 +161,8 @@ export function* saga() {
 }
 ```
 
-Here is another example of how you can use event channels to pass WebSocket events into your saga (e.g.: using socket.io library).
-Suppose you are waiting for a server message `ping` then reply with a `pong` message after some delay.
+這裡是另一個例子，你如何使用事件 channel 去傳送 WebSockeet 事件到你的 saga（例如：使用 socket.io library）。
+假設你等待伺服器的一個 `ping` 訊息，然後在 delay 後回覆一個 `pong` 訊息。
 
 
 ```javascript
