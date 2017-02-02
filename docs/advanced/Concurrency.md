@@ -29,7 +29,7 @@ function* takeLatest(pattern, saga, ...args) {
     while (true) {
       const action = yield take(pattern)
       if (lastTask)
-        yield cancel(lastTask) // cancel is no-op if the task has already terminated
+        yield cancel(lastTask) // 如果 task 己經被終止取消空操作
 
       lastTask = yield fork(saga, ...args.concat(action))
     }

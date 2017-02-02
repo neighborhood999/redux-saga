@@ -34,7 +34,7 @@ function* saga() {
   yield call(ApiFn, ...args)      // 阻塞：等待 ApiFn（如果 ApiFn 回傳一個 Promise）
   yield call(otherSaga, ...args)  // 阻塞：等待 otherSaga 終止
 
-  yield put(...)                   // 阻塞：非同步 dispatch asynchronously（使用 Promise.then）
+  yield put(...)                   // 非阻塞：將 dispatch 內部的 scheduler
 
   const task = yield fork(otherSaga, ...args)  // 非阻塞:不等待 otherSaga
   yield cancel(task)                           // 非阻塞：立即恢復

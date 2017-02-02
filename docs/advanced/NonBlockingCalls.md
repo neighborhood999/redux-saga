@@ -96,7 +96,7 @@ UI                              loginFlow
 --------------------------------------------------------
 LOGIN_REQUEST...................call authorize.......... waiting to resolve
 ........................................................
-........................................................                     
+........................................................
 LOGOUT.................................................. missed!
 ........................................................
 ................................authorize returned...... dispatch a `LOGIN_SUCCESS`!!
@@ -107,10 +107,9 @@ LOGOUT.................................................. missed!
 
 問題在上面 `call` 的程式碼， 它是一個阻塞的 Effect，也就是說 Generator 在呼叫結束之前，不能執行或處理任何東西。但在我們的情況中，我們不只想要 `loginFlow` 執行呼叫認證，也希望能觀察發生在呼叫的之間最終的 `LOGOUT` action。因為 `LOGOUT` 和 `authorize` 是*同時*呼叫的。
 
-
 所以我們需要的是一些非阻塞的方式來啟動 `authorize`，這樣 `loginFlow` 可以持續並觀察一個最終或併發的 `LOGOUT` action。
 
-如果要表達非阻塞的呼叫，library 提供另一個 Effect：[`fork`](http://yelouafi.github.io/redux-saga/docs/api/index.html#forkfn-args)。當我們 fork 一個 *task*，task 在背景被啟動而且 caller 可以持續它的流程，不用等待被 fork 的 task 結束。
+如果要表達非阻塞的呼叫，library 提供另一個 Effect：[`fork`](https://redux-saga.github.io/redux-saga/docs/api/index.html#forkfn-args)。當我們 fork 一個 *task*，task 在背景被啟動而且 caller 可以持續它的流程，不用等待被 fork 的 task 結束。
 
 所以為了讓 `loginFlow` 跳過一個併發的 `LOGOUT`，我們不應該使用 `call` 和 `authroize` task，而是使用 `fork`。
 
@@ -168,7 +167,7 @@ function* loginFlow() {
 
 如果我們在一個 API 呼叫期間接收一個 `LOGOUT` ，我們必須**取消** `authorize` 的程序，否則我們將會有兩個併發的 task 並行前進： `authorize` task 將持續執行並在成功（或失敗）時 dispatch 一個 `LOGIN_SUCCESS`（或是 `LOGIN_ERROR` action），這會導致 state 不一致。
 
-為了取消一個被 fork 的 task，我們使用一個專屬的 Effect：[`cancel`](http://yelouafi.github.io/redux-saga/docs/api/index.html#canceltask)
+為了取消一個被 fork 的 task，我們使用一個專屬的 Effect：[`cancel`](https://redux-saga.github.io/redux-saga/docs/api/index.html#canceltask)
 
 ```javascript
 import { take, put, call, fork, cancel } from 'redux-saga/effects'
@@ -188,7 +187,7 @@ function* loginFlow() {
 }
 ```
 
-`yield fork` 結果在一個 [Task 物件](http://yelouafi.github.io/redux-saga/docs/api/index.html#task)。我們將回傳的物件分配到 local 常數 `task`。之後如果我們接收一個 `LOGOUT` action，我們傳送 task 到 `cancel` Effect。如果 task 持續執行，它將被中止。如果 task 已經完成，不會發生任何事情，取消操作的結果將是一個空操作（no-op）。最後，如果 task 完成後有錯誤，我們不會做任何事情，因為我們知道 task 已經完成。
+`yield fork` 結果在一個 [Task 物件](https://redux-saga.github.io/redux-saga/docs/api/index.html#task)。我們將回傳的物件分配到 local 常數 `task`。之後如果我們接收一個 `LOGOUT` action，我們傳送 task 到 `cancel` Effect。如果 task 持續執行，它將被中止。如果 task 已經完成，不會發生任何事情，取消操作的結果將是一個空操作（no-op）。最後，如果 task 完成後有錯誤，我們不會做任何事情，因為我們知道 task 已經完成。
 
 我們*幾乎*要完成了（併發不是這麼簡單的；你需要認真以待）。
 

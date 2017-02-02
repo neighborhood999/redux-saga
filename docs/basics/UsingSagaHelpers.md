@@ -1,6 +1,6 @@
 # 使用 Saga Helpers
 
-`redux-saga` 提供了一些 helper function，當指定的 action 被 dispatch 到 Store 時會產生 task。
+當指定的 action 被 dispatch 到 Store 時，`redux-saga` 提供了一些 helper effects function wrap 內部的 fucnction 產生 task。
 
 helper function 建立在低階的 API 上。我們在進階部份會看到這些 function 可以被實現。
 
@@ -26,7 +26,7 @@ export function* fetchData(action) {
 為了每次在得到 `FETCH_REQUESTED` action 時，啟動上面的 task：
 
 ```javascript
-import { takeEvery } from 'redux-saga'
+import { takeEvery } from 'redux-saga/effects'
 
 function* watchFetchData() {
   yield takeEvery('FETCH_REQUESTED', fetchData)
@@ -38,7 +38,7 @@ function* watchFetchData() {
 如果我們只想要取得最新被觸發請求的 response（例如：顯示最新版本的資料），我們可以使用 `takeLatest` helper：
 
 ```javascript
-import { takeLatest } from 'redux-saga'
+import { takeLatest } from 'redux-saga/effects'
 
 function* watchFetchData() {
   yield takeLatest('FETCH_REQUESTED', fetchData)
@@ -53,7 +53,6 @@ function* watchFetchData() {
 
 ```javascript
 import { takeEvery } from 'redux-saga'
-import { fork } from 'redux-saga/effects'
 
 // FETCH_USERS
 function* fetchUsers(action) { ... }

@@ -1,29 +1,27 @@
-import { noop, kTrue, is, log as _log, check, deferred, autoInc, remove, TASK, CANCEL, makeIterator } from './utils'
-import asap from './asap'
+import { noop, kTrue, is, log as _log, check, deferred, uid as nextEffectId, remove, TASK, CANCEL, makeIterator, isDev } from './utils'
+import { asap, suspend, flush } from './scheduler'
 import { asEffect } from './io'
 import { stdChannel as _stdChannel, eventChannel, isEnd } from './channel'
 import { buffers } from './buffers'
 
-const isDev = process.env.NODE_ENV === 'development'
-
 export const NOT_ITERATOR_ERROR = 'proc first argument (Saga function result) must be an iterator'
 
-const nextEffectId = autoInc()
 export const CHANNEL_END = {toString() { return '@@redux-saga/CHANNEL_END' }}
 export const TASK_CANCEL = {toString() { return '@@redux-saga/TASK_CANCEL' }}
 
 const matchers = {
   wildcard  : () => kTrue,
-  default   : pattern => input => input.type === pattern,
-  array     : patterns => input => patterns.some(p => p === input.type),
+  default   : pattern => input => input.type === (typeof pattern === 'symbol' ? pattern : String(pattern)),
+  array     : patterns => input => patterns.some(p => matcher(p)(input)),
   predicate : predicate => input => predicate(input)
 }
 
 function matcher(pattern) {
   return (
-      pattern === '*'   ? matchers.wildcard
-    : is.array(pattern) ? matchers.array
-    : is.func(pattern)  ? matchers.predicate
+      pattern === '*'            ? matchers.wildcard
+    : is.array(pattern)          ? matchers.array
+    : is.stringableFunc(pattern) ? matchers.default
+    : is.func(pattern)           ? matchers.predicate
     : matchers.default
   )(pattern)
 }
@@ -38,7 +36,7 @@ function matcher(pattern) {
   linear execution tree in sequential (non parallel) programming)
 
   A parent tasks has the following semantics
-  - It completes iff all its forks either complete or all cancelled
+  - It completes if all its forks either complete or all cancelled
   - If it's cancelled, all forks are cancelled as well
   - It aborts if any uncaught error bubbles up from forks
   - If it completes, the return value is the one returned by the main task
@@ -134,11 +132,7 @@ function createTaskIterator({context, fn, args}) {
       })())
 }
 
-function wrapHelper(helper) {
-  return {
-    fn: helper
-  }
-}
+const wrapHelper = (helper) => ({ fn: helper })
 
 export default function proc(
   iterator,
@@ -235,7 +229,7 @@ export default function proc(
         result = iterator.throw(arg)
       } else if(arg === TASK_CANCEL) {
         /**
-          getting TASK_CANCEL autoamtically cancels the main task
+          getting TASK_CANCEL automatically cancels the main task
           We can get this value here
 
           - By cancelling the parent task manually
@@ -379,7 +373,6 @@ export default function proc(
       : is.helper(effect)                                    ? runForkEffect(wrapHelper(effect), effectId, currCb)
       : is.iterator(effect)                                  ? resolveIterator(effect, effectId, name, currCb)
 
-
       // declarative effects
       : is.array(effect)                                     ? runParallelEffect(effect, effectId, currCb)
       : (is.notUndef(data = asEffect.take(effect)))          ? runTakeEffect(data, currCb)
@@ -428,22 +421,23 @@ export default function proc(
     cb.cancel = takeCb.cancel
   }
 
-  function runPutEffect({channel, action, sync}, cb) {
-    /*
-      Use a reentrant lock `asap` to flatten all nested dispatches
-      If this put cause another Saga to take this action an then immediately
-      put an action that will be taken by this Saga. Then the outer Saga will miss
-      the action from the inner Saga b/c this put has not yet returned.
-    */
+  function runPutEffect({channel, action, resolve}, cb) {
+    /**
+      Schedule the put in case another saga is holding a lock.
+      The put will be executed atomically. ie nested puts will execute after
+      this put has terminated.
+    **/
     asap(() => {
       let result
       try {
         result = (channel ? channel.put : dispatch)(action)
       } catch(error) {
-        return cb(error, true)
+        // If we have a channel or `put.resolve` was used then bubble up the error.
+        if (channel || resolve) return cb(error, true)
+        log('error', `uncaught at ${name}`, error.stack || error.message || error)
       }
 
-      if(sync && is.promise(result)) {
+      if(resolve && is.promise(result)) {
         resolvePromise(result, cb)
       } else {
         return cb(result)
@@ -473,9 +467,11 @@ export default function proc(
 
     // catch synchronous failures; see #152
     try {
-      fn.apply(context, args.concat(
-        (err, res) => is.undef(err) ? cb(res) : cb(err, true)
-      ))
+      const cpsCb = (err, res) => is.undef(err) ? cb(res) : cb(err, true);
+      fn.apply(context, args.concat(cpsCb));
+      if (cpsCb.cancel) {
+        cb.cancel = () => cpsCb.cancel();
+      }
     } catch(error) {
       return cb(error, true)
     }
@@ -484,22 +480,25 @@ export default function proc(
   function runForkEffect({context, fn, args, detached}, effectId, cb) {
     const taskIterator = createTaskIterator({context, fn, args})
 
-    asap.suspend()
-    const task = proc(taskIterator, subscribe, dispatch, getState, options, effectId, fn.name, (detached ? null : noop))
+    try {
+      suspend()
+      const task = proc(taskIterator, subscribe, dispatch, getState, options, effectId, fn.name, (detached ? null : noop))
 
-    if(detached) {
-      cb(task)
-    } else {
-      if(taskIterator._isRunning) {
-        taskQueue.addTask(task)
+      if(detached) {
         cb(task)
-      } else if(taskIterator._error) {
-        taskQueue.abort(taskIterator._error)
       } else {
-        cb(task)
+        if(taskIterator._isRunning) {
+          taskQueue.addTask(task)
+          cb(task)
+        } else if(taskIterator._error) {
+          taskQueue.abort(taskIterator._error)
+        } else {
+          cb(task)
+        }
       }
+    } finally {
+      flush()
     }
-    asap.flush()
     // Fork effects are non cancellables
   }
 
@@ -597,7 +596,12 @@ export default function proc(
         keys.forEach(key => childCbs[key].cancel())
       }
     }
-    keys.forEach(key => runEffect(effects[key], effectId, key, childCbs[key]))
+    keys.forEach(key => {
+      if(completed) {
+        return
+      }
+      runEffect(effects[key], effectId, key, childCbs[key])
+    })
   }
 
   function runSelectEffect({selector, args}, cb) {

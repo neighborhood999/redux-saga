@@ -11,7 +11,7 @@ Saga 可以 yield 多種形式的 Effect。最簡單的方式就是 yield Promis
 例如，假設我們有一個 Saga 觀察一個 `PRODUCTS_REQUESTED` action。在每次發出的 action 符合 takeEvery 的 action 時，它啟動一個 task 來從伺服器取得一些產品。
 
 ```javascript
-import { takeEvery } from 'redux-saga'
+import { takeEvery } from 'redux-saga/effects'
 import Api from './path/to/api'
 
 function* watchFetchProducts() {

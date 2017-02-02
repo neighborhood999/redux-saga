@@ -1,8 +1,8 @@
 # Pull 未來的 action
 
-到目前為止，為了在每次進來的 action 發起一個任務，我們使用了 `takeEvery` helpler function。這有點模仿 redux-thunk 的行為：舉例來說，在每次 Component 調用一個 `fetchProducts` Action Creator，Action Creator 將 dispatch 一個 thunk 來執行控制流程。
+到目前為止，為了在每次進來的 action 發起一個任務，我們使用了 `takeEvery` effect helpler 。這有點模仿 redux-thunk 的行為：舉例來說，在每次 Component 調用一個 `fetchProducts` Action Creator，Action Creator 將 dispatch 一個 thunk 來執行控制流程。
 
-實際上，`takeEvery` 是在一個強大的低階 API 建立一個 helper function。在這個部份我們將看到一個新的 Effect：`take`，透過 action 完整控制的觀察過程，讓建立複雜的控制流程變成可能。
+實際上，`takeEvery` 只是一個 wrapper effect 把內部的 helper function 建立在低階以及更多強大的 API 上。在這個部份我們將看到一個新的 Effect：`take`，透過 action 完整控制的觀察過程，讓建立複雜的控制流程變成可能。
 
 ## 一個簡單的 logger
 
@@ -11,8 +11,7 @@
 使用 `takeEvery('*')`（完全匹配的模式 `*`）不論它是什麼類型，我們都可以捕捉到所有被 dispatch 的 action。
 
 ```javascript
-import { takeEvery } from 'redux-saga'
-import { put, select } from 'redux-saga/effects'
+import { select, takeEvery } from 'redux-saga/effects'
 
 function* watchAndLog() {
   yield takeEvery('*', function* logger(action) {
@@ -27,8 +26,7 @@ function* watchAndLog() {
 現在讓我們來看一下如何使用 `take` Effect 來實現上方相同的流程。
 
 ```javascript
-import { take } from 'redux-saga/effects'
-import { put, select } from 'redux-saga/effects'
+import { select, take } from 'redux-saga/effects'
 
 function* watchAndLog() {
   while (true) {

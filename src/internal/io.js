@@ -1,18 +1,24 @@
-import { sym, is, ident, check, TASK } from './utils'
+import { sym, is, ident, check, deprecate } from './utils'
+import { takeEveryHelper, takeLatestHelper, throttleHelper } from './sagaHelpers'
 
-const IO      = sym('IO')
-const TAKE    = 'TAKE'
-const PUT     = 'PUT'
-const RACE    = 'RACE'
-const CALL    = 'CALL'
-const CPS     = 'CPS'
-const FORK    = 'FORK'
-const JOIN    = 'JOIN'
-const CANCEL  = 'CANCEL'
-const SELECT  = 'SELECT'
+const IO             = sym('IO')
+const TAKE           = 'TAKE'
+const PUT            = 'PUT'
+const RACE           = 'RACE'
+const CALL           = 'CALL'
+const CPS            = 'CPS'
+const FORK           = 'FORK'
+const JOIN           = 'JOIN'
+const CANCEL         = 'CANCEL'
+const SELECT         = 'SELECT'
 const ACTION_CHANNEL = 'ACTION_CHANNEL'
-const CANCELLED  = 'CANCELLED'
-const FLUSH  = 'FLUSH'
+const CANCELLED      = 'CANCELLED'
+const FLUSH          = 'FLUSH'
+
+const TEST_HINT = '\n(HINT: if you are getting this errors in tests, consider using createMockTask from redux-saga/utils)'
+
+const deprecationWarning = (deprecated, preferred) =>
+  `${ deprecated } has been deprecated in favor of ${ preferred }, please update your code`
 
 const effect = (type, payload) => ({[IO]: true, [type]: payload})
 
@@ -29,11 +35,13 @@ export function take(patternOrChannel = '*') {
   throw new Error(`take(patternOrChannel): argument ${String(patternOrChannel)} is not valid channel or a valid pattern`)
 }
 
-export function takem(...args) {
+take.maybe = (...args) => {
   const eff = take(...args)
   eff[TAKE].maybe = true
   return eff
 }
+
+export const takem = deprecate(take.maybe, deprecationWarning('takem', 'take.maybe'))
 
 export function put(channel, action) {
   if(arguments.length > 1) {
@@ -48,11 +56,13 @@ export function put(channel, action) {
   return effect(PUT, {channel, action})
 }
 
-put.sync = (...args) => {
+put.resolve = (...args) => {
   const eff = put(...args)
-  eff[PUT].sync = true
+  eff[PUT].resolve = true
   return eff
 }
+
+put.sync = deprecate(put.resolve, deprecationWarning('put.sync', 'put.resolve'))
 
 export function race(effects) {
   return effect(RACE, effects)
@@ -94,24 +104,28 @@ export function spawn(fn, ...args) {
   return eff
 }
 
-const isForkedTask = task => task[TASK]
-
-export function join(task) {
-  check(task, is.notUndef, 'join(task): argument task is undefined')
-  if(!isForkedTask(task)) {
-    throw new Error(`join(task): argument ${task} is not a valid Task object \n(HINT: if you are getting this errors in tests, consider using createMockTask from redux-saga/utils)`)
+export function join(...tasks) {
+  if (tasks.length > 1) {
+    return tasks.map(t => join(t))
+  }
+  check(tasks, is.notUndef, 'join(task): argument task is undefined')
+  if(!is.task(tasks[0])) {
+    throw new Error(`join(task): argument ${tasks[0]} is not a valid Task object ${ TEST_HINT }`)
   }
 
-  return effect(JOIN, task)
+  return effect(JOIN, tasks[0])
 }
 
-export function cancel(task) {
-  check(task, is.notUndef, 'cancel(task): argument task is undefined')
-  if(!isForkedTask(task)) {
-    throw new Error(`cancel(task): argument ${task} is not a valid Task object \n(HINT: if you are getting this errors in tests, consider using createMockTask from redux-saga/utils)`)
+export function cancel(...tasks) {
+  if (tasks.length > 1) {
+    return tasks.map(t => cancel(t))
+  }
+  check(tasks[0], is.notUndef, 'cancel(task): argument task is undefined')
+  if(!is.task(tasks[0])) {
+    throw new Error(`cancel(task): argument ${tasks[0]} is not a valid Task object ${ TEST_HINT }`)
   }
 
-  return effect(CANCEL, task)
+  return effect(CANCEL, tasks[0])
 }
 
 export function select(selector, ...args) {
@@ -131,7 +145,7 @@ export function actionChannel(pattern, buffer) {
   check(pattern, is.notUndef, 'actionChannel(pattern,...): argument pattern is undefined')
   if(arguments.length > 1) {
     check(buffer, is.notUndef, 'actionChannel(pattern, buffer): argument buffer is undefined')
-    check(buffer, is.notUndef, `actionChannel(pattern, buffer): argument ${buffer} is not a valid buffer`)
+    check(buffer, is.buffer, `actionChannel(pattern, buffer): argument ${buffer} is not a valid buffer`)
   }
   return effect(ACTION_CHANNEL, {pattern, buffer})
 }
@@ -145,17 +159,31 @@ export function flush(channel) {
   return effect(FLUSH, channel)
 }
 
+export function takeEvery(patternOrChannel, worker, ...args) {
+  return fork(takeEveryHelper, patternOrChannel, worker, ...args)
+}
+
+export function takeLatest(patternOrChannel, worker, ...args) {
+  return fork(takeLatestHelper, patternOrChannel, worker, ...args)
+}
+
+export function throttle(ms, pattern, worker, ...args) {
+  return fork(throttleHelper, ms, pattern, worker, ...args)
+}
+
+const createAsEffectType = type => effect => effect && effect[IO] && effect[type]
+
 export const asEffect = {
-  take    : effect => effect && effect[IO] && effect[TAKE],
-  put     : effect => effect && effect[IO] && effect[PUT],
-  race    : effect => effect && effect[IO] && effect[RACE],
-  call    : effect => effect && effect[IO] && effect[CALL],
-  cps     : effect => effect && effect[IO] && effect[CPS],
-  fork    : effect => effect && effect[IO] && effect[FORK],
-  join    : effect => effect && effect[IO] && effect[JOIN],
-  cancel  : effect => effect && effect[IO] && effect[CANCEL],
-  select  : effect => effect && effect[IO] && effect[SELECT],
-  actionChannel : effect => effect && effect[IO] && effect[ACTION_CHANNEL],
-  cancelled  : effect => effect && effect[IO] && effect[CANCELLED],
-  flush  : effect => effect && effect[IO] && effect[FLUSH]
+  take         : createAsEffectType(TAKE),
+  put          : createAsEffectType(PUT),
+  race         : createAsEffectType(RACE),
+  call         : createAsEffectType(CALL),
+  cps          : createAsEffectType(CPS),
+  fork         : createAsEffectType(FORK),
+  join         : createAsEffectType(JOIN),
+  cancel       : createAsEffectType(CANCEL),
+  select       : createAsEffectType(SELECT),
+  actionChannel: createAsEffectType(ACTION_CHANNEL),
+  cancelled    : createAsEffectType(CANCELLED),
+  flush        : createAsEffectType(FLUSH)
 }

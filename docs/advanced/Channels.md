@@ -33,7 +33,7 @@ function* handleRequest(payload) { ... }
 
 所以我們想要的是*隊列*所有還沒被處理的 action，一旦我們處理完目前的 request，我們可以從隊列取得下一個訊息。
 
-library 提供一個 `actionChannel` helper Effect，讓我們可以處理這些東西。讓我們來看如何使用它重新撰寫先前的範例：
+Redux-Saga 提供一個 Effect `actionChannel` helper，讓我們可以處理這些東西。讓我們來看如何使用它重新撰寫先前的範例：
 
 ```javascript
 import { take, actionChannel, call, ... } from 'redux-saga/effects'
@@ -54,11 +54,11 @@ function* handleRequest(payload) { ... }
 
 第一件事情是建立一個 action channel，我們使用 `yield actionChannel(pattern)`，這個 pattern 被解讀成我們先前提到的 `take(pattern)` 並使用相同的規則。這兩個形式不同的地方是，如果 Saga 還沒準備好接收它們的話（例如一個被阻塞的 API 呼叫），`actionChannel` **可以緩衝傳入的訊息**。
 
-接下來是 `yield take(requestChan)`，除了使用一個 `pattern` 從 Redux Store 接收指定的 action 之外，`take` 也可以被用在 channel（在上面我們從指定的 Redux Store 建立 channel 物件）。`take` 可以阻塞 Saga，直到在 channel 有一個可用的訊息。如果有一個訊息被儲存在基礎緩衝區，take 也可以立即的恢復。
+接下來是 `yield take(requestChan)`。除了使用一個 `pattern` 從 Redux Store 接收指定的 action 之外，`take` 也可以被用在 channel（在上面我們從指定的 Redux Store 建立 channel 物件）。`take` 可以阻塞 Saga，直到在 channel 有一個可用的訊息。如果有一個訊息被儲存在基礎緩衝區，take 也可以立即的恢復。
 
 最重要的是注意到我們如何使用一個阻塞的 `call`。Saga 將停留在阻塞狀態，直到 `call(handleRequest)` 回傳，但如果其他的 `REQUEST` action 被 dispatch，而 Saga 仍然被阻塞時，透過 `requestChan` 被隊列在內部。當 Saga 從 `call(handleRequest)` 恢復並執行下一個 `yield take(requestChan)`，take 將 resolve 被隊列的訊息。
 
-預設上，`actionChannel` 沒有限制緩衝所有傳入的訊息。如果你想要更多的緩衝控制，你可提供一個 Buffer 的參數到 effect creator。library 提供一些普遍的 buffer（none、dropping、sliding），但你也可以提供你自己的 buffer 實作，更多細節請參考 API 文件。
+預設上，`actionChannel` 沒有限制緩衝所有傳入的訊息。如果你想要更多的緩衝控制，你可提供一個 Buffer 的參數到 effect creator。Redux-Saga 提供一些普遍的 buffers（none、dropping、sliding），但你也可以提供你自己的 buffer 實作。[請參考 API 文件](../api#buffers)。
 
 例如，如果我們只想要處理最近五筆項目你可以使用：
 
@@ -108,7 +108,7 @@ function countdown(secs) {
 
 注意，也可以調用 `emitter(END)`。channel 被關閉時，我們使用 `emitter(END)` 來通知所有 channel consumer，意思是沒有其他的訊息可以可以通過這個 channel。
 
-讓我看一下如何從 Saga 使用這個 channel，這個範例是來自 repo 的 cancellable-counter 範例：
+讓我看一下如何從 Saga 使用這個 channel。（這個範例是來自 repo 的 cancellable-counter 範例。）
 
 ```javascript
 import { take, put, call } from 'redux-saga/effects'
@@ -131,7 +131,7 @@ export function* saga() {
 }
 ```
 
-所以 Saga yield 一個 `take(chan)` 造成阻塞，直到一個訊息被 put 在 channel。在我們上面的範例，它對應到我們調用 `emitter(secs)`，注意我們還在在一個 `try/finally` 區塊執行整個 `while (true {...}` 迴圈。當間隔終止時，countdown function 透過調用 `emitter(END)` 關閉 channel。在 channel 的 `take` effect 關閉 channel 終止所有被阻塞的 Saga。在我們的範例，終止 Saga 將造成它跳到 `finally` 區塊（如果有提供的話，否則 Saga 只是簡單的終止）。
+所以 Saga yield 一個 `take(chan)` 造成阻塞，直到一個訊息被 put 到 channel 上。在我們上面的範例，它對應到我們調用 `emitter(secs)`，注意我們還在在一個 `try/finally` 區塊執行整個 `while (true {...}` 迴圈。當間隔終止時，countdown function 透過調用 `emitter(END)` 關閉 channel。在 channel 的 `take` effect 關閉 channel 終止所有被阻塞的 Saga。在我們的範例，終止 Saga 將造成它跳到 `finally` 區塊（如果有提供的話，否則 Saga 只是簡單的終止）。
 
 訂閱者回傳一個 `unsubscribe` function，這是被用來在事件來源完成之前，透過 channel 取消訂閱。在 Saga 內使用來自事件 channel 的訊息，如果我們想要在事件來源完成之前*提早離開*（例如：Saga 已經被取消），你可以從來源呼叫 `chan.close()` 關閉 channel 並取消訂閱。
 
@@ -161,7 +161,6 @@ export function* saga() {
 ```
 
 這裡是另一個例子，你如何使用事件 channel 去傳送 WebSockeet 事件到你的 saga（例如：使用 socket.io library）。
-
 假設你等待伺服器的一個 `ping` 訊息，然後在 delay 後回覆一個 `pong` 訊息。
 
 ```javascript
@@ -196,7 +195,7 @@ function createSocketChannel(socket) {
 }
 
 // 藉由調用的 `socket.emit('pong')` 回覆一個 `pong` 訊息
-function* pong() {
+function* pong(socket) {
   yield call(delay, 5000)
   yield apply(socket, socket.emit, ['pong']) // 呼叫 `emit` 作為方法與 `socket`  作為 context
 }
@@ -213,11 +212,11 @@ export function* watchOnPings() {
 }
 ```
 
-> 注意：預設上，訊息在一個 eventChannel 不會被緩衝，你可以提供一個緩衝到 eventChannel factory 來指定 channel 的緩衝策略（例如：`eventChannel(subscriber, buffer)`），更多資訊請參考 API。
+> 注意：預設上，訊息在一個 eventChannel 不會被緩衝，你可以提供一個緩衝到 eventChannel factory 來指定 channel 的緩衝策略（例如：`eventChannel(subscriber, buffer)`）。[更多資訊請參考 API 文件](../api#buffers)。
 
 ### 使用 channel 在 Saga 之間溝通
 
-除了 action channel 和事件 channel 之外，你也可以直接建立 channel，預設上可以不用連結任何的來源，你可以在 channel 手動的 `put`。當你想要在 saga 之間使用 channel 溝通是非常方便的。
+除了 action channel 和事件 channel 之外。你也可以直接建立 channel，預設上可以不用連結任何的來源。你可以在 channel 手動的 `put`。當你想要在 saga 之間使用 channel 溝通是非常方便的。
 
 為了說明，讓我們回顧先前的請求操作範例：
 

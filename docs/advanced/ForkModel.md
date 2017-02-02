@@ -2,8 +2,8 @@
 
 在 `redux-saga` 你可以使用兩種 Effect 的動態執行 fork task 。
 
-- `fork` 被用來建立 *被附加的 forks*
-- `spawn` 被用來建立 *被分離的 forks*
+- `fork` 被用來建立*被附加的 forks*
+- `spawn` 被用來建立*被分離的 forks*
 
 ## 被附加的 forks（使用 `fork`）
 
@@ -109,7 +109,7 @@ function* fetchResource(resource) {
 
 function* main() {
   try {
-    call(fetchAll)
+    yield call(fetchAll)
   } catch (e) {
     // 處理 fetchAll 錯誤
   }

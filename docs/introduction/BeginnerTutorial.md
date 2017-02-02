@@ -8,7 +8,7 @@
 
 ### 初始步驟
 
-在開始之前，請先 clone [教學的 repository](https://github.com/yelouafi/redux-saga-beginner-tutorial)。
+在開始之前，請先 clone [教學 repository](https://github.com/redux-saga/redux-saga-beginner-tutorial)。
 
 > 這個教學最終完成的程式碼位在 `sagas` 的 branch。
 
@@ -29,7 +29,7 @@ $ npm start
 
 如果一切順利的話，你應該會看到兩個按鈕 `Increment` 和 `Decrement`，還有一個在下方顯示的訊息 `Counter: 0`。
 
-> 你在執行應用程式如果遇到一個問題，請在這個[教學 repo](https://github.com/yelouafi/redux-saga-beginner-tutorial/issues) 建立一個 issue。
+> 你在執行應用程式如果遇到一個問題，請在這個[教學 repo](https://github.com/redux-saga/redux-saga-beginner-tutorial/issues) 建立一個 issue。
 
 ## Hello Sagas!
 
@@ -67,6 +67,8 @@ const store = createStore(
 )
 sagaMiddleware.run(helloSaga)
 
+const action = type => store.dispatch({type})
+
 // 休息不改變（rest unchange）
 ```
 
@@ -86,9 +88,13 @@ sagaMiddleware.run(helloSaga)
 const Counter = ({ value, onIncrement, onDecrement, onIncrementAsync }) =>
   <div>
     {' '}
-    <button onClick={onIncrementAsync}>Increment after 1 second</button>
+    <button onClick={onIncrementAsync}>
+      Increment after 1 second
+    </button>
     <hr />
-    <div>Clicked: {value} times</div>
+    <div>
+      Clicked: {value} times
+    </div>
   </div>
 ```
 
@@ -100,6 +106,7 @@ const Counter = ({ value, onIncrement, onDecrement, onIncrementAsync }) =>
 function render() {
   ReactDOM.render(
     <Counter
+      value={store.getState()}
       onIncrementAsync={() => action('INCREMENT_ASYNC')}
     />,
     document.getElementById('root')
@@ -118,8 +125,8 @@ function render() {
 加入以下的程式碼到 `sagas.js` module：
 
 ```javascript
-import { takeEvery, delay } from 'redux-saga'
-import { put } from 'redux-saga/effects'
+import { delay } from 'redux-saga'
+import { put, takeEvery } from 'redux-saga/effects'
 
 // 我們工作的 Saga：將執行非同步的 increment task
 export function* incrementAsync() {
@@ -237,8 +244,8 @@ test('incrementAsync Saga test', (assert) => {
 
 ```javascript
 // ...
-import { put, call } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
+import { put, call, takeEvery } from 'redux-saga/effects'
 
 export function* incrementAsync() {
   // 使用 call Effect

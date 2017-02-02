@@ -2,11 +2,11 @@
 
 import test from 'tape'
 import { createStore, applyMiddleware } from 'redux'
-import sagaMiddleware, { takeEvery, END } from '../../src'
-import { take, put, fork, join, call, race, cancel } from '../../src/effects'
-import {channel} from '../../src/internal/channel'
-import {buffers} from '../../src/internal/buffers'
-
+import sagaMiddleware, { END } from '../../src'
+import { take, put, fork, join, call, race, cancel, takeEvery } from '../../src/effects'
+import { channel } from '../../src/internal/channel'
+import { buffers } from '../../src/internal/buffers'
+import { runSyncDispatchTest } from '../scheduler'
 
 test('synchronous sequential takes', assert => {
   assert.plan(1);
@@ -248,7 +248,7 @@ test('synchronous takes (from a channel) + puts (to the store)', assert => {
 });
 
 
-// see https://github.com/yelouafi/redux-saga/issues/50
+// see #50
 test('inter-saga put/take handling', assert => {
   assert.plan(1);
 
@@ -478,15 +478,10 @@ test('inter-saga fork/take back from forked child', assert => {
 
 
   function* root() {
-    yield [fork(takeEvery1), fork(takeEvery2)]
-  }
-
-  function* takeEvery1() {
-    yield* takeEvery('TEST', takeTest1);
-  }
-
-  function* takeEvery2() {
-    yield* takeEvery('TEST2', takeTest2);
+    yield [
+      takeEvery('TEST', takeTest1),
+      takeEvery('TEST2', takeTest2)
+    ]
   }
 
   let testCounter = 0;
@@ -524,4 +519,135 @@ test('inter-saga fork/take back from forked child', assert => {
 
   store.dispatch({type: 'TEST'})
   store.dispatch(END)
+});
+
+test('inter-saga fork/take back from forked child', assert => {
+  assert.plan(1);
+
+  const actual = []
+  const chan = channel()
+
+  const middleware = sagaMiddleware()
+  const store = createStore(() => {}, applyMiddleware(middleware))
+
+
+  function* root() {
+    yield [
+      takeEvery('TEST', takeTest1),
+      takeEvery('TEST2', takeTest2)
+    ]
+  }
+
+  let testCounter = 0;
+
+  function* takeTest1(action) {
+    if (testCounter === 0){
+        actual.push(1)
+        testCounter++;
+
+        yield put({type: 'TEST2'})
+    } else {
+        actual.push(++testCounter)
+    }
+  }
+
+  function* takeTest2(action) {
+    yield [fork(forkedPut1), fork(forkedPut2)]
+  }
+
+
+  function* forkedPut1() {
+    yield put({type: 'TEST'})
+  }
+
+  function* forkedPut2() {
+    yield put({type: 'TEST'})
+  }
+
+  middleware.run(root).done.then(() => {
+    assert.deepEqual(actual, [1,2,3],
+      "Sagas must take actions from each forked childs doing Sync puts"
+    );
+    assert.end();
+  })
+
+  store.dispatch({type: 'TEST'})
+  store.dispatch(END)
+});
+
+test('deeply nested forks/puts', assert => {
+  assert.plan(1);
+
+  const actual = []
+
+  const middleware = sagaMiddleware()
+  const store = createStore(() => {}, applyMiddleware(middleware))
+
+
+  function* s1() {
+    yield fork(s2)
+    actual.push(yield take('a2'))
+  }
+
+  function* s2() {
+    yield fork(s3)
+    actual.push(yield take('a3'))
+    yield put({type: 'a2'})
+  }
+
+  function* s3() {
+    yield put({type: 'a3'})
+  }
+
+  middleware.run(s1)
+  assert.deepEqual(
+    actual,
+    [{type: 'a3'}, {type: 'a2'}],
+    "must schedule deeply nested forks/puts"
+  )
+});
+
+// #413
+test('inter-saga fork/take back from forked child 3', assert => {
+  assert.plan(1);
+
+  const actual = []
+  const chan = channel()
+
+  const middleware = sagaMiddleware()
+  const store = createStore(() => {}, applyMiddleware(middleware))
+
+  let first = true
+
+  function* root() {
+    yield takeEvery('PING', ackWorker)
+  }
+
+  function* ackWorker (action) {
+    if (first) {
+      first = false
+      yield put({type: 'PING', val: action.val + 1})
+      yield take(`ACK-${action.val + 1}`)
+    }
+    yield put({type: `ACK-${action.val}`})
+    actual.push(1)
+  }
+
+  middleware.run(root).done.then(() => {
+    assert.deepEqual(actual, [1,1],
+      "Sagas must take actions from each forked childs doing Sync puts"
+    );
+    assert.end();
+  })
+
+  store.dispatch({type: 'PING', val: 0})
+  store.dispatch(END)
+});
+
+test('put causing sync dispatch response in store subscriber', assert => {
+  const reducer = (state, action) => action.type
+  const middleware = sagaMiddleware()
+  const store = createStore(reducer, applyMiddleware(middleware))
+
+  runSyncDispatchTest(assert, store, (saga) => middleware.run(saga))
 });

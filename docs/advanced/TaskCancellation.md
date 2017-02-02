@@ -9,7 +9,7 @@
 task 將持續執行直到一個 `STOP_BACKGROUND_SYNC` action 被觸發，然後我們取消背景 task 並等待下一次的 `START_BACKGROUND_SYNC` action。   
 
 ```javascript
-import {  take, put, call, fork, cancel, cancelled } from 'redux-saga/effects'
+import { take, put, call, fork, cancel, cancelled } from 'redux-saga/effects'
 import { delay } from 'redux-saga'
 import { someApi, actions } from 'somewhere'
 
@@ -74,7 +74,39 @@ function* subtask2() {
 
 現在如果 callee 一直處於等待，而且 caller 決定取消操作，它將觸發一種訊號往下傳播到 callee（以及透過 callee 本身被呼叫的任何深層操作）。所有深層等待的操作將被取消。
 
-如果加入的 task 被取消的話，task 的 joiner（那些被阻塞的 `yield join(task)`）將也會被取消。同樣的，任何那些 joiner 潛在的 caller 將會被取消（因為他們阻塞的操作已經從外面被取消）。
+還有另一個取消傳播的方向：如果被加入的 task 已經被取消的話，task 的 joiners（那些被阻塞的 `yield join(task)`）也會被取消。同樣的，任何那些 joiners 潛在的 callers 將會被取消（因為他們阻塞的操作已經從外面被取消）。
+
+## 測試 generator 和 fork effect
+
+當 `fork` 被呼叫時，它在背景啟動 task 並回傳像是我們先前已經知道的 task object。當測試時我們必須使用 `createMockTask` utility function。在 fork test 之後，從這個 function 被回傳的 Object 應該被傳送到下一個 `next` call。例如 Mock task 可以傳送給 `cancel`。這裡測試的 `main` generator  在這個頁面的頂部。
+
+```javascript
+describe('main', () => {
+  const generator = main();
+
+  it('waits for start action', () => {
+    const expectedYield = take(START_BACKGROUND_SYNC);
+    expect(generator.next().value).to.deep.equal(expectedYield);
+  });
+
+  it('forks the service', () => {
+    const expectedYield = fork(bgSync);
+    expect(generator.next().value).to.deep.equal(expectedYield);
+  });
+
+  it('waits for stop action and then cancels the service', () => {
+    const mockTask = createMockTask();
+
+    const expectedTakeYield = take(STOP_BACKGROUND_SYNC);
+    expect(generator.next(mockTask).value).to.deep.equal(expectedTakeYield);
+
+    const expectedCancelYield = cancel(mockTask);
+    expect(generator.next().value).to.deep.equal(expectedCancelYield);
+  });
+});
+```
+
+你也可以使用 `setRunning`、`setResult` 和 `setError` 的 mock task function 來設定 mock task 的狀態。例如 `mockTask.setRunning(false)`。
 
 ### 注意
 

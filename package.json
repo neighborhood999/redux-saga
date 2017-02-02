@@ -1,6 +1,6 @@
 {
   "name": "redux-saga",
-  "version": "0.12.0",
+  "version": "0.14.3",
   "description": "Saga middleware for Redux to handle Side Effects",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
@@ -30,7 +30,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yelouafi/redux-saga.git"
+    "url": "git+https://github.com/redux-saga/redux-saga.git"
   },
   "keywords": [
     "javascript",
@@ -43,9 +43,9 @@
   "author": "Yassine ELOUAFI <yelouafi@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yelouafi/redux-saga/issues"
+    "url": "https://github.com/redux-saga/redux-saga/issues"
   },
-  "homepage": "https://github.com/yelouafi/redux-saga#readme",
+  "homepage": "https://github.com/redux-saga/redux-saga#readme",
   "dependencies": {},
   "devDependencies": {
     "babel-cli": "^6.1.18",
@@ -61,6 +61,7 @@
     "express": "^4.13.3",
     "gitbook-cli": "1.0.1",
     "isomorphic-fetch": "^2.2.0",
+    "lolex": "^1.5.2",
     "react": "^15.0.0",
     "react-dom": "^15.0.0",
     "react-redux": "^4.4.5",
