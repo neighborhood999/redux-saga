@@ -28,6 +28,7 @@
   * [`join(...tasks)`](#jointasks)
   * [`cancel(task)`](#canceltask)
   * [`cancel(...tasks)`](#canceltasks)
+  * [`cancel()`](#cancel)
   * [`select(selector, ...args)`](#selectselector-args)
   * [`actionChannel(pattern, [buffer])`](#actionchannelpattern-buffer)
   * [`flush(channel)`](#flushchannel)
@@ -50,7 +51,7 @@
 
 # Cheatsheets
 
-* [阻塞 / 非阻塞](#blocking--non-blocking)
+* [阻塞 / 非阻塞](#blocking--nonblocking)
 
 ## Middleware API
 
@@ -511,6 +512,34 @@ function* mySaga() {
 
 它只是自動的 wrap 在 [cancel effects](#canceltask) 的 task 陣列，所以大致上等於 `yield tasks.map(t => cancel(t))`。
 
+### `cancel()`
+
+建立一個 Effect 描述去命令 middleware 取消已經被 yield 的 task（本身自己取消）。
+它讓我們在 `finally` 區塊覆用類解構邏輯，對於外部（`cancel(task)`）和本身（`cancel()`）的取消。
+
+#### 範例
+
+```javascript
+function* deleteRecord({ payload }) {
+  try {
+    const { confirm, deny } = yield call(prompt);
+    if (confirm) {
+      yield put(actions.deleteRecord.confirmed())
+    }
+    if (deny) {
+      yield cancel()
+    }
+  } catch(e) {
+    // 處理錯誤
+  } finally {
+    if (yield cancelled()) {
+      // 共用取消錯誤邏輯
+      yield put(actions.deleteRecord.cancel(payload))
+    }
+  }
+}
+```
+
 ### `select(selector, ...args)`
 
 建立一個 Effect 描述，指示 middleware 在目前 Store 的 state 調用提供的 selector（例如：回傳 `selector(getState(), ...args)` 的結果）。
@@ -762,7 +791,10 @@ Channel interface 定義三個方法：`take`、`put` 和 `close`
 - 如果是等待的 taker，調用舊的 taker 訊息
 - 除此之外，在底層緩衝 put 訊息
 
-`Channel.flush():` 用於從 channel 提出所有被 buffer 的訊息，清空 channel。
+`Channel.flush(callback):` 用於從 channel 提出所有被 buffer 的訊息，清空 channel。
+
+- 如果 channel 被關閉且沒有任何被緩衝的訊息，然後 `callback` 和 `END` 會被調用
+- 否則 `callback` 與其他被緩衝的訊息被調用
 
 `Channel.close():` 關閉 channel 意思說不允許更多被 put 的訊息。如果等待的 taker 沒有被緩衝的訊息，所有的 taker 將調用 `END`。如果有被緩衝的訊息，那些訊息將傳遞給第一個 taker 直到緩衝變成空的。剩下的 taker 將調用 `END`。
 

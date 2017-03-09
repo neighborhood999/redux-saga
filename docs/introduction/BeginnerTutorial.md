@@ -6,7 +6,7 @@
 
 我們使用 Redux repo 中簡單的 Counter 範例作為我們的入門教學。這個應用程式相對是簡單的，但是很適合來說明 redux-saga 的基本概念，才不會讓你迷失在過多的細節裡。
 
-### 初始步驟
+### 初始設定
 
 在開始之前，請先 clone [教學 repository](https://github.com/redux-saga/redux-saga-beginner-tutorial)。
 
@@ -107,8 +107,9 @@ function render() {
   ReactDOM.render(
     <Counter
       value={store.getState()}
-      onIncrementAsync={() => action('INCREMENT_ASYNC')}
-    />,
+      onIncrement={() => action('INCREMENT')}
+      onDecrement={() => action('DECREMENT')}
+      onIncrementAsync={() => action('INCREMENT_ASYNC')} />,
     document.getElementById('root')
   )
 }
@@ -197,7 +198,7 @@ test('incrementAsync Saga test', (assert) => {
 });
 ```
 
-由於 `incrementAsync` 是一個 Generator function，當我們在 middleware 外執行它，每次調用 generator 的 `next`，你可以取得以下形狀的物件：
+由於 `incrementAsync` 是一個 Generator function，當我們執行它傳回一個 iterator 物件且 iterator 的 `next` 方法回傳的物件形狀如下：
 
 ```javascript
 gen.next() // => { done: boolean, value: any }
