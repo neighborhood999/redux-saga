@@ -959,18 +959,18 @@ const countdown = (secs) => {
 
 ### `cloneableGenerator(generatorFunc)`
 
-Takes a generator function (function*) and returns a generator function.
-All generators instanciated from this function will be cloneable.
-For testing purpose only.
+帶了一個 generator function（function*）並回傳一個 generator function。
+所有從這個 function 實例化的 generator 都可以可以被 clone。
+僅用於測試。
 
-#### Example
+#### 範例
 
-This is usefull when you want to test different branch of a saga without having to replay the actions that lead to it.
+當你想要測試不同的 saga branch 的時候很有用的，你不需要重複這些動作。
 
 ```javascript
 
 function* oddOrEven() {
-  // some stuff are done here
+  // 一些東西在這裡完成了
   yield 1;
   yield 2;
   yield 3;
