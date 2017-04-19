@@ -161,7 +161,7 @@ Saga 被實作為 [Generator function](https://developer.mozilla.org/en-US/docs/
 // 單一進入點，一次啟動所有 Saga
 export default function* rootSaga() {
   yield [
-    helloSaga(),
+    incrementAsync(),
     watchIncrementAsync()
   ]
 }

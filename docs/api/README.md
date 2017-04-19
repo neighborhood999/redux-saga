@@ -48,6 +48,7 @@
   * [`eventChannel(subscribe, [buffer], matcher)`](#eventchannelsubscribe-buffer-matcher)
   * [`buffers`](#buffers)
   * [`delay(ms, [val])`](#delayms-val)
+  * [`cloneableGenerator(generatorFunc)`](#cloneablegeneratorgeneratorfunc)
 
 # Cheatsheets
 
@@ -515,7 +516,7 @@ function* mySaga() {
 ### `cancel()`
 
 建立一個 Effect 描述去命令 middleware 取消已經被 yield 的 task（本身自己取消）。
-它讓我們在 `finally` 區塊覆用類解構邏輯，對於外部（`cancel(task)`）和本身（`cancel()`）的取消。
+它允許我們在 `finally` 區塊覆用類解構邏輯，對於外部（`cancel(task)`）和本身（`cancel()`）的取消。
 
 #### 範例
 
@@ -955,6 +956,101 @@ const countdown = (secs) => {
 ### `delay(ms, [val])`
 
 在 `ms` 毫秒後，回傳一個 Promise resolve 的 `val` 。
+
+### `cloneableGenerator(generatorFunc)`
+
+Takes a generator function (function*) and returns a generator function.
+All generators instanciated from this function will be cloneable.
+For testing purpose only.
+
+#### Example
+
+This is usefull when you want to test different branch of a saga without having to replay the actions that lead to it.
+
+```javascript
+
+function* oddOrEven() {
+  // some stuff are done here
+  yield 1;
+  yield 2;
+  yield 3;
+
+  const userInput = yield 'enter a number';
+  if (userInput % 2 === 0) {
+    yield 'even';
+  } else {
+    yield 'odd'
+  }
+}
+
+test('my oddOrEven saga', assert => {
+  const data = {};
+  data.gen = cloneableGenerator(oddOrEven)();
+
+  assert.equal(
+    data.gen.next().value,
+    1,
+    'it should yield 1'
+  );
+
+  assert.equal(
+    data.gen.next().value,
+    2,
+    'it should yield 2'
+  );
+
+  assert.equal(
+    data.gen.next().value,
+    3,
+    'it should yield 3'
+  );
+
+  assert.equal(
+    data.gen.next().value,
+    'enter a number',
+    'it should ask for a number'
+  );
+
+  assert.test('even number is given', a => {
+    // we make a clone of the generator before giving the number;
+    data.clone = data.gen.clone();
+
+    a.equal(
+      data.gen.next(2).value,
+      'even',
+      'it should yield "event"'
+    );
+
+    a.equal(
+      data.gen.next().done,
+      true,
+      'it should be done'
+    );
+
+    a.end();
+  });
+
+  assert.test('odd number is given', a => {
+
+    a.equal(
+      data.clone.next(1).value,
+      'odd',
+      'it should yield "odd"'
+    );
+
+    a.equal(
+      data.clone.next().done,
+      true,
+      'it should be done'
+    );
+
+    a.end();
+  });
+
+  assert.end();
+});
+
+```
 
 ## Cheatsheets
 

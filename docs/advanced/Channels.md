@@ -90,7 +90,6 @@ function countdown(secs) {
         } else {
           // 這裡造成 channel 關閉
           emitter(END)
-          clearInterval(iv)
         }
       }, 1000);
       // 訂閱者必須回傳取消訂閱功能

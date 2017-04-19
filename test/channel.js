@@ -225,6 +225,37 @@ test('event channel', assert => {
   assert.end()
 });
 
+test('unsubscribe event channel', assert => {
+  let unsubscribed = false;
+  let chan = eventChannel(() => () => {
+    unsubscribed = true;
+  });
+  chan.close();
+  assert.ok(unsubscribed, 'eventChannel should call unsubscribe when channel is closed')
+
+  unsubscribed = false;
+  chan = eventChannel((emitter) => {
+    emitter(END);
+    return () => {
+      unsubscribed = true;
+    }
+  });
+  assert.ok(unsubscribed, 'eventChannel should call unsubscribe when END event is emitted synchronously');
+
+  unsubscribed = false;
+  chan = eventChannel((emitter) => {
+    setTimeout(() => emitter(END), 0);
+    return () => {
+      unsubscribed = true;
+    }
+  });
+  chan.take(input => {
+    assert.equal(input, END, 'should emit END event');
+    assert.ok(unsubscribed, 'eventChannel should call unsubscribe when END event is emitted asynchronously');
+    assert.end();
+  });
+});
+
 test('expanding buffer', assert => {
   let chan = channel(buffers.expanding(2))
 
