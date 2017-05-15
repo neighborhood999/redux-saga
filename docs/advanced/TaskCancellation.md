@@ -116,6 +116,6 @@ describe('main', () => {
 
 除了手動取消之外，也有一些是被觸發而自動取消的情況
 
-1. 在一個 `rafe` effect，除了 winner 之外，所有 race 競爭者都會被取消。
+1. 在一個 `race` effect，除了 winner 之外，所有 race 競爭者都會被取消。
 
 2. 在一個併行的 effect（`yield [...]`）中，一旦其中一個子 effect 被 reject，併行的 effect 會被 reject（像是 `Promise.all` 一樣）。在這個情況，所有其他的子 effect 都會自動的被取消。
