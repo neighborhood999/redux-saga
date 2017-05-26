@@ -53,11 +53,11 @@ function* main() {
 
 ```js
 function* fetchAll() {
-  yield [
+  yield all([
     call(fetchResource, 'users'),     // task1
     call(fetchResource, 'comments'),  // task2,
     call(delay, 1000)
-  ]
+  ])
 }
 ```
 
@@ -76,11 +76,11 @@ function* fetchAll() {
 例如，我們有這個 Effect：
 
 ```js
-yield [
+yield all([
   call(fetchResource, 'users'),
   call(fetchResource, 'comments'),
   call(delay, 1000)
-]
+])
 ```
 
 如果三個子 Effect 其中一個失敗，會造成其他都失敗。此外，未捕獲的錯誤將造成 parallel 的 Effect 取消所有其他等待的 Effect。例如，如果 `call(fetchResource), 'users')` 發出一個未捕獲的錯誤，parallel 的 Effect 將取消其他兩個 task（如果他們仍再等待），並從失敗的呼叫中，abort 本身具有相同的錯誤。
@@ -120,7 +120,7 @@ function* main() {
 
 - 其他尚未完成的 task 被取消。這些包含：  
   - *main task* （`fetchAll` 的 body）: 取消意思是，取消目前的 Effect `call(delay, 1000)`  
-  - 其他被 fork 的 task 仍然等待。例如在我們範例的 `task2`。
+  - 其他被 fork 的 task 仍然在等待。例如在我們的 `task2` 範例。
 
 - `call(fetchAll)` 本身發出一個錯誤的話，將會在 `main` 的 `catch` 捕獲錯誤。
 

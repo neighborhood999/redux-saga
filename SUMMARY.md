@@ -11,7 +11,7 @@
 * [3. 進階概念](/docs/advanced/README.md)
   * [3.1 Pull 未來的 action](/docs/advanced/FutureActions.md)
   * [3.2 非阻塞式的呼叫](/docs/advanced/NonBlockingCalls.md)
-  * [3.3 同時執行多個任務l](/docs/advanced/RunningTasksInParallel.md)
+  * [3.3 同時執行多個任務](/docs/advanced/RunningTasksInParallel.md)
   * [3.4 在多個 Effect 之間啟動一個 race](/docs/advanced/RacingEffects.md)
   * [3.5 使用 yield* 對 Saga 做排序](/docs/advanced/SequencingSagas.md)
   * [3.6 組合 Saga](/docs/advanced/ComposingSagas.md)

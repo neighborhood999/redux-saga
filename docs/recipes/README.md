@@ -83,12 +83,12 @@ function* updateApi(data) {
       const apiResponse = yield call(apiRequest, { data });
       return apiResponse;
     } catch(err) {
-      if(i < 5) {
+      if(i < 4) {
         yield call(delay, 2000);
       }
     }
   }
-  // 嘗試 10 秒後失敗
+  // 在嘗試五次後失敗
   throw new Error('API request failed');
 }
 

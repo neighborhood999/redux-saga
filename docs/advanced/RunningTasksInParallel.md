@@ -11,13 +11,13 @@ const users  = yield call(fetch, '/users'),
 因為第二個 effect 將直到第一個呼叫 resolve 後才執行，所以我們應該這樣撰寫：
 
 ```javascript
-import { call } from 'redux-saga/effects'
+import { all, call } from 'redux-saga/effects'
 
-// 正確寫法，effect 將同步被執行
-const [users, repos]  = yield [
+// 正確寫法，在併行情況下 effect 執行
+const [users, repos]  = yield all([
   call(fetch, '/users'),
   call(fetch, '/repos')
-]
+])
 ```
 
 當我們 yield 一個 effect 的陣列，generator 是被阻塞的，直到所有 effect 都被 resolve 或者是被 reject（就像 `Promise.all` 的行為）。

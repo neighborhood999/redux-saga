@@ -5,6 +5,7 @@
 - [JavaScript Generators 的權威指南](http://gajus.com/blog/2/the-definitive-guide-to-the-javascript-generators) by Gajus Kuizinas
 - [基礎的 ES6 Generators](https://davidwalsh.name/es6-generators) by Kyle Simpson
 - [深入 ES6 generators](http://www.2ality.com/2015/03/es6-generators.html) by Axel Rauschmayer
+- [三個 JavaScript generator 案例並理解它們](https://goshakkk.name/javascript-generators-understanding-sample-use-cases/) by Gosha Arinich
 
 ### redux-saga 相關文章
 
@@ -26,3 +27,4 @@
 - [eslint-plugin-redux-saga](https://www.npmjs.com/package/eslint-plugin-redux-saga) - ESLint 的 rules，幫助你撰寫沒有錯誤的 saga
 - [redux-saga-router](https://www.npmjs.com/package/redux-saga-router) - 藉由 route 的改變在 response 內執行 saga 的 Helper
 - [vuex-redux-saga](https://github.com/xanf/vuex-redux-saga) - Vuex 和 Redux-Saga 之間的橋樑
+- [esdoc-saga-plugin](https://www.npmjs.com/package/esdoc-saga-plugin) - ESDoc plugin 用來記錄 sagas effects。

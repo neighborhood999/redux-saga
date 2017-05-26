@@ -26,7 +26,7 @@ Yield 一個巢狀化的 generator 陣列，將同時啟動所有子 generator�
 
 ```javascript
 function* mainSaga(getState) {
-  const results = yield [call(task1), call(task2), ...]
+  const results = yield all([call(task1), call(task2), ...])
   yield put(showResults(results))
 }
 ```

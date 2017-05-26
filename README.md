@@ -1,4 +1,4 @@
-<img src='logo/0800/Redux-Saga-Logo-Landscape.png' alt='Redux Logo Landscape' width='800px'>
+<img src='https://redux-saga.js.org/logo/0800/Redux-Saga-Logo-Landscape.png' alt='Redux Logo Landscape' width='800px'>
 
 # redux-saga
 
@@ -10,7 +10,7 @@
 
 想法上，redux-saga 像是一個獨立的 thread 在你的應用程式，專門負責 side effect。`redux-saga` 是 redux 的 middleware，意思說從主要應用程式標準的 redux action 可以啟動、暫停和取消 thread，它可以存取整個 redux 應用程式的 state 和 dispatch redux 的 action。
 
-使用 ES6 的 Generators 功能讓非同步的流程可以更容易閱讀、撰寫和測試，*(如果你還不熟悉的話，[這裡有一些介紹的連結](https://redux-saga.github.io/redux-saga/docs/ExternalResources.html))*。透過這樣的方式，這些非同步的流程看起來就像標準 JavaScript 同步程式碼（像是 `async`/`await`，但是 generators 還有一些更棒而且我們需要的功能）。
+使用 ES6 的 Generators 功能讓非同步的流程可以更容易閱讀、撰寫和測試，*(如果你還不熟悉的話，[這裡有一些介紹的連結](https://redux-saga.js.org/docs/ExternalResources.html))*。透過這樣的方式，這些非同步的流程看起來就像標準 JavaScript 同步程式碼（像是 `async`/`await`，但是 generators 還有一些更棒而且我們需要的功能）。
 
 你可能已經使用 `redux-thunk` 來處理你資料的 fetch。不同於 redux thunk，你不會再出現 callback hell 了，你可以簡單測試非同步的流程並保持你的 action 是 pure 的。
 
@@ -110,26 +110,30 @@ sagaMiddleware.run(mySaga)
 
 # 文件
 
-- [介紹](http://redux-saga.github.io/redux-saga/docs/introduction/BeginnerTutorial.html)
-- [基本概念](http://redux-saga.github.io/redux-saga/docs/basics/index.html)
-- [進階概念](http://redux-saga.github.io/redux-saga/docs/advanced/index.html)
-- [Recipes](http://redux-saga.github.io/redux-saga/docs/recipes/index.html)
-- [外部資源](http://redux-saga.github.io/redux-saga/docs/ExternalResources.html)
-- [疑難排解](http://redux-saga.github.io/redux-saga/docs/Troubleshooting.html)
-- [術語表](http://redux-saga.github.io/redux-saga/docs/Glossary.html)
-- [API 參考](http://redux-saga.github.io/redux-saga/docs/api/index.html)
+- [介紹](https://redux-saga.js.org/docs/introduction/BeginnerTutorial.html)
+- [基本概念](https://redux-saga.js.org/docs/basics/index.html)
+- [進階概念](https://redux-saga.js.org/docs/advanced/index.html)
+- [Recipes](https://redux-saga.js.org/docs/recipes/index.html)
+- [外部資源](https://redux-saga.js.org/docs/ExternalResources.html)
+- [疑難排解](https://redux-saga.js.org/docs/Troubleshooting.html)
+- [術語表](https://redux-saga.js.org/docs/Glossary.html)
+- [API 參考](https://redux-saga.js.org/docs/api/index.html)
 
 # Translation
 
 - [Chinese](https://github.com/superRaytin/redux-saga-in-chinese)
 - [Chinese Traditional](https://github.com/neighborhood999/redux-saga)
 - [Japanese](https://github.com/redux-saga/redux-saga/blob/master/README_ja.md)
-- [Korean](https://github.com/redux-saga/redux-saga/blob/master/README_ko.md)
+- [Korean](https://github.com/mskims/redux-saga-in-korean)
 - [Russian](https://github.com/redux-saga/redux-saga/blob/master/README_ru.md)
 
 # 在瀏覽器使用 umd build 版本
 
-在 `dist/` 資料夾也有一個 `redux-saga` 的 **umd** build 可以使用。當使用 umd build 的 `redux-saga`，`ReduxSaga` 作為在 window 的全域變數。
+在 `dist/` 資料夾也有一個 `redux-saga` 的 **umd** build 可以使用。當使用 umd build 的 `redux-saga`，`ReduxSaga` 作為在 window 的全域變數。這可以讓你不需要使用 ES6 `import` 語法就可以建立 Saga middleware：
+
+```javascript
+var sagaMiddleware = ReduxSaga.default()
+```
 
 在你不使用 Webpack 或 Browserify 時，umd 版本很方便可以使用，你可以從 [unpkg](https://unpkg.com/) 直接存取。
 
@@ -149,7 +153,7 @@ import sagaMiddleware from 'redux-saga'
 # 從原始碼中來建立範例
 
 ```sh
-$ git clone https://github.com/yelouafi/redux-saga.git
+$ git clone https://github.com/redux-saga/redux-saga.git
 $ cd redux-saga
 $ npm install
 $ npm test

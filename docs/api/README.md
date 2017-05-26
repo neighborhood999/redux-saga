@@ -17,6 +17,7 @@
   * [`put(channel, action)`](#putchannel-action)
   * [`call(fn, ...args)`](#callfn-args)
   * [`call([context, fn], ...args)`](#callcontext-fn-args)
+  * [`call([context, fnName], ...args)`](#callcontext-fnname-args)
   * [`apply(context, fn, args)`](#applycontext-fn-args)
   * [`cps(fn, ...args)`](#cpsfn-args)
   * [`cps([context, fn], ...args)`](#cpscontext-fn-args)
@@ -33,22 +34,27 @@
   * [`actionChannel(pattern, [buffer])`](#actionchannelpattern-buffer)
   * [`flush(channel)`](#flushchannel)
   * [`cancelled()`](#cancelled)
+  * [`setContext(props)`](#setcontextprops)
+  * [`getContext(prop)`](#getcontextprop)
 * [`Effect combinators`](#effect-combinators)
   * [`race(effects)`](#raceeffects)
-  * [`[...effects] (aka parallel effects)`](#effects-parallel-effects)
+  * [`all([...effects]) (aka parallel effects)`](#alleffects---parallel-effects)
+  * [`all(effects)`](#alleffects)
 * [`Interfaces`](#interfaces)
   * [`Task`](#task)
   * [`Channel`](#channel)
   * [`Buffer`](#buffer)
   * [`SagaMonitor`](#sagamonitor)
 * [`External API`](#external-api)
-  * [`runSaga(iterator, options)`](#runsagaiterator-options)
+  * [`runSaga(options, saga, ...args)`](#runsagaoptions-saga-args)
 * [`Utils`](#utils)
   * [`channel([buffer])`](#channelbuffer)
   * [`eventChannel(subscribe, [buffer], matcher)`](#eventchannelsubscribe-buffer-matcher)
   * [`buffers`](#buffers)
   * [`delay(ms, [val])`](#delayms-val)
   * [`cloneableGenerator(generatorFunc)`](#cloneablegeneratorgeneratorfunc)
+  * [`createMockTask()`](#createmocktask)
+
 
 # Cheatsheets
 
@@ -132,7 +138,7 @@ store.runSaga(rootSaga)
 
 `saga` 必須是一個 function 且回傳一個 [Generator 物件](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator)。middleware 將迭代 Generator 並執行所有被 yield 的 Effect。
 
-`saga` 可能也使用 library 提供的各種 Effect 來啟動其他 saga。迭代處理程序也使用於下面所有的子 saga。
+`saga` 可能也使用 library 提供的各種 Effect 來啟動其他 saga。迭代處理程序也描述也適用於下面所有的子 saga。
 
 在第一個迭代，middleware 調用 `next()` 方法來取得下一個 Effect，然後 middleware 透過 Effect API 執行被指定的 yield Effect。在這個同時，Generator 將暫停直到 effect 結束執行。收到的執行結果後，middleware 在 Generator 呼叫 `next(result)`，將它取得結果作為參數傳送。或拋出一些錯誤。
 
@@ -378,6 +384,10 @@ middleware 調用 function 並檢查它的結果。
 
 與 `call(fn, ...args)` 一樣，但是支援傳送 `this` context 到 `fn`，這在調用物件方法很有用。
 
+### `call([context, fnName], ...args)`
+
+Same as `call([context, fn], ...args)` but supports passing a `fn` as string. Useful for invoking object's methods, i.e. `yield call([localStorage, 'getItem'], 'redux-saga')`
+
 ### `apply(context, fn, [args])`
 
 `call([context, fn], ...args)` 的別名（Alias）。
@@ -450,7 +460,7 @@ middleware 仍然會暫停，直到 `fn` 終止。
 
 #### 注意
 
-`join`  將解析相同被加入 task 的結果（成功或失敗）。如果被加入的 task 被取消，取消也會傳播到 join effect 執行的 Saga。同樣的，任何那些 joiner 潛在的 caller 將被取消。
+`join` 將 resolve 被加入 task 的相同結果（成功或失敗）。如果取消被加入的 task，取消也會傳播給 Saga 執行 join effect。同樣的，任何那些 joiner 潛在的 caller 將被取消。
 
 ### `join(...tasks)`
 
@@ -460,7 +470,7 @@ middleware 仍然會暫停，直到 `fn` 終止。
 
 #### 注意
 
-它只是自動的 wrap 在[join effects](#jointask) 的 task 陣列，所以大致上等於 `yield tasks.map(t => join(t))`。
+它只是自動的在[join effects](#jointask) wrap task 陣列，大致上等於 `yield tasks.map(t => join(t))`。
 
 ### `cancel(task)`
 
@@ -503,6 +513,8 @@ function* mySaga() {
 }
 ```
 
+redux-saga 將使用 `abort` 方法自動地取消 jqXHR object。
+
 ### `cancel(...tasks)`
 
 建立一個 Effect 描述指示 middleware 取消先前被 fork 的 tasks。
@@ -511,7 +523,7 @@ function* mySaga() {
 
 #### 注意
 
-它只是自動的 wrap 在 [cancel effects](#canceltask) 的 task 陣列，所以大致上等於 `yield tasks.map(t => cancel(t))`。
+它只是自動的在 [cancel effects](#canceltask) wrap task 陣列，所以大致上等於 `yield tasks.map(t => cancel(t))`。
 
 ### `cancel()`
 
@@ -667,11 +679,20 @@ function* saga() {
 }
 ```
 
+### `setContext(props)`
+
+Creates an effect that instructs the middleware to update it's own context. This effect extends
+saga's context instead of replacing it.
+
+### `getContext(prop)`
+
+Creates an effect that instructs the middleware to return a specific property of saga's context.
+
 ## Effect combinators
 
 ### `race(effects)`
 
-建立一個 Effect 描述，指示 middleware 在多個 Effect 之間執行 *Race*（類似 `Promise.race([...])` 的行為）。
+建立一個 Effect 描述，指示 middleware 在多個 Effect 之間執行 *Race*（類似 [`Promise.race([...])`]((https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/race) behaves)) 的行為）。
 
 `effects: Object` - 物件形式 {label: effect, ...}
 
@@ -702,9 +723,9 @@ function* fetchUsersSaga {
 
 當 resolve `race` 時，middleware 自動的取消所有輸掉的 Effect。
 
-### `[...effects] (parallel effects)`
+### `all([...effects]) - parallel effects`
 
-建立一個 Effect 描述，指示 middleware 同時執行多個 Effect 並等待他們完成。
+建立一個 Effect 描述，指示 middleware 同時執行多個 Effect 並等待他們完成。這相當於 [`Promise#all`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/all) API 的標準。。
 
 #### 範例
 
@@ -714,10 +735,31 @@ function* fetchUsersSaga {
 import { fetchCustomers, fetchProducts } from './path/to/api'
 
 function* mySaga() {
-  const [customers, products] = yield [
+  const [customers, products] = yield all([
     call(fetchCustomers),
     call(fetchProducts)
-  ]
+  ])
+}
+```
+
+### `all(effects)`
+
+The same as [`all([...effects])`](#alleffects-parallel-effects) but let's you to pass in a dictionary object of effects with labels, just like [`race(effects)`](#alleffects)
+
+`effects: Object` - a dictionary Object of the form {label: effect, ...}
+
+#### Example
+
+The following example runs two blocking calls in parallel:
+
+```javascript
+import { fetchCustomers, fetchProducts } from './path/to/api'
+
+function* mySaga() {
+  const { customers, products } = yield all({
+    customers: call(fetchCustomers),
+    products: call(fetchProducts)
+  })
 }
 ```
 
@@ -858,30 +900,33 @@ Channel interface 定義三個方法：`take`、`put` 和 `close`
 ## 外部 API
 ------------------------
 
-### `runSaga(iterator, options)`
+### `runSaga(options, saga, ...args)`
 
 允許在 Redux middleware 環境外啟動 saga。除了 store action 外，如果你想要連結 Saga 到外部的輸入或輸出這是非常有用的。
 
-`runSaga` 回傳一個 Task 物件，就像從 `fork` effect 回傳一樣。
-
-
-- `iterator: {next, throw}` - 一個 Iterator 物件，通常透過調用 Generator function 被建立。
+`runSaga` 回傳一個 Task 物件，就像從 `fork` 被回傳的 effect 一樣。
 
 - `options: Object` - 目前支援的選項有：
 
-  - `subscribe(callback): Function` - 接受一個 callback 並回傳一個 `unsubscribe` function。
+  - `subscribe(callback): Function` - 接受一個 callback 並回傳一個 `unsubscribe` function
 
     - `callback(input): Function` - callback（透過 runSaga 提供）被用來訂閱輸入事件。`subscribe` 必須支援註冊多個訂閱。
-      - `input: any` - 由 `subscribe` 傳送參數到 `callback`（參考下面注意事項）。
+      - `input: any` - 由 `subscribe` 傳送參數到 `callback`（參考下面注意事項）
 
-  - `dispatch(output): Function` - 用來滿足 `put` effect。
-    - `output: any` -  由 Saga 提供的參數給 `put` Effect（參考下面注意事項）。
+- `dispatch(output): Function` - 用來滿足 `put` effect。
+    - `output: any` -  由 Saga 提供的參數給 `put` Effect（參考下面注意事項）
 
-  - `getState(): Function` - 用來滿足 `select` 和 `getState` effect。
+- `getState(): Function` - 用來滿足 `select` 和 `getState` effect
 
-  - `sagaMonitor` : [SagaMonitor](#sagamonitor) - 參考 [`createSagaMiddleware(options)`](#createsagamiddlewareoptions) 文件。
+- `sagaMonitor` : [SagaMonitor](#sagamonitor) - 參考 [`createSagaMiddleware(options)`](#createsagamiddlewareoptions)
 
-  - `logger` : `Function` - 參考 [`createSagaMiddleware(options)`](#createsagamiddlewareoptions) 文件。
+- `logger: Function` - 參考 [`createSagaMiddleware(options)`](#createsagamiddlewareoptions)
+
+- `onError: Function` - see docs for [`createSagaMiddleware(options)`](#createsagamiddlewareoptions)
+
+- `saga: Function` - 一個 Generator function
+
+- `args: Array<any>` - 提供給 `saga` 的參數
 
 #### 注意
 
@@ -1051,6 +1096,12 @@ test('my oddOrEven saga', assert => {
 });
 
 ```
+### `createMockTask()`
+
+Returns an object that mocks a task.
+For testing purposes only.
+[See Task Cancellation docs for more information.](/docs/advanced/TaskCancellation.md#testing-generators-with-fork-effect)
+)
 
 ## Cheatsheets
 

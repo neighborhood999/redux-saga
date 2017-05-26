@@ -6,7 +6,7 @@
 
 我們來看一下它是如何運作的，讓我們考慮一個簡單的範例：可以透過一些 UI 的 command 啟動或暫停背景同步，接收一個 `START_BACKGROUND_SYNC` action，我們 fork 一個背景 task 將定期的從遠端資料庫同步一些資料。
 
-task 將持續執行直到一個 `STOP_BACKGROUND_SYNC` action 被觸發，然後我們取消背景 task 並等待下一次的 `START_BACKGROUND_SYNC` action。   
+task 將持續執行直到一個 `STOP_BACKGROUND_SYNC` action 被觸發，然後我們取消背景 task 並等待下一次的 `START_BACKGROUND_SYNC` action。
 
 ```javascript
 import { take, put, call, fork, cancel, cancelled } from 'redux-saga/effects'
@@ -81,6 +81,8 @@ function* subtask2() {
 當 `fork` 被呼叫時，它在背景啟動 task 並回傳像是我們先前已經知道的 task object。當測試時我們必須使用 `createMockTask` utility function。在 fork test 之後，從這個 function 被回傳的 Object 應該被傳送到下一個 `next` call。例如 Mock task 可以傳送給 `cancel`。這裡測試的 `main` generator  在這個頁面的頂部。
 
 ```javascript
+import { createMockTask } from 'redux-saga/utils';
+
 describe('main', () => {
   const generator = main();
 

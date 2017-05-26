@@ -37,20 +37,7 @@ var defineEnumerableProperties = function (obj, descs) {
 
 
 
-var defineProperty = function (obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
 
-  return obj;
-};
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -78,81 +65,26 @@ var _extends = Object.assign || function (target) {
 
 
 
+var objectWithoutProperties = function (obj, keys) {
+  var target = {};
 
-
-
-
-
-
-
-
-var slicedToArray = function () {
-  function sliceIterator(arr, i) {
-    var _arr = [];
-    var _n = true;
-    var _d = false;
-    var _e = undefined;
-
-    try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);
-
-        if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;
-      _e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"]) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }
-
-    return _arr;
+  for (var i in obj) {
+    if (keys.indexOf(i) >= 0) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, i)) continue;
+    target[i] = obj[i];
   }
 
-  return function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      return sliceIterator(arr, i);
-    } else {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-    }
-  };
-}();
-
-
-
-
-
-
-
-
-
-
-
-
-
-var toConsumableArray = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
+  return target;
 };
 
 var sym = function sym(id) {
   return '@@redux-saga/' + id;
 };
+
 var TASK = sym('TASK');
 var HELPER = sym('HELPER');
 var MATCH = sym('MATCH');
-var CANCEL = sym('cancelPromise');
+var CANCEL = sym('CANCEL_PROMISE');
 var SAGA_ACTION = sym('SAGA_ACTION');
 var SELF_CANCELLATION = sym('SELF_CANCELLATION');
 var konst = function konst(v) {
@@ -166,8 +98,6 @@ var noop = function noop() {};
 var ident = function ident(v) {
   return v;
 };
-
-var isDev = "development" === 'development';
 
 function check(value, predicate, error) {
   if (!predicate(value)) {
@@ -194,7 +124,13 @@ var is = {
   number: function number(n) {
     return typeof n === 'number';
   },
+  string: function string(s) {
+    return typeof s === 'string';
+  },
   array: Array.isArray,
+  object: function object(obj) {
+    return obj && !is.array(obj) && (typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) === 'object';
+  },
   promise: function promise(p) {
     return p && is.func(p.then);
   },
@@ -214,7 +150,7 @@ var is = {
     return buf && is.func(buf.isEmpty) && is.func(buf.take) && is.func(buf.put);
   },
   pattern: function pattern(pat) {
-    return pat && (typeof pat === 'string' || (typeof pat === 'undefined' ? 'undefined' : _typeof(pat)) === 'symbol' || is.func(pat) || is.array(pat));
+    return pat && (is.string(pat) || (typeof pat === 'undefined' ? 'undefined' : _typeof(pat)) === 'symbol' || is.func(pat) || is.array(pat));
   },
   channel: function channel(ch) {
     return ch && is.func(ch.take) && is.func(ch.close);
@@ -227,12 +163,34 @@ var is = {
   }
 };
 
+var object = {
+  assign: function assign(target, source) {
+    for (var i in source) {
+      if (hasOwn(source, i)) {
+        target[i] = source[i];
+      }
+    }
+  }
+};
+
 function remove(array, item) {
   var index = array.indexOf(item);
   if (index >= 0) {
     array.splice(index, 1);
   }
 }
+
+var array = {
+  'from': function from(obj) {
+    var arr = Array(obj.length);
+    for (var i in obj) {
+      if (hasOwn(obj, i)) {
+        arr[i] = obj[i];
+      }
+    }
+    return arr;
+  }
+};
 
 function deferred() {
   var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -278,19 +236,19 @@ function createMockTask() {
   var _result = void 0,
       _error = void 0;
 
-  return _ref = {}, defineProperty(_ref, TASK, true), defineProperty(_ref, 'isRunning', function isRunning() {
+  return _ref = {}, _ref[TASK] = true, _ref.isRunning = function isRunning() {
     return running;
-  }), defineProperty(_ref, 'result', function result() {
+  }, _ref.result = function result() {
     return _result;
-  }), defineProperty(_ref, 'error', function error() {
+  }, _ref.error = function error() {
     return _error;
-  }), defineProperty(_ref, 'setRunning', function setRunning(b) {
+  }, _ref.setRunning = function setRunning(b) {
     return running = b;
-  }), defineProperty(_ref, 'setResult', function setResult(r) {
+  }, _ref.setResult = function setResult(r) {
     return _result = r;
-  }), defineProperty(_ref, 'setError', function setError(e) {
+  }, _ref.setError = function setError(e) {
     return _error = e;
-  }), _ref;
+  }, _ref;
 }
 
 function autoInc() {
@@ -345,21 +303,28 @@ function log(level, message) {
 
 function deprecate(fn, deprecationWarning) {
   return function () {
-    if (isDev) log('warn', deprecationWarning);
+    log('warn', deprecationWarning);
     return fn.apply(undefined, arguments);
   };
 }
+
+var updateIncentive = function updateIncentive(deprecated, preferred) {
+  return deprecated + ' has been deprecated in favor of ' + preferred + ', please update your code';
+};
 
 var internalErr = function internalErr(err) {
   return new Error('\n  redux-saga: Error checking hooks detected an inconsistent state. This is likely a bug\n  in redux-saga code and not yours. Thanks for reporting this in the project\'s github repo.\n  Error: ' + err + '\n');
 };
 
-function wrapSagaDispatch(dispatch) {
-  return function sagaDispatch(action) {
-    var wrappedAction = Object.defineProperty(action, SAGA_ACTION, { value: true });
-    return dispatch(wrappedAction);
+var createSetContextWarning = function createSetContextWarning(ctx, props) {
+  return (ctx ? ctx + '.' : '') + 'setContext(props): argument ' + props + ' is not a plain object';
+};
+
+var wrapSagaDispatch = function wrapSagaDispatch(dispatch) {
+  return function (action) {
+    return dispatch(Object.defineProperty(action, SAGA_ACTION, { value: true }));
   };
-}
+};
 
 var cloneableGenerator = function cloneableGenerator(generatorFunc) {
   return function () {
@@ -390,59 +355,6 @@ var cloneableGenerator = function cloneableGenerator(generatorFunc) {
     };
   };
 };
-
-var queue = [];
-/**
-  Variable to hold a counting semaphore
-  - Incrementing adds a lock and puts the scheduler in a `suspended` state (if it's not
-    already suspended)
-  - Decrementing releases a lock. Zero locks puts the scheduler in a `released` state. This
-    triggers flushing the queued tasks.
-**/
-var semaphore = 0;
-
-/**
-  Executes a task 'atomically'. Tasks scheduled during this execution will be queued
-  and flushed after this task has finished (assuming the scheduler endup in a released
-  state).
-**/
-function exec(task) {
-  try {
-    suspend();
-    task();
-  } finally {
-    flush();
-  }
-}
-
-/**
-  Executes or queues a task depending on the state of the scheduler (`suspended` or `released`)
-**/
-function asap(task) {
-  if (!semaphore) {
-    exec(task);
-  } else {
-    queue.push(task);
-  }
-}
-
-/**
-  Puts the scheduler in a `suspended` state. Scheduled tasks will be queued until the
-  scheduler is released.
-**/
-function suspend() {
-  semaphore++;
-}
-
-/**
-  Releases the current lock. Executes all queued tasks if the scheduler is in the released state.
-**/
-function flush() {
-  semaphore--;
-  if (!semaphore && queue.length) {
-    exec(queue.shift());
-  }
-}
 
 var BUFFER_OVERFLOW = 'Channel\'s Buffer overflow!';
 
@@ -543,6 +455,69 @@ var buffers = {
     return ringBuffer(initialSize, ON_OVERFLOW_EXPAND);
   }
 };
+
+var queue = [];
+/**
+  Variable to hold a counting semaphore
+  - Incrementing adds a lock and puts the scheduler in a `suspended` state (if it's not
+    already suspended)
+  - Decrementing releases a lock. Zero locks puts the scheduler in a `released` state. This
+    triggers flushing the queued tasks.
+**/
+var semaphore = 0;
+
+/**
+  Executes a task 'atomically'. Tasks scheduled during this execution will be queued
+  and flushed after this task has finished (assuming the scheduler endup in a released
+  state).
+**/
+function exec(task) {
+  try {
+    suspend();
+    task();
+  } finally {
+    release();
+  }
+}
+
+/**
+  Executes or queues a task depending on the state of the scheduler (`suspended` or `released`)
+**/
+function asap(task) {
+  queue.push(task);
+
+  if (!semaphore) {
+    suspend();
+    flush();
+  }
+}
+
+/**
+  Puts the scheduler in a `suspended` state. Scheduled tasks will be queued until the
+  scheduler is released.
+**/
+function suspend() {
+  semaphore++;
+}
+
+/**
+  Puts the scheduler in a `released` state.
+**/
+function release() {
+  semaphore--;
+}
+
+/**
+  Releases the current lock. Executes all queued tasks if the scheduler is in the released state.
+**/
+function flush() {
+  release();
+
+  var task = void 0;
+  while (!semaphore && (task = queue.shift()) !== undefined) {
+    exec(task);
+  }
+}
 
 var CHANNEL_END_TYPE = '@@redux-saga/CHANNEL_END';
 var END = { type: CHANNEL_END_TYPE };
@@ -756,10 +731,9 @@ function fsmIterator(fsm, q0) {
       updateState && updateState(arg);
 
       var _fsm$qNext = fsm[qNext](),
-          _fsm$qNext2 = slicedToArray(_fsm$qNext, 3),
-          q = _fsm$qNext2[0],
-          output = _fsm$qNext2[1],
-          _updateState = _fsm$qNext2[2];
+          q = _fsm$qNext[0],
+          output = _fsm$qNext[1],
+          _updateState = _fsm$qNext[2];
 
       qNext = q;
       updateState = _updateState;
@@ -884,16 +858,17 @@ function throttleHelper(delayLength, pattern, worker) {
   }, 'q1', 'throttle(' + safeName(pattern) + ', ' + worker.name + ')');
 }
 
-var deprecationWarning$1 = function deprecationWarning(helperName) {
-  return 'import ' + helperName + ' from \'redux-saga\' has been deprecated in favor of import ' + helperName + ' from \'redux-saga/effects\'.\nThe latter will not work with yield*, as helper effects are wrapped automatically for you in fork effect.\nTherefore yield ' + helperName + ' will return task descriptor to your saga and execute next lines of code.';
+var deprecationWarning = function deprecationWarning(helperName) {
+  return 'import { ' + helperName + ' } from \'redux-saga\' has been deprecated in favor of import { ' + helperName + ' } from \'redux-saga/effects\'.\nThe latter will not work with yield*, as helper effects are wrapped automatically for you in fork effect.\nTherefore yield ' + helperName + ' will return task descriptor to your saga and execute next lines of code.';
 };
-var takeEvery$1 = deprecate(takeEveryHelper, deprecationWarning$1('takeEvery'));
-var takeLatest$1 = deprecate(takeLatestHelper, deprecationWarning$1('takeLatest'));
-var throttle$1 = deprecate(throttleHelper, deprecationWarning$1('throttle'));
+var takeEvery$1 = deprecate(takeEveryHelper, deprecationWarning('takeEvery'));
+var takeLatest$1 = deprecate(takeLatestHelper, deprecationWarning('takeLatest'));
+var throttle$1 = deprecate(throttleHelper, deprecationWarning('throttle'));
 
 var IO = sym('IO');
 var TAKE = 'TAKE';
 var PUT = 'PUT';
+var ALL = 'ALL';
 var RACE = 'RACE';
 var CALL = 'CALL';
 var CPS = 'CPS';
@@ -904,17 +879,15 @@ var SELECT = 'SELECT';
 var ACTION_CHANNEL = 'ACTION_CHANNEL';
 var CANCELLED = 'CANCELLED';
 var FLUSH = 'FLUSH';
+var GET_CONTEXT = 'GET_CONTEXT';
+var SET_CONTEXT = 'SET_CONTEXT';
 
 var TEST_HINT = '\n(HINT: if you are getting this errors in tests, consider using createMockTask from redux-saga/utils)';
-
-var deprecationWarning = function deprecationWarning(deprecated, preferred) {
-  return deprecated + ' has been deprecated in favor of ' + preferred + ', please update your code';
-};
 
 var effect = function effect(type, payload) {
   var _ref;
 
-  return _ref = {}, defineProperty(_ref, IO, true), defineProperty(_ref, type, payload), _ref;
+  return _ref = {}, _ref[IO] = true, _ref[type] = payload, _ref;
 };
 
 function take() {
@@ -938,7 +911,7 @@ take.maybe = function () {
   return eff;
 };
 
-var takem = deprecate(take.maybe, deprecationWarning('takem', 'take.maybe'));
+var takem = deprecate(take.maybe, updateIncentive('takem', 'take.maybe'));
 
 function put(channel, action) {
   if (arguments.length > 1) {
@@ -959,7 +932,11 @@ put.resolve = function () {
   return eff;
 };
 
-put.sync = deprecate(put.resolve, deprecationWarning('put.sync', 'put.resolve'));
+put.sync = deprecate(put.resolve, updateIncentive('put.sync', 'put.resolve'));
+
+function all(effects) {
+  return effect(ALL, effects);
+}
 
 function race(effects) {
   return effect(RACE, effects);
@@ -971,15 +948,15 @@ function getFnCallDesc(meth, fn, args) {
   var context = null;
   if (is.array(fn)) {
     var _fn = fn;
-
-    var _fn2 = slicedToArray(_fn, 2);
-
-    context = _fn2[0];
-    fn = _fn2[1];
+    context = _fn[0];
+    fn = _fn[1];
   } else if (fn.fn) {
-    var _fn3 = fn;
-    context = _fn3.context;
-    fn = _fn3.fn;
+    var _fn2 = fn;
+    context = _fn2.context;
+    fn = _fn2.fn;
+  }
+  if (context && is.string(fn) && is.func(context[fn])) {
+    fn = context[fn];
   }
   check(fn, is.func, meth + ': argument ' + fn + ' is not a function');
 
@@ -1032,9 +1009,9 @@ function join() {
   }
 
   if (tasks.length > 1) {
-    return tasks.map(function (t) {
+    return all(tasks.map(function (t) {
       return join(t);
-    });
+    }));
   }
   var task = tasks[0];
   check(task, is.notUndef, 'join(task): argument task is undefined');
@@ -1048,9 +1025,9 @@ function cancel() {
   }
 
   if (tasks.length > 1) {
-    return tasks.map(function (t) {
+    return all(tasks.map(function (t) {
       return cancel(t);
-    });
+    }));
   }
   var task = tasks[0];
   if (tasks.length === 1) {
@@ -1095,6 +1072,16 @@ function flush$1(channel) {
   return effect(FLUSH, channel);
 }
 
+function getContext(prop) {
+  check(prop, is.string, 'getContext(prop): argument ' + prop + ' is not a string');
+  return effect(GET_CONTEXT, prop);
+}
+
+function setContext(props) {
+  check(props, is.object, createSetContextWarning(null, props));
+  return effect(SET_CONTEXT, props);
+}
+
 function takeEvery$$1(patternOrChannel, worker) {
   for (var _len8 = arguments.length, args = Array(_len8 > 2 ? _len8 - 2 : 0), _key8 = 2; _key8 < _len8; _key8++) {
     args[_key8 - 2] = arguments[_key8];
@@ -1128,6 +1115,7 @@ var createAsEffectType = function createAsEffectType(type) {
 var asEffect = {
   take: createAsEffectType(TAKE),
   put: createAsEffectType(PUT),
+  all: createAsEffectType(ALL),
   race: createAsEffectType(RACE),
   call: createAsEffectType(CALL),
   cps: createAsEffectType(CPS),
@@ -1137,7 +1125,9 @@ var asEffect = {
   select: createAsEffectType(SELECT),
   actionChannel: createAsEffectType(ACTION_CHANNEL),
   cancelled: createAsEffectType(CANCELLED),
-  flush: createAsEffectType(FLUSH)
+  flush: createAsEffectType(FLUSH),
+  getContext: createAsEffectType(GET_CONTEXT),
+  setContext: createAsEffectType(SET_CONTEXT)
 };
 
 var NOT_ITERATOR_ERROR = 'proc first argument (Saga function result) must be an iterator';
@@ -1158,11 +1148,13 @@ var matchers = {
     return kTrue;
   },
   default: function _default(pattern) {
-    return function (input) {
-      return input.type === ((typeof pattern === 'undefined' ? 'undefined' : _typeof(pattern)) === 'symbol' ? pattern : String(pattern));
+    return (typeof pattern === 'undefined' ? 'undefined' : _typeof(pattern)) === 'symbol' ? function (input) {
+      return input.type === pattern;
+    } : function (input) {
+      return input.type === String(pattern);
     };
   },
-  array: function array(patterns) {
+  array: function array$$1(patterns) {
     return function (input) {
       return patterns.some(function (p) {
         return matcher(p)(input);
@@ -1311,12 +1303,16 @@ function proc(iterator) {
   };
   var dispatch = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : noop;
   var getState = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : noop;
-  var options = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
-  var parentEffectId = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
-  var name = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 'anonymous';
-  var cont = arguments[7];
+  var parentContext = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : {};
+  var options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
+  var parentEffectId = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0;
+  var name = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 'anonymous';
+  var cont = arguments[8];
 
   check(iterator, is.iterator, NOT_ITERATOR_ERROR);
+
+  var effectsString = '[...effects]';
+  var runParallelEffect = deprecate(runAllEffect, updateIncentive(effectsString, 'all(' + effectsString + ')'));
 
   var sagaMonitor = options.sagaMonitor,
       logger = options.logger,
@@ -1324,6 +1320,7 @@ function proc(iterator) {
 
   var log$$1 = logger || log;
   var stdChannel$$1 = stdChannel(subscribe);
+  var taskContext = Object.create(parentContext);
   /**
     Tracks the current effect cancellation
     Each time the generator progresses. calling runEffect will set a new value
@@ -1414,7 +1411,7 @@ function proc(iterator) {
         next.cancel();
         /**
           If this Generator has a `return` method then invokes it
-          Thill will jump to the finally block
+          This will jump to the finally block
         **/
         result = is.func(iterator.return) ? iterator.return(TASK_CANCEL) : { done: true, value: TASK_CANCEL };
       } else if (arg === CHANNEL_END) {
@@ -1446,7 +1443,7 @@ function proc(iterator) {
     iterator._isRunning = false;
     stdChannel$$1.close();
     if (!isErr) {
-      if (result === TASK_CANCEL && isDev) {
+      if ("development" === 'development' && result === TASK_CANCEL) {
         log$$1('info', name + ' has been cancelled', '');
       }
       iterator._result = result;
@@ -1497,7 +1494,6 @@ function proc(iterator) {
       if (sagaMonitor) {
         isErr ? sagaMonitor.effectRejected(effectId, res) : sagaMonitor.effectResolved(effectId, res);
       }
-
       cb(res, isErr);
     }
     // tracks down the current cancel
@@ -1532,7 +1528,7 @@ function proc(iterator) {
        ATTENTION! effect runners must setup the cancel logic by setting cb.cancel = [cancelMethod]
       And the setup must occur before calling the callback
        This is a sort of inversion of control: called async functions are responsible
-      of completing the flow by calling the provided continuation; while caller functions
+      for completing the flow by calling the provided continuation; while caller functions
       are responsible for aborting the current flow by calling the attached cancel function
        Library users can attach their own cancellation logic to promises by defining a
       promise[CANCEL] method in their returned promises
@@ -1544,7 +1540,7 @@ function proc(iterator) {
       is.promise(effect) ? resolvePromise(effect, currCb) : is.helper(effect) ? runForkEffect(wrapHelper(effect), effectId, currCb) : is.iterator(effect) ? resolveIterator(effect, effectId, name, currCb)
 
       // declarative effects
-      : is.array(effect) ? runParallelEffect(effect, effectId, currCb) : is.notUndef(data = asEffect.take(effect)) ? runTakeEffect(data, currCb) : is.notUndef(data = asEffect.put(effect)) ? runPutEffect(data, currCb) : is.notUndef(data = asEffect.race(effect)) ? runRaceEffect(data, effectId, currCb) : is.notUndef(data = asEffect.call(effect)) ? runCallEffect(data, effectId, currCb) : is.notUndef(data = asEffect.cps(effect)) ? runCPSEffect(data, currCb) : is.notUndef(data = asEffect.fork(effect)) ? runForkEffect(data, effectId, currCb) : is.notUndef(data = asEffect.join(effect)) ? runJoinEffect(data, currCb) : is.notUndef(data = asEffect.cancel(effect)) ? runCancelEffect(data, currCb) : is.notUndef(data = asEffect.select(effect)) ? runSelectEffect(data, currCb) : is.notUndef(data = asEffect.actionChannel(effect)) ? runChannelEffect(data, currCb) : is.notUndef(data = asEffect.flush(effect)) ? runFlushEffect(data, currCb) : is.notUndef(data = asEffect.cancelled(effect)) ? runCancelledEffect(data, currCb) : /* anything else returned as is        */currCb(effect)
+      : is.array(effect) ? runParallelEffect(effect, effectId, currCb) : (data = asEffect.take(effect)) ? runTakeEffect(data, currCb) : (data = asEffect.put(effect)) ? runPutEffect(data, currCb) : (data = asEffect.all(effect)) ? runAllEffect(data, effectId, currCb) : (data = asEffect.race(effect)) ? runRaceEffect(data, effectId, currCb) : (data = asEffect.call(effect)) ? runCallEffect(data, effectId, currCb) : (data = asEffect.cps(effect)) ? runCPSEffect(data, currCb) : (data = asEffect.fork(effect)) ? runForkEffect(data, effectId, currCb) : (data = asEffect.join(effect)) ? runJoinEffect(data, currCb) : (data = asEffect.cancel(effect)) ? runCancelEffect(data, currCb) : (data = asEffect.select(effect)) ? runSelectEffect(data, currCb) : (data = asEffect.actionChannel(effect)) ? runChannelEffect(data, currCb) : (data = asEffect.flush(effect)) ? runFlushEffect(data, currCb) : (data = asEffect.cancelled(effect)) ? runCancelledEffect(data, currCb) : (data = asEffect.getContext(effect)) ? runGetContextEffect(data, currCb) : (data = asEffect.setContext(effect)) ? runSetContextEffect(data, currCb) : /* anything else returned as is        */currCb(effect)
     );
   }
 
@@ -1559,7 +1555,7 @@ function proc(iterator) {
   }
 
   function resolveIterator(iterator, effectId, name, cb) {
-    proc(iterator, subscribe, dispatch, getState, options, effectId, name, cb);
+    proc(iterator, subscribe, dispatch, getState, taskContext, options, effectId, name, cb);
   }
 
   function runTakeEffect(_ref2, cb) {
@@ -1657,7 +1653,7 @@ function proc(iterator) {
 
     try {
       suspend();
-      var _task = proc(taskIterator, subscribe, dispatch, getState, options, effectId, fn.name, detached ? null : noop);
+      var _task = proc(taskIterator, subscribe, dispatch, getState, taskContext, options, effectId, fn.name, detached ? null : noop);
 
       if (detached) {
         cb(_task);
@@ -1700,24 +1696,27 @@ function proc(iterator) {
     // cancel effects are non cancellables
   }
 
-  function runParallelEffect(effects, effectId, cb) {
-    if (!effects.length) {
-      return cb([]);
+  function runAllEffect(effects, effectId, cb) {
+    var keys = Object.keys(effects);
+
+    if (!keys.length) {
+      return cb(is.array(effects) ? [] : {});
     }
 
     var completedCount = 0;
     var completed = void 0;
-    var results = Array(effects.length);
+    var results = {};
+    var childCbs = {};
 
     function checkEffectEnd() {
-      if (completedCount === results.length) {
+      if (completedCount === keys.length) {
         completed = true;
-        cb(results);
+        cb(is.array(effects) ? array.from(_extends({}, results, { length: keys.length })) : results);
       }
     }
 
-    var childCbs = effects.map(function (eff, idx) {
-      var chCbAtIdx = function chCbAtIdx(res, isErr) {
+    keys.forEach(function (key) {
+      var chCbAtKey = function chCbAtKey(res, isErr) {
         if (completed) {
           return;
         }
@@ -1725,26 +1724,26 @@ function proc(iterator) {
           cb.cancel();
           cb(res, isErr);
         } else {
-          results[idx] = res;
+          results[key] = res;
           completedCount++;
           checkEffectEnd();
         }
       };
-      chCbAtIdx.cancel = noop;
-      return chCbAtIdx;
+      chCbAtKey.cancel = noop;
+      childCbs[key] = chCbAtKey;
     });
 
     cb.cancel = function () {
       if (!completed) {
         completed = true;
-        childCbs.forEach(function (chCb) {
-          return chCb.cancel();
+        keys.forEach(function (key) {
+          return childCbs[key].cancel();
         });
       }
     };
 
-    effects.forEach(function (eff, idx) {
-      return runEffect(eff, effectId, idx, childCbs[idx]);
+    keys.forEach(function (key) {
+      return runEffect(effects[key], effectId, key, childCbs[key]);
     });
   }
 
@@ -1764,9 +1763,11 @@ function proc(iterator) {
           cb.cancel();
           cb(res, true);
         } else if (!isEnd(res) && res !== CHANNEL_END && res !== TASK_CANCEL) {
+          var _cb;
+
           cb.cancel();
           completed = true;
-          cb(defineProperty({}, key, res));
+          cb((_cb = {}, _cb[key] = res, _cb));
         }
       };
       chCbAtKey.cancel = noop;
@@ -1795,7 +1796,7 @@ function proc(iterator) {
         args = _ref7.args;
 
     try {
-      var state = selector.apply(undefined, [getState()].concat(toConsumableArray(args)));
+      var state = selector.apply(undefined, [getState()].concat(args));
       cb(state);
     } catch (error) {
       cb(error, true);
@@ -1819,11 +1820,20 @@ function proc(iterator) {
     channel$$1.flush(cb);
   }
 
+  function runGetContextEffect(prop, cb) {
+    cb(taskContext[prop]);
+  }
+
+  function runSetContextEffect(props, cb) {
+    object.assign(taskContext, props);
+    cb();
+  }
+
   function newTask(id, name, iterator, cont) {
     var _done, _ref9, _mutatorMap;
 
     iterator._deferredEnd = null;
-    return _ref9 = {}, defineProperty(_ref9, TASK, true), defineProperty(_ref9, 'id', id), defineProperty(_ref9, 'name', name), _done = 'done', _mutatorMap = {}, _mutatorMap[_done] = _mutatorMap[_done] || {}, _mutatorMap[_done].get = function () {
+    return _ref9 = {}, _ref9[TASK] = true, _ref9.id = id, _ref9.name = name, _done = 'done', _mutatorMap = {}, _mutatorMap[_done] = _mutatorMap[_done] || {}, _mutatorMap[_done].get = function () {
       if (iterator._deferredEnd) {
         return iterator._deferredEnd.promise;
       } else {
@@ -1834,35 +1844,87 @@ function proc(iterator) {
         }
         return def.promise;
       }
-    }, defineProperty(_ref9, 'cont', cont), defineProperty(_ref9, 'joiners', []), defineProperty(_ref9, 'cancel', cancel$$1), defineProperty(_ref9, 'isRunning', function isRunning() {
+    }, _ref9.cont = cont, _ref9.joiners = [], _ref9.cancel = cancel$$1, _ref9.isRunning = function isRunning() {
       return iterator._isRunning;
-    }), defineProperty(_ref9, 'isCancelled', function isCancelled() {
+    }, _ref9.isCancelled = function isCancelled() {
       return iterator._isCancelled;
-    }), defineProperty(_ref9, 'isAborted', function isAborted() {
+    }, _ref9.isAborted = function isAborted() {
       return iterator._isAborted;
-    }), defineProperty(_ref9, 'result', function result() {
+    }, _ref9.result = function result() {
       return iterator._result;
-    }), defineProperty(_ref9, 'error', function error() {
+    }, _ref9.error = function error() {
       return iterator._error;
-    }), defineEnumerableProperties(_ref9, _mutatorMap), _ref9;
+    }, _ref9.setContext = function setContext$$1(props) {
+      check(props, is.object, createSetContextWarning('task', props));
+      object.assign(taskContext, props);
+    }, defineEnumerableProperties(_ref9, _mutatorMap), _ref9;
   }
 }
 
-function sagaMiddlewareFactory() {
-  var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+var RUN_SAGA_SIGNATURE = 'runSaga(storeInterface, saga, ...args)';
+var NON_GENERATOR_ERR = RUN_SAGA_SIGNATURE + ': saga argument must be a Generator function!';
 
-  var runSagaDynamically = void 0;
-  var sagaMonitor = options.sagaMonitor;
+function runSaga(storeInterface, saga) {
+  for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
 
-  // monitors are expected to have a certain interface, let's fill-in any missing ones
+  var iterator = void 0;
+
+  if (is.iterator(storeInterface)) {
+    {
+      log('warn', 'runSaga(iterator, storeInterface) has been deprecated in favor of ' + RUN_SAGA_SIGNATURE);
+    }
+    iterator = storeInterface;
+    storeInterface = saga;
+  } else {
+    check(saga, is.func, NON_GENERATOR_ERR);
+    iterator = saga.apply(undefined, args);
+    check(iterator, is.iterator, NON_GENERATOR_ERR);
+  }
+
+  var _storeInterface = storeInterface,
+      subscribe = _storeInterface.subscribe,
+      dispatch = _storeInterface.dispatch,
+      getState = _storeInterface.getState,
+      context = _storeInterface.context,
+      sagaMonitor = _storeInterface.sagaMonitor,
+      logger = _storeInterface.logger,
+      onError = _storeInterface.onError;
+
+
+  var effectId = uid();
 
   if (sagaMonitor) {
+    // monitors are expected to have a certain interface, let's fill-in any missing ones
     sagaMonitor.effectTriggered = sagaMonitor.effectTriggered || noop;
     sagaMonitor.effectResolved = sagaMonitor.effectResolved || noop;
     sagaMonitor.effectRejected = sagaMonitor.effectRejected || noop;
     sagaMonitor.effectCancelled = sagaMonitor.effectCancelled || noop;
     sagaMonitor.actionDispatched = sagaMonitor.actionDispatched || noop;
+
+    sagaMonitor.effectTriggered({ effectId: effectId, root: true, parentEffectId: 0, effect: { root: true, saga: saga, args: args } });
   }
+
+  var task = proc(iterator, subscribe, wrapSagaDispatch(dispatch), getState, context, { sagaMonitor: sagaMonitor, logger: logger, onError: onError }, effectId, saga.name);
+
+  if (sagaMonitor) {
+    sagaMonitor.effectResolved(effectId, task);
+  }
+
+  return task;
+}
+
+function sagaMiddlewareFactory() {
+  var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+  var _ref$context = _ref.context,
+      context = _ref$context === undefined ? {} : _ref$context,
+      options = objectWithoutProperties(_ref, ['context']);
+  var sagaMonitor = options.sagaMonitor,
+      logger = options.logger,
+      onError = options.onError;
+
 
   if (is.func(options)) {
     {
@@ -1870,17 +1932,15 @@ function sagaMiddlewareFactory() {
     }
   }
 
-  if (options.logger && !is.func(options.logger)) {
+  if (logger && !is.func(logger)) {
     throw new Error('`options.logger` passed to the Saga middleware is not a function!');
   }
 
-  if (options.onerror) {
-    if (isDev) log('warn', '`options.onerror` is deprecated. Use `options.onError` instead.');
-    options.onError = options.onerror;
-    delete options.onerror;
+  if ("development" === 'development' && options.onerror) {
+    throw new Error('`options.onerror` was removed. Use `options.onError` instead.');
   }
 
-  if (options.onError && !is.func(options.onError)) {
+  if (onError && !is.func(onError)) {
     throw new Error('`options.onError` passed to the Saga middleware is not a function!');
   }
 
@@ -1888,22 +1948,26 @@ function sagaMiddlewareFactory() {
     throw new Error('`options.emitter` passed to the Saga middleware is not a function!');
   }
 
-  function sagaMiddleware(_ref) {
-    var getState = _ref.getState,
-        dispatch = _ref.dispatch;
+  function sagaMiddleware(_ref2) {
+    var getState = _ref2.getState,
+        dispatch = _ref2.dispatch;
 
-    runSagaDynamically = runSaga;
     var sagaEmitter = emitter();
     sagaEmitter.emit = (options.emitter || ident)(sagaEmitter.emit);
-    var sagaDispatch = wrapSagaDispatch(dispatch);
 
-    function runSaga(saga, args, sagaId) {
-      return proc(saga.apply(undefined, toConsumableArray(args)), sagaEmitter.subscribe, sagaDispatch, getState, options, sagaId, saga.name);
-    }
+    sagaMiddleware.run = runSaga.bind(null, {
+      context: context,
+      subscribe: sagaEmitter.subscribe,
+      dispatch: dispatch,
+      getState: getState,
+      sagaMonitor: sagaMonitor,
+      logger: logger,
+      onError: onError
+    });
 
     return function (next) {
       return function (action) {
-        if (sagaMonitor) {
+        if (sagaMonitor && sagaMonitor.actionDispatched) {
           sagaMonitor.actionDispatched(action);
         }
         var result = next(action); // hit reducers
@@ -1913,50 +1977,16 @@ function sagaMiddlewareFactory() {
     };
   }
 
-  sagaMiddleware.run = function (saga) {
-    for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-      args[_key - 1] = arguments[_key];
-    }
+  sagaMiddleware.run = function () {
+    throw new Error('Before running a Saga, you must mount the Saga middleware on the Store using applyMiddleware');
+  };
 
-    check(runSagaDynamically, is.notUndef, 'Before running a Saga, you must mount the Saga middleware on the Store using applyMiddleware');
-    check(saga, is.func, 'sagaMiddleware.run(saga, ...args): saga argument must be a Generator function!');
-
-    var effectId = uid();
-    if (sagaMonitor) {
-      sagaMonitor.effectTriggered({ effectId: effectId, root: true, parentEffectId: 0, effect: { root: true, saga: saga, args: args } });
-    }
-    var task = runSagaDynamically(saga, args, effectId);
-    if (sagaMonitor) {
-      sagaMonitor.effectResolved(effectId, task);
-    }
-    return task;
+  sagaMiddleware.setContext = function (props) {
+    check(props, is.object, createSetContextWarning('sagaMiddleware', props));
+    object.assign(context, props);
   };
 
   return sagaMiddleware;
-}
-
-function runSaga(iterator, _ref) {
-  var subscribe = _ref.subscribe,
-      dispatch = _ref.dispatch,
-      getState = _ref.getState,
-      sagaMonitor = _ref.sagaMonitor,
-      logger = _ref.logger,
-      onError = _ref.onError;
-
-
-  check(iterator, is.iterator, "runSaga must be called on an iterator");
-
-  var effectId = uid();
-  if (sagaMonitor) {
-    sagaMonitor.effectTriggered({ effectId: effectId, root: true, parentEffectId: 0, effect: { root: true, saga: iterator, args: [] } });
-  }
-  var task = proc(iterator, subscribe, wrapSagaDispatch(dispatch), getState, { sagaMonitor: sagaMonitor, logger: logger, onError: onError }, effectId, iterator.name);
-
-  if (sagaMonitor) {
-    sagaMonitor.effectResolved(effectId, task);
-  }
-
-  return task;
 }
 
 
@@ -1965,6 +1995,7 @@ var effects = Object.freeze({
 	take: take,
 	takem: takem,
 	put: put,
+	all: all,
 	race: race,
 	call: call,
 	apply: apply,
@@ -1977,6 +2008,8 @@ var effects = Object.freeze({
 	actionChannel: actionChannel,
 	cancelled: cancelled,
 	flush: flush$1,
+	getContext: getContext,
+	setContext: setContext,
 	takeEvery: takeEvery$$1,
 	takeLatest: takeLatest$$1,
 	throttle: throttle$$1

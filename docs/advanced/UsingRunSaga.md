@@ -18,9 +18,9 @@ const myIO = {
 }
 
 runSaga(
-  saga(),
   myIO
+  saga,
 )
 ```
 
-如果要了解更多資訊，請參考 [API 文件](https://redux-saga.github.io/redux-saga/docs/api/index.html#runsagaiterator-options)。
+如果要了解更多資訊，請參考 [API 文件](https://redux-saga.js.org/docs/api/index.html##runsagaoptions-saga-args)。

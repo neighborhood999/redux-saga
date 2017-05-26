@@ -127,7 +127,7 @@ function render() {
 
 ```javascript
 import { delay } from 'redux-saga'
-import { put, takeEvery } from 'redux-saga/effects'
+import { put, takeEvery, all } from 'redux-saga/effects'
 
 // 我們工作的 Saga：將執行非同步的 increment task
 export function* incrementAsync() {
@@ -160,10 +160,10 @@ Saga 被實作為 [Generator function](https://developer.mozilla.org/en-US/docs/
 ```javascript
 // 單一進入點，一次啟動所有 Saga
 export default function* rootSaga() {
-  yield [
-    incrementAsync(),
+  yield all([
+    helloSaga(),
     watchIncrementAsync()
-  ]
+  ])
 }
 ```
 
