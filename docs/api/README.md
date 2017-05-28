@@ -388,7 +388,7 @@ Generator, the error will propagate to the calling Generator.
 
 ### `call([context, fnName], ...args)`
 
-Same as `call([context, fn], ...args)` but supports passing a `fn` as string. Useful for invoking object's methods, i.e. `yield call([localStorage, 'getItem'], 'redux-saga')`
+相同於 `call([context, fn], ...args)`，但是支援傳送一個 `fn` 作為 string。對於調用物件的方法很有用，也就是 `yield call([localStorage, 'getItem'], 'redux-saga')`
 
 ### `apply(context, fn, [args])`
 
@@ -691,12 +691,11 @@ function* saga() {
 
 ### `setContext(props)`
 
-Creates an effect that instructs the middleware to update it's own context. This effect extends
-saga's context instead of replacing it.
+建立一個 effect 指示 middleware 更新它本身的 context。這個 effect 繼承 saga 的 context 而不是替換它。
 
 ### `getContext(prop)`
 
-Creates an effect that instructs the middleware to return a specific property of saga's context.
+建立一個 effect 指示 middleware 回傳 saga context 特定的 property。
 
 ## Effect combinators
 
@@ -757,13 +756,13 @@ function* mySaga() {
 
 ### `all(effects)`
 
-The same as [`all([...effects])`](#alleffects-parallel-effects) but let's you to pass in a dictionary object of effects with labels, just like [`race(effects)`](#alleffects)
+相同於 [`all([...effects])`](#alleffects-parallel-effects)，但讓你可以在 directionary 傳送帶有 label effects 的物件，就像 [`race(effects)`](#alleffects)
 
 - `effects: Object` - a dictionary Object of the form {label: effect, ...}
 
-#### Example
+#### 範例
 
-The following example runs two blocking calls in parallel:
+以下的範例併行執行兩個 blocking 呼叫：
 
 ```javascript
 import { fetchCustomers, fetchProducts } from './path/to/api'
@@ -1114,9 +1113,9 @@ test('my oddOrEven saga', assert => {
 ```
 ### `createMockTask()`
 
-Returns an object that mocks a task.
-For testing purposes only.
-[See Task Cancellation docs for more information.](/docs/advanced/TaskCancellation.md#testing-generators-with-fork-effect)
+回傳一個 mock task 的物件。
+僅用於測試目的，
+[詳細資訊請參考 Task Cancellation 文件。](/docs/advanced/TaskCancellation.md#testing-generators-with-fork-effect)
 )
 
 ## Cheatsheets
