@@ -47,7 +47,7 @@ function* main() {
 
 所以整個 task 將被阻塞，直到一個 1000 毫秒的 delay 通過**以及** `tasks1` 和 `task2` 完成他們的商業邏輯。
 
-比方說，1000 毫秒的 delay 和兩個 task 還沒有完成，然後 `fetchAll` 在終止整個 task 之前，將直到等待所有被 fork 的 task 完成。
+比方說，1000 毫秒的 delay 和兩個 task 還沒有完成，然後 `fetchAll` 在終止整個 task 之前，將等待直到所有被 fork 的 task 完成。
 
 細心的讀者可能會注意到 `fetchAll` saga 可以使用平行的 Effect 覆寫：
 
