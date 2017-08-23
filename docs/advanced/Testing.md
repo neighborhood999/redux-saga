@@ -1,12 +1,12 @@
-# Testing Sagas
+# Saga 測試的範例
 
 **Effects return plain javascript objects**
 
 Those objects describe the effect and redux-saga is in charge to execute them.
 
 This makes testing very easy because all you have to do is compare that the object yielded by the saga describe the effect you want.
- 
-## Basic Example
+
+## 基本範例
 
 ```javascript
 console.log(put({ type: MY_CRAZY_ACTION }));
@@ -78,7 +78,7 @@ test('change color saga', assert => {
 
 Another great benefit is that your tests are also your doc! They describe everything that should happen.
 
-## Branching Saga 
+## Branching Saga
 
 Sometimes your saga will have different outcomes. To test the different branches without repeating all the steps that lead to it you can use the utility function **cloneableGenerator**
 ```javascript
@@ -101,7 +101,7 @@ const changeUI = (color) => ({
 });
 
 const doStuff = () => ({
-  type: DO_STUFF, 
+  type: DO_STUFF,
 });
 
 
