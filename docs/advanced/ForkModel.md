@@ -1,4 +1,4 @@
-# redux-saga's fork model
+# redux-saga 的 fork 模型
 
 In `redux-saga` you can dynamically fork tasks that execute in the background using 2 Effects
 
