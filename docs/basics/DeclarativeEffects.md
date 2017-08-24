@@ -6,7 +6,7 @@
 
 在這個部份和接下來的部份，我們將介紹一些基礎的 Effect，而且可以看到這些概念讓 Saga 變得更容易測試。
 
-Saga 可以 yield 多種形式的 Effect。最簡單的方式就是 yield Promise。
+Saga 可以 yield 多種形式的 Effect。最簡單的方式就是 yield 一個 Promise。
 
 例如，假設我們有一個 Saga 觀察一個 `PRODUCTS_REQUESTED` action。在每次發出的 action 符合 takeEvery 的 action 時，它啟動一個 task 來從伺服器取得一些產品。
 
@@ -24,9 +24,9 @@ function* fetchProducts() {
 }
 ```
 
-在上面的範例中，我們從 Generator 內直接調用了 `Api.fetch`（在 Generator function，任何在 yield 右邊的表達式都會被求值，然後結果被 yield 到 caller）。
+在上面的範例中，我們從 Generator 內直接調用了 `Api.fetch`（在 Generator function 中，任何在 yield 右邊的表達式都會被求值，然後結果被 yield 到 caller）。
 
-`Api.fetch('/products')` 觸發一個 AJAX 請求並回傳一個 Promise，Promise 將被 resolve 並 resovle response，AJAX 請求將直接執行。簡單且直覺的，但是...
+`Api.fetch('/products')` 觸發一個 AJAX 請求並回傳一個 Promise，Promise 將被 resolve，被 resolve 的 Promise 會取得 response。簡單且直覺的，但是...
 
 假設我們要測試上面的 generator：
 
