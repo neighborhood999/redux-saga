@@ -68,7 +68,7 @@ function* fetchUser(action) {
 
 /*
   在每次 dispatch `USER_FETCH_REQUESTED` action 時，啟動 fetchUser。
-  允許併發取得使用者。
+  允許同時取得使用者。
 */
 function* mySaga() {
   yield takeEvery("USER_FETCH_REQUESTED", fetchUser);
@@ -77,7 +77,7 @@ function* mySaga() {
 /*
   另外你也可以使用 takeLatest。
 
-  但不允許併發取得使用者。當一個 fetch 已經在 pending 時，如果取得 dispatch「USER_FETCH_REQUESTED」，
+  但不允許同時取得使用者。當一個 fetch 已經在 pending 時，如果取得 dispatch「USER_FETCH_REQUESTED」，
   正在等待的 fetch 會被取消，只執行最新的發出的 USER_FETCH_REQUESTED。
 */
 function* mySaga() {
@@ -220,12 +220,12 @@ $ npm run real-world
 
 ### TypeScript
 
-Redux-Saga with TypeScript requires `DOM.Iterable` or `ES2015.Iterable`. If your `target` is `ES6`, you are likely already set, however, for `ES5`, you will need to add it yourself.
-Check your `tsconfig.json` file, and the official <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html">compiler options</a> documentation.
+Redux-Saga 與 TypeScript 需要 `DOM.Iterable` 或 `ES2015.Iterable`。如果你的 `target` 是 `ES6`，你或許已經設定好了，然而對於 `ES5`，你將需要自己把它們加入。
+確認你的 `tsconfig.json` 檔案，和官方的 <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html">compiler 選項</a> 文件。
 
 ### Logo
 
-You can find the official Redux-Saga logo with different flavors in the [logo directory](logo).
+你可以在 [logo 目錄](logo) 找到不同風格的 Redux-Saga  官方 logo。
 
 
 ### Backers
