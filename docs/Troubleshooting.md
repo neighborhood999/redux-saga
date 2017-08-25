@@ -2,9 +2,9 @@
 
 ### 加入 Saga 後應用程式停住了
 
-確認你 `yield` 的 effect 來自 generator function。
+確認你在 generator function `yield` 的 effect 。
 
-考慮以下的範例：
+思考以下的範例：
 
 ```js
 import { take } from 'redux-saga/effects'
@@ -34,7 +34,7 @@ function* logActions() {
 }
 ```
 
-### My Saga miss 了一些被 dispatch 的 action
+### 我的 Saga miss 了一些被 dispatch 的 action
 
 確認 Saga 不會被阻塞在某些 effect，當 Saga 等待一個 Effect resolve，它不會 take 被 dispatch 的 action，直到 Effect 被 resolve。
 
