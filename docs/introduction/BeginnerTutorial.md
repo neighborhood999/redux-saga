@@ -43,7 +43,7 @@ export function* helloSaga() {
 }
 ```
 
-所以這沒什麼好怕的，只是一個正常的 function（除了有一個 `*`）。它所做的就是列印一個歡迎的訊息到 console。
+所以這沒什麼好擔心的，只是一個正常的 function（除了有一個 `*`）。它所做的就是列印一個歡迎的訊息到 console。
 
 為了執行我們的 Saga，我們需要：
 
@@ -72,11 +72,11 @@ const action = type => store.dispatch({type})
 // rest unchanged
 ```
 
-首先我們 import 我們的 Saga 從 `./sagas` module。然後使用 `redux-saga` library 匯出的 `createSagaMiddleware` factory function 建立一個 middleware。
+首先我們從 `./sagas` import 我們的 module，然後使用 `redux-saga` library 匯出的 `createSagaMiddleware` factory function 建立一個 middleware。
 
 在執行我們的 `helloSaga` 之前，我們必須使用 `applyMiddleware` 連結我們的 middleware 到 Store。然後我們可以使用 `sagaMiddleware.run(helloSaga)` 來啟動我們的 Saga。
 
-到目前為止，我們的 Saga 沒有什麼特別的。它只是 log 一個訊息然後離開。
+到目前為止，我們的 Saga 沒有什麼特別的，它只是 log 一個訊息然後離開。
 
 ## 進行非同步的呼叫
 
@@ -122,7 +122,7 @@ function render() {
 }
 ```
 
-注意，這不像 redux-thunk，我們 component dispatch 一個純物件的 action。
+注意，這不像 redux-thunk，我們 component dispatch 一個 action 純物件。
 
 現在我們將介紹另一個 Saga 來執行非同步呼叫。我們使用的方式如下：
 
