@@ -15,15 +15,15 @@
 - [使用 Saga 掌握複雜的 Redux Workflows](http://konkle.us/master-complex-redux-workflows-with-sagas/) by Brandon Konkle
 - [使用 Saga 在 Redux 處理非同步](http://wecodetheweb.com/2016/01/23/handling-async-in-redux-with-sagas/) by Niels Gerritsen
 - [在 Redux 處理認證的秘訣](https://medium.com/@MattiaManzati/tips-to-handle-authentication-in-redux-2-introducing-redux-saga-130d6872fbe7#.g49x2gj1g) by Mattia Manzati
-- [Build an Image Gallery Using React, Redux and redux-saga](http://joelhooks.com/blog/2016/03/20/build-an-image-gallery-using-redux-saga/?utm_content=bufferbadc3&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer) by Joel Hooks
-- [Async Operations using redux saga](https://medium.com/@andresmijares25/async-operations-using-redux-saga-2ba02ae077b3#.556ey5blj) by Andrés Mijares
-- [Introduction to Redux Saga](https://ohyayanotherblog.ghost.io/redux-saga-clock/) by Matt Granmoe
-- [Vuex meets Redux-saga](https://medium.com/@xanf/vuex-meets-redux-saga-e9c6b46555e#.d4318am40) by Illya Klymov
-- [3 common approaches to side-effects in Redux apps](https://goshakkk.name/redux-side-effect-approaches/) by Gosha Arinich
-- [Lazy registration with Redux and Sagas](https://goshakkk.name/lazy-auth-redux-saga-flow/) by Gosha Arinich
-- [Writing more testable code with Redux Saga](https://medium.com/grey-frogs/writing-more-testable-code-with-redux-saga-c1561f995225) by Luiz Guilherme D’Abruzzo Pereira
-- [Redux Hero Part 4: Every Hero Needs a Villain (A Fun Introduction to redux-saga.js)](https://decembersoft.com/posts/redux-hero-part-4-every-hero-needs-a-villain-a-fun-introduction-to-redux-saga-js/)
-- [Modelling common patterns with redux-saga](https://medium.com/@chanakyabhardwaj/modelling-common-patterns-with-redux-saga-464a380a37ce) by Chanakya Bhardwaj
+- [使用 React、Redux  和 redux-saga 來建立 Image Gallery](http://joelhooks.com/blog/2016/03/20/build-an-image-gallery-using-redux-saga/?utm_content=bufferbadc3&utm_medium=social&utm_source=twitter.com&utm_campaign=buffer) by Joel Hooks
+- [使用 redux 操作非同步 saga](https://medium.com/@andresmijares25/async-operations-using-redux-saga-2ba02ae077b3#.556ey5blj) by Andrés Mijares
+- [介紹 Redux Saga](https://ohyayanotherblog.ghost.io/redux-saga-clock/) by Matt Granmoe
+- [Vuex 遇見 Redux-saga](https://medium.com/@xanf/vuex-meets-redux-saga-e9c6b46555e#.d4318am40) by Illya Klymov
+- [Redux 應用程式中 3 種常見的 side-effects](https://goshakkk.name/redux-side-effect-approaches/) by Gosha Arinich
+- [Lazy registration 與 Redux 和 Sagas](https://goshakkk.name/lazy-auth-redux-saga-flow/) by Gosha Arinich
+- [用Redux Saga 撰寫更多可測試的程式碼](https://medium.com/grey-frogs/writing-more-testable-code-with-redux-saga-c1561f995225) by Luiz Guilherme D’Abruzzo Pereira
+- [Redux Hero Part 4：Every Hero Needs a Villain（一個有趣的方式來介紹 redux-saga）](https://decembersoft.com/posts/redux-hero-part-4-every-hero-needs-a-villain-a-fun-introduction-to-redux-saga-js/)
+- [使用 redux-saga 建立常見的模式](https://medium.com/@chanakyabhardwaj/modelling-common-patterns-with-redux-saga-464a380a37ce) by Chanakya Bhardwaj
 - [Analytics on easy mode with Redux-Saga](https://goshakkk.name/analytics-easy-redux-saga/) by Gosha Arinich
 
 ### Addons
