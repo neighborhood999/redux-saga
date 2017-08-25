@@ -76,9 +76,9 @@ function* subtask2() {
 
 如果加入的 task 被取消的話，task 的 joiner（那些被阻塞的 `yield join(task)`）將也會被取消。同樣的，任何那些 joiner 潛在的 caller 將會被取消（因為他們阻塞的操作已經從外面被取消）。
 
-## Testing generators with fork effect
+## 測試 generators 和 fork effect
 
-When `fork` is called it starts the task in the background and also returns task object like we have learned previously. When testing this we have to use utility function `createMockTask`. Object returned from this function should be passed to next `next` call after fork test. Mock task can then be passed to `cancel` for example. Here is test for `main` generator which is on top of this page.
+當 `fork` 被呼叫時，它在會背景啟動 task，並回傳 task 物件，就像我們先前所學習的。當測試的時候，我們需要 utility `createMockTask` function 。在 fork test 之後，該 function 回傳的 Object 應該傳送到下一個 `next`  呼叫。在範例中，Mock task 可以被傳送到 `cancel`。這是一個在這個頁面上 `main` generator 的測試。
 
 ```javascript
 import { createMockTask } from 'redux-saga/utils';
@@ -108,7 +108,7 @@ describe('main', () => {
 });
 ```
 
-You can also use mock task's functions `setRunning`, `setResult` and `setError` to set mock task's state. For example `mockTask.setRunning(false)`.
+你也可使用 mock task 的 `setRunning`、`setResult` 和 `setError` function 來設定 mock task 的狀態。例如 `mockTask.setRunning(false)`。
 
 ### 注意
 
