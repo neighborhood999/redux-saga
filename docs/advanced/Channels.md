@@ -58,11 +58,9 @@ function* handleRequest(payload) { ... }
 
 最重要的是注意到我們如何使用一個阻塞的 `call`。Saga 將停留在阻塞狀態，直到 `call(handleRequest)` 回傳，但如果其他的 `REQUEST` action 被 dispatch，而 Saga 仍然被阻塞時，透過 `requestChan` 被隊列在內部。當 Saga 從 `call(handleRequest)` 恢復並執行下一個 `yield take(requestChan)`，take 將 resolve 被隊列的訊息。
 
-預設上，`actionChannel` 沒有限制緩衝所有傳入的訊息。如果你想要更多的緩衝控制，你可提供一個 Buffer 的參數到 effect creator。library 提供一些普遍的 buffer（none、dropping、sliding），但你也可以提供你自己的 buffer 實作，更多細節請參考 API 文件。
+預設上，`actionChannel` 沒有限制緩衝所有傳入的訊息。如果你想要更多的緩衝控制，你可提供一個 Buffer 的參數到 effect creator。library 提供一些普遍的 buffer（none、dropping、sliding），但你也可以提供你自己的 buffer 實作，更多細節請參考 [API 文件](../api#buffers)。
 
-By default, `actionChannel` buffers all incoming messages without limit. If you want a more control over the buffering, you can supply a Buffer argument to the effect creator. Redux-Saga provides some common buffers (none, dropping, sliding) but you can also supply your own buffer implementation. [See API docs](../api#buffers) for more details.
-
-For example if you want to handle only the most recent five items you can use:
+例如，如果我們只想要處理最近的五筆資料，你可以使用：
 
 ```javascript
 import { buffers } from 'redux-saga'
@@ -164,30 +162,29 @@ export function* saga() {
 這裡是另一個例子，你如何使用事件 channel 去傳送 WebSockeet 事件到你的 saga（例如：使用 socket.io library）。
 假設你等待伺服器的一個 `ping` 訊息，然後在 delay 後回覆一個 `pong` 訊息。
 
-
 ```javascript
 import { take, put, call, apply } from 'redux-saga/effects'
 import { eventChannel, delay } from 'redux-saga'
 import { createWebSocketConnection } from './socketConnection'
 
-// this function creates an event channel from a given socket
-// Setup subscription to incoming `ping` events
+// 這個 function 從一個指定的 socket 建立一個 event channel
+// 設定傳入 `ping` events 的 subscription
 function createSocketChannel(socket) {
-  // `eventChannel` takes a subscriber function
-  // the subscriber function takes an `emit` argument to put messages onto the channel
+  // `eventChannel` 接收一個 subscriber function
+  // subscriber function 接收一個 `emit` 參數，把 message 放到 channel 上 the channel
   return eventChannel(emit => {
 
     const pingHandler = (event) => {
-      // puts event payload into the channel
-      // this allows a Saga to take this payload from the returned channel
+      // 放入 event payload 到 channel
+      // 這可以讓 Saga 從被回傳的 channel 接收 payload
       emit(event.payload)
     }
 
-    // setup the subscription
+    // 設定 subscription
     socket.on('ping', pingHandler)
 
-    // the subscriber must return an unsubscribe function
-    // this will be invoked when the saga calls `channel.close` method
+    // subscriber 必須回傳一個 unsubscribe function
+    // 當 saga 呼叫 `channel.close` 方法將會被調用
     const unsubscribe = () => {
       socket.off('ping', pingHandler)
     }
@@ -196,10 +193,10 @@ function createSocketChannel(socket) {
   })
 }
 
-// reply with a `pong` message by invoking `socket.emit('pong')`
+// 透過調用的 `socket.emit('pong')` 回傳一個 `pong` 訊息
 function* pong(socket) {
   yield call(delay, 5000)
-  yield apply(socket, socket.emit, ['pong']) // call `emit` as a method with `socket` as context
+  yield apply(socket, socket.emit, ['pong']) // 呼叫 `emit` 作為一個方法並以 `socket` 作為 context
 }
 
 export function* watchOnPings() {
