@@ -107,10 +107,7 @@ LOGOUT.................................................. missed!
 
 問題在上面 `call` 的程式碼， 它是一個阻塞的 Effect，也就是說 Generator 在呼叫結束之前，不能執行或處理任何東西。但在我們的情況中，我們不只想要 `loginFlow` 執行呼叫認證，也希望能觀察發生在呼叫的之間最終的 `LOGOUT` action。因為 `LOGOUT` 和 `authorize` 是*同時*呼叫的。
 
-
-To express non-blocking calls, the library provides another Effect: [`fork`](https://redux-saga.js.org/docs/api/index.html#forkfn-args). When we fork a *task*, the task is started in the background and the caller can continue its flow without waiting for the forked task to terminate.
-
-如果要表達非阻塞的呼叫，library 提供另一個 Effect：[`fork`](http://yelouafi.github.io/redux-saga/docs/api/index.html#forkfn-args)。當我們 fork 一個 *task*，task 在背景被啟動而且 caller 可以持續它的流程，不用等待被 fork 的 task 結束。
+如果要表達非阻塞的呼叫，library 提供另一個 Effect：[`fork`](https://redux-saga.js.org/docs/api/index.html#forkfn-args)。當我們 fork 一個 *task*，task 在背景被啟動而且 caller 可以持續它的流程，不用等待被 fork 的 task 結束。
 
 所以為了讓 `loginFlow` 跳過一個併發的 `LOGOUT`，我們不應該使用 `call` 和 `authroize` task，而是使用 `fork`。
 

@@ -1,10 +1,10 @@
 # Saga 測試的範例
 
-**Effects return plain javascript objects**
+**Effects 回傳一個 JavaScript 純物件**
 
-Those objects describe the effect and redux-saga is in charge to execute them.
+這些物件描述 redux-saga 如何執行 effect。
 
-This makes testing very easy because all you have to do is compare that the object yielded by the saga describe the effect you want.
+這讓測試更加容易，被 saga yield 的物件描述你要的 effect。
 
 ## 基本範例
 
@@ -24,7 +24,7 @@ console.log(put({ type: MY_CRAZY_ACTION }));
  */
 ```
 
-Testing a saga that wait for a user action and dispatch
+測試一個 saga，等待使用者的 action 和 dispatch
 
 ```javascript
 const CHOOSE_COLOR = 'CHOOSE_COLOR';
@@ -76,11 +76,12 @@ test('change color saga', assert => {
 });
 ```
 
-Another great benefit is that your tests are also your doc! They describe everything that should happen.
+另一個好處是，你的測試也是你的文件！它們描述所有發生的事情。
 
 ## Branching Saga
 
-Sometimes your saga will have different outcomes. To test the different branches without repeating all the steps that lead to it you can use the utility function **cloneableGenerator**
+有時候你的 saga 可能會有不同的結果。為了要測試不同的 branch 而不重複所有流程，你可以使用 **cloneableGenerator** utility function
+
 ```javascript
 const CHOOSE_NUMBER = 'CHOOSE_NUMBER';
 const CHANGE_UI = 'CHANGE_UI';
@@ -177,9 +178,9 @@ test('doStuffThenChangeColor', assert => {
 });
 ```
 
-See also: [Task cancellation](TaskCancellation.md) for testing fork effects
+參考：[Task cancellation](TaskCancellation.md) 來測試 fork effects
 
-See also: Repository Examples:
+參考：Repository 範例：
 
 https://github.com/redux-saga/redux-saga/blob/master/examples/counter/test/sagas.js
 
