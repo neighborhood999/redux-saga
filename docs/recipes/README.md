@@ -2,7 +2,7 @@
 
 ## Throttling
 
-You can throttle a sequence of dispatched actions by using a handy built-in `throttle` helper. For example, suppose the UI fires an `INPUT_CHANGED` action while the user is typing in a text field.
+你可以透過一個內建的 `throttle` helper 來 throttle 被 dispatch 的 action。例如，假設當使用者在 text 欄位打字時，在 UI 觸發一個 `INPUT_CHANGED` action。
 
 ```javascript
 import { throttle } from 'redux-saga/effects'
@@ -16,11 +16,11 @@ function* watchInput() {
 }
 ```
 
-By using this helper the `watchInput` won't start a new `handleInput` task for 500ms, but in the same time it will still be accepting the latest `INPUT_CHANGED` actions into its underlaying `buffer`, so it'll miss all `INPUT_CHANGED` actions happening in-between. This ensures that the Saga will take at most one `INPUT_CHANGED` action during each period of 500ms and still be able to process trailing action.
+透過使用 `throttle` helper，`watchInput` 不會在 500ms 啟動一個新的 `handleInput` task，但在相同時間內，它仍然接受最新的 `INPUT_CHANGED` 到底層的 `buffer`，所以它會忽略所有 `INPUT_CHANGED` action。這確保 Saga 在 500ms 這段時間，最多接受一個 `INPUT_CHANGED` action，並且可以繼續處理 trailing action。
 
 ## Debouncing
 
-To debounce a sequence, put the built-in `delay` helper in the forked task:
+為了 debounce 一個序列，把內建的 `delay` helper 放到被 fork 的 task：
 
 ```javascript
 
@@ -45,7 +45,8 @@ function* watchInput() {
 }
 ```
 
-The `delay` function 使用 Promise 實作一個簡單的 debounce。
+`delay` function 使用 Promise 實作一個簡單的 debounce。
+
 ```
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms))
 ```
@@ -153,17 +154,13 @@ export function* watchUpdateResource() {
 
 ## Undo
 
-The ability to undo respects the user by allowing the action to happen smoothly
-first and foremost before assuming they don't know what they are doing. [GoodUI](https://goodui.org/#8)
-The [redux documentation](http://redux.js.org/docs/recipes/ImplementingUndoHistory.html) describes a
-robust way to implement an undo based on modifying the reducer to contain `past`, `present`,
-and `future` state.  There is even a library [redux-undo](https://github.com/omnidan/redux-undo) that
-creates a higher order reducer to do most of the heavy lifting for the developer.
+Undo 的能力尊重使用者，假設使用者不知道他們在做什麼之前，允許 action 可以首先順利的發生。 [GoodUI](https://goodui.org/#8)
+[redux 文件](http://redux.js.org/docs/recipes/ImplementingUndoHistory.html) 描述一個
+穩定的方式來實作一個基於修改 reducer 包含 `past`、`present`、`future` state 的 undo。這裡甚至有一個 [redux-undo](https://github.com/omnidan/redux-undo) library，它建立一個 higher order reducer 來為 developer 做繁重的工作。
 
-However, this method comes with overhead because it stores references to the previous state(s) of the application.
+然而，這個方法附帶了一些開銷，因為它的 store 參考到先前應用程式的 state（s）。
 
-Using redux-saga's `delay` and `race` we can implement a simple, one-time undo without enhancing
-our reducer or storing the previous state.
+使用 redux-saga 的 `delay` 和 `race` 我們可以實作一個簡單的、一次性的 undo，不需要 enhance 我們的 reducer 或 store 先前的 state。
 
 ```javascript
 import { take, put, call, spawn, race } from 'redux-saga/effects'
@@ -177,38 +174,38 @@ function* onArchive(action) {
 
   const thread = { id: threadId, archived: true }
 
-  // show undo UI element, and provide a key to communicate
+  // 顯示 undo UI 元素，並提供一個 key 來溝通
   yield put(actions.showUndo(undoId))
 
-  // optimistically mark the thread as `archived`
+  // 樂觀地將 thread 標記作為 `archived`
   yield put(actions.updateThread(thread))
 
-  // allow the user 5 seconds to perform undo.
-  // after 5 seconds, 'archive' will be the winner of the race-condition
+  // 允許使用者五秒後執行 undo。
+  // 在五秒後，`archive` 會是 race-condition 的 winner
   const { undo, archive } = yield race({
     undo: take(action => action.type === 'UNDO' && action.undoId === undoId),
     archive: call(delay, 5000)
   })
 
-  // hide undo UI element, the race condition has an answer
+  // race condition 有了結果，隱藏 undo UI 元素
   yield put(actions.hideUndo(undoId))
 
   if (undo) {
-    // revert thread to previous state
+    // revert thread 到先前的 state
     yield put(actions.updateThread({ id: threadId, archived: false }))
   } else if (archive) {
-    // make the API call to apply the changes remotely
+    // 讓 API 呼叫遠端的修改
     yield call(updateThreadApi, thread)
   }
 }
 
 function* main() {
   while (true) {
-    // wait for an ARCHIVE_THREAD to happen
+    // 等待一個 ARCHIVE_THREAD 發生
     const action = yield take('ARCHIVE_THREAD')
-    // use spawn to execute onArchive in a non-blocking fashion, which also
-    // prevents cancellation when main saga gets cancelled.
-    // This helps us in keeping state in sync between server and client
+    // 以非阻塞的方式使用 spawn 來執行 onArchive，
+    // 當主要 saga 被取消時，阻止取消。
+    // 這可以幫助我們保持 server 和 client 端 state 的同步
     yield spawn(onArchive, action)
   }
 }
