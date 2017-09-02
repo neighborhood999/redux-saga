@@ -1,21 +1,21 @@
 # redux-saga 的 fork 模型
 
-In `redux-saga` you can dynamically fork tasks that execute in the background using 2 Effects
+在 `redux-saga` 你可以使用兩種 Effect 動態的在背景執行 fork task
 
-- `fork` is used to create *attached forks*
-- `spawn` is used to create *detached forks*
+- `fork` 是用來建立被*附加的 fork*
+- `spawn` 是用來建立被*分離的 fork*
 
-## Attached forks (using `fork`)
+## 被附加的 fork （使用 `fork`）
 
-Attached forks remains attached to their parent by the following rules
+被附加的 fork 透過以下的規則繼續附加在它們的 parent
 
-### Completion
+### 結論
 
-- A Saga terminates only after
-  - It terminates its own body of instructions
-  - All attached forks are themselves terminated
+- Saga 只會在這之後終止：
+  - body 的說明它終止了自己本身
+  - 所有被附加的 fork 被終止
 
-For example say we have the following
+例如我們有以下的情形：
 
 ```js
 import { delay } from 'redux-saga'
@@ -39,18 +39,17 @@ function* main() {
 }
 ```
 
-`call(fetchAll)` will terminate after:
+`call(fetchAll)` 將在這之後終止：
 
-- The `fetchAll` body itself terminates, this means all 3 effects are performed. Since `fork` effects are non blocking, the
-task will block on `call(delay, 1000)`
+- `fetchAll` 本身被終止，這意思是這三個 effect 都會被執行。由於 `fork` Effect 不是非阻塞的，task 將被阻塞在 `call(delay, 1000)`
 
-- The 2 forked tasks terminate, i.e. after fetching the required resources and putting the corresponding `receiveData` actions
+- 兩個被 fork 的 task 終止，意思是在 fetch 所需的資源並放入對應的 `receiveData` action
 
-So the whole task will block until a delay of 1000 millisecond passed *and* both `task1` and `task2` finished their business.
+所以整個 task 將阻塞直到一個 1000 毫秒的 delay 被傳送，*且* `task1` 和 `task2` 完成他們的任務。
 
 比方說，1000 毫秒的 delay 和兩個 task 還沒有完成，然後 `fetchAll` 在終止整個 task 之前，將等待直到所有被 fork 的 task 完成。
 
-The attentive reader might have noticed the `fetchAll` saga could be rewritten using the parallel Effect
+細心的讀者可能會注意到 `fetchAll` saga 使用平行 Effect 被改寫
 
 ```js
 function* fetchAll() {
@@ -62,20 +61,19 @@ function* fetchAll() {
 }
 ```
 
-In fact, attached forks shares the same semantics with the parallel Effect:
+事實上，被附加的 fork 與平行 Effect 共享相同的語意：
 
-- We're executing tasks in parallel
-- The parent will terminate after all launched tasks terminate
+- 在平行情況下我們執行 task
+- 在所有被 launch 的 task 終止後，paraent 將會終止
 
 
-And this applies for all other semantics as well (error and cancellation propagation). You can understand how
-attached forks behave by simply considering it as a *dynamic parallel* Effect.
+這也適用於其他語意（錯誤和取消傳播）。你可以簡單的把它考慮作為一個*動態平行* Effect，了解附加 fork 的行為。
 
-## Error propagation
+## Error 傳播
 
-Following the same analogy, Let's examine in detail how errors are handled in parallel Effects
+按照同樣的比喻，我們來詳細的檢查在平行的 Effect 如何處理錯誤
 
-for example, let's say we have this Effect
+例如，假設我們有這個 Effect
 
 ```js
 yield all([
@@ -85,18 +83,15 @@ yield all([
 ])
 ```
 
-The above effect will fail as soon as any one of the 3 child Effects fails. Furthermore, the uncaught error will cause
-the parallel Effect to cancel all the other pending Effects. So for example if `call(fetchResource, 'users')` raises an
-uncaught error, the parallel Effect will cancel the 2 other tasks (if they are still pending) then aborts itself with the
-same error from the failed call.
+一旦其中一個子 Effect 失敗，上方的 Effect 就會失敗。此外，未捕獲的錯誤將會造成平行 Effect 取消所有其他 pending 的 Effect。例如，如果 `call(fetchResource, 'users')` 發出了一個未捕獲的錯誤，平行 Effect 將會取消其他兩個 task（如果他們仍然在 pending），並從失敗的呼叫中，終止自己本身的錯誤。
 
-Similarly for attached forks, a Saga aborts as soon as
+類似於被 attach 的 forks，Saga 會在以下情況馬上終止
 
-- Its main body of instructions throws an error
+- 它主要 body 的說明拋出了一個錯誤
 
-- An uncaught error was raised by one of its attached forks
+- 一個未捕獲的錯誤透過其中一個被 attach 的 forks 被發出
 
-So in the previous example
+所以在先前的範例：
 
 ```js
 //... imports
@@ -116,44 +111,38 @@ function* main() {
   try {
     yield call(fetchAll)
   } catch (e) {
-    // handle fetchAll errors
+    // 處理 fetchAll 錯誤
   }
 }
 ```
 
-If at a moment, for example, `fetchAll` is blocked on the `call(delay, 1000)` Effect, and say, `task1` failed, then the whole
-`fetchAll` task will fail causing
+如果在這樣的情況，例如 `fetchAll` 被阻塞在 `call(delay, 1000)` Effect，並說明 `task1` 失敗，然後整個 `fetchAll` task 將會因此失敗
 
-- Cancellation of all other pending tasks. This includes:
-  - The *main task* (the body of `fetchAll`): cancelling it means cancelling the current Effect `call(delay, 1000)`
-  - The other forked tasks which are still pending. i.e. `task2` in our example.
+- 取消所有其他在 pending 的 task。這包含：
+  - *main task*（`fetchAll` 的本身）：取消的意思是，取消目前的 `call(delay, 1000)` 的 Effect
+  - 其他被 fork 的 task 仍然在 pending。例如在我們範例的 `task2`。
 
-- The `call(fetchAll)` will raise itself an error which will be caught in the `catch` body of `main`
+- 在 `main` 的 `catch` 內將會捕獲由 `call(fetchAll)` 發出的錯誤
 
-Note we're able to catch the error from `call(fetchAll)` inside `main` only because we're using a blocking call. And that
-we can't catch the error directly from `fetchAll`. This is a rule of thumb, **you can't catch errors from forked tasks**. A failure
-in an attached fork will cause the forking parent to abort (Just like there is no way to catch an error *inside* a parallel Effect, only from
-outside by blocking on the parallel Effect).
+注意，因為我們使用一個阻塞的 call，所以我們只能從 `main` 內部 catch `call(fetchAll)` 的錯誤，而且我們不能直結從 `fetchAll` 捕捉錯誤。這是首要的原則，**你不能從被 fork 的 task 捕捉錯誤**。在一個被附加的 fork 錯誤將會導致被 fork 的 parent 被終止（就像沒有方法在一個平行 Effect *內*捕捉錯誤，只能從外部透過被阻塞的的平行 Effect）。
 
 
 ## Cancellation
 
-Cancelling a Saga causes the cancellation of:
+取消 Saga 導致:
 
-- The *main task* this means cancelling the current Effect where the Saga is blocked
+- *main task* 這意思是當 Saga 被阻塞時，取消目前的 Effect
 
-- All attached forks that are still executing
+- 所有被附加的 fork 仍然繼續執行
 
 
 **WIP**
 
-## Detached forks (using `spawn`)
+## 被分離的 fork（使用 `spawn`）
 
-Detached forks live in their own execution context. A parent doesn't wait for detached forks to terminate. Uncaught
-errors from spawned tasks are not bubbled up to the parent. And cancelling a parent doesn't automatically cancel detached
-forks (you need to cancel them explicitly).
+被分離的 fork 存活在它們本身執行的 context。Parent 不會等待被分離的 fork 終止。從被 spawn 的 task 為捕獲的錯誤不會被冒泡到 parent，而且取消一個 parent 並不會自動的取消被分離的 fork（你需要明確的取消它們）。
 
-In short, detached forks behave like root Sagas started directly using the `middleware.run` API.
+簡單來說，被分離的 fork 行為像是使用 `middleware.run` API 直接啟動 root Saga。
 
 
 **WIP**
