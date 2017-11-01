@@ -1,7 +1,7 @@
-import { sym, is, ident, check, deprecate, updateIncentive, createSetContextWarning, SELF_CANCELLATION } from './utils'
+import { IO, SELF_CANCELLATION } from './symbols'
+import { is, identity, check, createSetContextWarning } from './utils'
 import { takeEveryHelper, takeLatestHelper, throttleHelper } from './sagaHelpers'
 
-const IO = sym('IO')
 const TAKE = 'TAKE'
 const PUT = 'PUT'
 const ALL = 'ALL'
@@ -24,54 +24,57 @@ const TEST_HINT =
 const effect = (type, payload) => ({ [IO]: true, [type]: payload })
 
 export const detach = eff => {
-  check(asEffect.fork(eff), is.object, 'detach(eff): argument must be a fork effect')
+  if (process.env.NODE_ENV === 'development') {
+    check(asEffect.fork(eff), is.object, 'detach(eff): argument must be a fork effect')
+  }
   eff[FORK].detached = true
   return eff
 }
 
-export function take(patternOrChannel = '*') {
-  if (arguments.length) {
+export function take(patternOrChannel = '*', multicastPattern) {
+  if (process.env.NODE_ENV === 'development' && arguments.length) {
     check(arguments[0], is.notUndef, 'take(patternOrChannel): patternOrChannel is undefined')
   }
   if (is.pattern(patternOrChannel)) {
     return effect(TAKE, { pattern: patternOrChannel })
   }
+  if (is.multicast(patternOrChannel) && is.notUndef(multicastPattern) && is.pattern(multicastPattern)) {
+    return effect(TAKE, { channel: patternOrChannel, pattern: multicastPattern })
+  }
   if (is.channel(patternOrChannel)) {
     return effect(TAKE, { channel: patternOrChannel })
   }
-  throw new Error(
-    `take(patternOrChannel): argument ${String(patternOrChannel)} is not valid channel or a valid pattern`,
-  )
+  throw new Error(`take(patternOrChannel): argument ${patternOrChannel} is not valid channel or a valid pattern`)
 }
 
-take.maybe = (...args) => {
+export const takeMaybe = (...args) => {
   const eff = take(...args)
   eff[TAKE].maybe = true
   return eff
 }
 
-export const takem = /*#__PURE__*/ deprecate(take.maybe, /*#__PURE__*/ updateIncentive('takem', 'take.maybe'))
-
 export function put(channel, action) {
-  if (arguments.length > 1) {
-    check(channel, is.notUndef, 'put(channel, action): argument channel is undefined')
-    check(channel, is.channel, `put(channel, action): argument ${channel} is not a valid channel`)
-    check(action, is.notUndef, 'put(channel, action): argument action is undefined')
-  } else {
-    check(channel, is.notUndef, 'put(action): argument action is undefined')
+  if (process.env.NODE_ENV === 'development') {
+    if (arguments.length > 1) {
+      check(channel, is.notUndef, 'put(channel, action): argument channel is undefined')
+      check(channel, is.channel, `put(channel, action): argument ${channel} is not a valid channel`)
+      check(action, is.notUndef, 'put(channel, action): argument action is undefined')
+    } else {
+      check(channel, is.notUndef, 'put(action): argument action is undefined')
+    }
+  }
+  if (is.undef(action)) {
     action = channel
     channel = null
   }
   return effect(PUT, { channel, action })
 }
 
-put.resolve = (...args) => {
+export const putResolve = (...args) => {
   const eff = put(...args)
   eff[PUT].resolve = true
   return eff
 }
-
-put.sync = deprecate(put.resolve, updateIncentive('put.sync', 'put.resolve'))
 
 export function all(effects) {
   return effect(ALL, effects)
@@ -82,7 +85,9 @@ export function race(effects) {
 }
 
 function getFnCallDesc(meth, fn, args) {
-  check(fn, is.notUndef, `${meth}: argument fn is undefined`)
+  if (process.env.NODE_ENV === 'development') {
+    check(fn, is.notUndef, `${meth}: argument fn is undefined`)
+  }
 
   let context = null
   if (is.array(fn)) {
@@ -93,7 +98,10 @@ function getFnCallDesc(meth, fn, args) {
   if (context && is.string(fn) && is.func(context[fn])) {
     fn = context[fn]
   }
-  check(fn, is.func, `${meth}: argument ${fn} is not a function`)
+
+  if (process.env.NODE_ENV === 'development') {
+    check(fn, is.func, `${meth}: argument ${fn} is not a function`)
+  }
 
   return { context, fn, args }
 }
@@ -122,9 +130,14 @@ export function join(...tasks) {
   if (tasks.length > 1) {
     return all(tasks.map(t => join(t)))
   }
+
   const task = tasks[0]
-  check(task, is.notUndef, 'join(task): argument task is undefined')
-  check(task, is.task, `join(task): argument ${task} is not a valid Task object ${TEST_HINT}`)
+
+  if (process.env.NODE_ENV === 'development') {
+    check(task, is.notUndef, 'join(task): argument task is undefined')
+    check(task, is.task, `join(task): argument ${task} is not a valid Task object ${TEST_HINT}`)
+  }
+
   return effect(JOIN, task)
 }
 
@@ -132,33 +145,38 @@ export function cancel(...tasks) {
   if (tasks.length > 1) {
     return all(tasks.map(t => cancel(t)))
   }
+
   const task = tasks[0]
-  if (tasks.length === 1) {
+
+  if (process.env.NODE_ENV === 'development' && tasks.length === 1) {
     check(task, is.notUndef, 'cancel(task): argument task is undefined')
     check(task, is.task, `cancel(task): argument ${task} is not a valid Task object ${TEST_HINT}`)
   }
+
   return effect(CANCEL, task || SELF_CANCELLATION)
 }
 
-export function select(selector, ...args) {
-  if (arguments.length === 0) {
-    selector = ident
-  } else {
-    check(selector, is.notUndef, 'select(selector,[...]): argument selector is undefined')
-    check(selector, is.func, `select(selector,[...]): argument ${selector} is not a function`)
+export function select(selector = identity, ...args) {
+  if (process.env.NODE_ENV === 'development' && arguments.length) {
+    check(arguments[0], is.notUndef, 'select(selector, [...]): argument selector is undefined')
+    check(selector, is.func, `select(selector, [...]): argument ${selector} is not a function`)
   }
   return effect(SELECT, { selector, args })
 }
 
 /**
-  channel(pattern, [buffer])    => creates an event channel for store actions
+  channel(pattern, [buffer])    => creates a proxy channel for store actions
 **/
 export function actionChannel(pattern, buffer) {
-  check(pattern, is.notUndef, 'actionChannel(pattern,...): argument pattern is undefined')
-  if (arguments.length > 1) {
-    check(buffer, is.notUndef, 'actionChannel(pattern, buffer): argument buffer is undefined')
-    check(buffer, is.buffer, `actionChannel(pattern, buffer): argument ${buffer} is not a valid buffer`)
+  if (process.env.NODE_ENV === 'development') {
+    check(pattern, is.notUndef, 'actionChannel(pattern,...): argument pattern is undefined')
+
+    if (arguments.length > 1) {
+      check(buffer, is.notUndef, 'actionChannel(pattern, buffer): argument buffer is undefined')
+      check(buffer, is.buffer, `actionChannel(pattern, buffer): argument ${buffer} is not a valid buffer`)
+    }
   }
+
   return effect(ACTION_CHANNEL, { pattern, buffer })
 }
 
@@ -167,17 +185,26 @@ export function cancelled() {
 }
 
 export function flush(channel) {
-  check(channel, is.channel, `flush(channel): argument ${channel} is not valid channel`)
+  if (process.env.NODE_ENV === 'development') {
+    check(channel, is.channel, `flush(channel): argument ${channel} is not valid channel`)
+  }
+
   return effect(FLUSH, channel)
 }
 
 export function getContext(prop) {
-  check(prop, is.string, `getContext(prop): argument ${prop} is not a string`)
+  if (process.env.NODE_ENV === 'development') {
+    check(prop, is.string, `getContext(prop): argument ${prop} is not a string`)
+  }
+
   return effect(GET_CONTEXT, prop)
 }
 
 export function setContext(props) {
-  check(props, is.object, createSetContextWarning(null, props))
+  if (process.env.NODE_ENV === 'development') {
+    check(props, is.object, createSetContextWarning(null, props))
+  }
+
   return effect(SET_CONTEXT, props)
 }
 

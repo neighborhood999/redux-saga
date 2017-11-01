@@ -1,12 +1,9 @@
 /* eslint-disable no-unused-vars, no-constant-condition */
-
 import test from 'tape'
 import { createStore, applyMiddleware } from 'redux'
 import sagaMiddleware, { END } from '../../src'
 import { take, put, fork, join, call, all, race, cancel, takeEvery } from '../../src/effects'
-import { channel } from '../../src/internal/channel'
-import { buffers } from '../../src/internal/buffers'
-import { runSyncDispatchTest } from '../scheduler'
+import { channel, buffers } from '../../src'
 
 test('synchronous sequential takes', assert => {
   assert.plan(1)
@@ -311,10 +308,13 @@ test('inter-saga put/take handling (via buffered channel)', assert => {
     yield all([fork(fnA), fork(fnB)])
   }
 
-  middleware.run(root).done.then(() => {
-    assert.deepEqual(actual, [1, 2, 3], 'Sagas must take actions from each other (via buffered channel)')
-    assert.end()
-  })
+  middleware
+    .run(root)
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, [1, 2, 3], 'Sagas must take actions from each other (via buffered channel)')
+      assert.end()
+    })
 })
 
 test('inter-saga send/aknowledge handling', assert => {
@@ -430,14 +430,17 @@ test('inter-saga send/aknowledge handling (via buffered channel)', assert => {
     yield fork(fnA)
   }
 
-  middleware.run(root).done.then(() => {
-    assert.deepEqual(
-      actual,
-      ['msg-1', 'ack-1', 'msg-2', 'ack-2'],
-      'Sagas must take actions from each other (via buffered channel) in the right order',
-    )
-    assert.end()
-  })
+  middleware
+    .run(root)
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(
+        actual,
+        ['msg-1', 'ack-1', 'msg-2', 'ack-2'],
+        'Sagas must take actions from each other (via buffered channel) in the right order',
+      )
+      assert.end()
+    })
 })
 
 test('inter-saga fork/take back from forked child', assert => {
@@ -478,10 +481,13 @@ test('inter-saga fork/take back from forked child', assert => {
     yield put({ type: 'TEST' })
   }
 
-  middleware.run(root).done.then(() => {
-    assert.deepEqual(actual, [1, 2, 3], 'Sagas must take actions from each forked childs doing Sync puts')
-    assert.end()
-  })
+  middleware
+    .run(root)
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, [1, 2, 3], 'Sagas must take actions from each forked childs doing Sync puts')
+      assert.end()
+    })
 
   store.dispatch({ type: 'TEST' })
   store.dispatch(END)
@@ -525,10 +531,13 @@ test('inter-saga fork/take back from forked child', assert => {
     yield put({ type: 'TEST' })
   }
 
-  middleware.run(root).done.then(() => {
-    assert.deepEqual(actual, [1, 2, 3], 'Sagas must take actions from each forked childs doing Sync puts')
-    assert.end()
-  })
+  middleware
+    .run(root)
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, [1, 2, 3], 'Sagas must take actions from each forked childs doing Sync puts')
+      assert.end()
+    })
 
   store.dispatch({ type: 'TEST' })
   store.dispatch(END)
@@ -587,10 +596,13 @@ test('inter-saga fork/take back from forked child 3', assert => {
     actual.push(1)
   }
 
-  middleware.run(root).done.then(() => {
-    assert.deepEqual(actual, [1, 1], 'Sagas must take actions from each forked childs doing Sync puts')
-    assert.end()
-  })
+  middleware
+    .run(root)
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, [1, 1], 'Sagas must take actions from each forked childs doing Sync puts')
+      assert.end()
+    })
 
   store.dispatch({ type: 'PING', val: 0 })
   store.dispatch(END)
@@ -601,5 +613,37 @@ test('put causing sync dispatch response in store subscriber', assert => {
   const middleware = sagaMiddleware()
   const store = createStore(reducer, applyMiddleware(middleware))
 
-  runSyncDispatchTest(assert, store, saga => middleware.run(saga))
+  const actual = []
+
+  assert.plan(1)
+  middleware.run(root)
+
+  store.subscribe(() => {
+    if (store.getState() === 'c') store.dispatch({ type: 'b', test: true })
+  })
+  store.dispatch({ type: 'a', test: true })
+
+  function* root() {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const { a, b } = yield race({
+        a: take('a'),
+        b: take('b'),
+      })
+
+      actual.push(a ? a.type : b.type)
+
+      if (a) {
+        yield put({ type: 'c', test: true })
+        continue
+      }
+
+      yield put({ type: 'd', test: true })
+    }
+  }
+
+  Promise.resolve().then(() => {
+    assert.deepEqual(actual, ['a', 'b'], "Sagas can't miss actions dispatched by store subscribers during put handling")
+    assert.end()
+  })
 })

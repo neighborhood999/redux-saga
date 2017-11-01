@@ -5,7 +5,9 @@
   * [`middleware.run(saga, ...args)`](#middlewarerunsaga-args)
 * [`Saga Helpers`](#saga-helpers)
   * [`takeEvery(pattern, saga, ...args)`](#takeeverypattern-saga-args)
+  * [`takeEvery(channel, saga, ...args)`](#takeeverychannel-saga-args)
   * [`takeLatest(pattern, saga, ..args)`](#takelatestpattern-saga-args)
+  * [`takeLatest(channel, saga, ..args)`](#takelatestchannel-saga-args)
   * [`throttle(ms, pattern, saga, ..args)`](#throttlems-pattern-saga-args)
 * [`Effect creators`](#effect-creators)
   * [`take(pattern)`](#takepattern)
@@ -38,6 +40,7 @@
   * [`getContext(prop)`](#getcontextprop)
 * [`Effect combinators`](#effect-combinators)
   * [`race(effects)`](#raceeffects)
+  * [`race([...effects])`](#raceeffects-with-array)
   * [`all([...effects]) (aka parallel effects)`](#alleffects---parallel-effects)
   * [`all(effects)`](#alleffects)
 * [`Interfaces`](#interfaces)
@@ -88,7 +91,7 @@
      });
      ```
 
-  - `logger` : Function -  定義一個自訂的 logger middleware。預設上，middleware 記錄所有錯誤並在 console 中警告。告訴 middleware 傳送錯誤或警告到提供的 logger。被呼叫的 logger 與它的參數 `(level, ...args)`，第一個說明記錄的層級：('info', 'warning' or 'error')。其餘部分對應於以下參數（你可以使用 `args.join(' ') 來連接所有參數成為一個單一的字串`）。
+  - `logger` : Function -  定義一個自訂的 logger middleware。預設上，middleware 記錄所有錯誤並在 console 中警告。告訴 middleware 傳送錯誤或警告到提供的 logger。被呼叫的 logger 與它的參數 `(level, ...args)`，第一個說明記錄的層級：('info', 'warning' or 'error')。其餘部分對應於以下參數（你可以使用 `args.join(' ')` 來連接所有參數成為一個單一的字串）。
 
   - `onError` : Function - 如果有提供的話，middleware 將從 Saga 呼叫它與未捕獲錯誤。對於傳送未捕獲例外到追蹤錯誤服務非常有用。
 
@@ -181,9 +184,9 @@ function* watchFetchUser() {
 `takeEvery` 是一個高階 API，使用 `take` 和 `fork` 建立。這裡是如何使用低階 Effects 實作 helper
 
 ```javascript
-const takeEvery = (pattern, saga, ...args) => fork(function*() {
+const takeEvery = (patternOrChannel, saga, ...args) => fork(function*() {
   while (true) {
-    const action = yield take(pattern)
+    const action = yield take(patternOrChannel)
     yield fork(saga, ...args.concat(action))
   }
 })
@@ -192,6 +195,10 @@ const takeEvery = (pattern, saga, ...args) => fork(function*() {
 `takeEvery` 允許處理併發的 action。在上面的範例中，當一個 `USER_REQUESTED` action 被 dispatch，新的 `fetchUser` task 會被啟動，即使之前的 `fetchUser` 還在等待（例如，使用者快速的在一個 `Load User` 按鈕按了兩次，第二次點擊仍然會 dispatch 一個 `USER_REQUESTED` action，即使第一個觸發的 `fetchUser` 還沒結束）。
 
 `takeEvery` 不會處理多個 task 的 response 排序。這不會保證 task 按照啟動的順序結束，如果要處理 response 的排序，你可能考慮以下的 `takeLatest`。
+
+### `takeEvery(channel, saga, ...args)`
+
+You can also pass in a channel as argument and the behaviour is the same as [takeEvery(pattern, saga, ...args)](#takeeverypattern-saga-args).
 
 ### `takeLatest(pattern, saga, ...args)`
 
@@ -226,10 +233,10 @@ function* watchLastFetchUser() {
 `takeLatest` 是一個高階 API，使用 `take` 和 `fork` 建立。這裡是如何使用低階 Effects 實作 helper
 
 ```javascript
-const takeLatest = (pattern, saga, ...args) => fork(function*() {
+const takeLatest = (patternOrChannel, saga, ...args) => fork(function*() {
   let lastTask
   while (true) {
-    const action = yield take(pattern)
+    const action = yield take(patternOrChannel)
     if (lastTask) {
       yield cancel(lastTask) // 如果 task 已經結束，cancel 是一個空操作
     }
@@ -237,6 +244,10 @@ const takeLatest = (pattern, saga, ...args) => fork(function*() {
   }
 })
 ```
+
+### `takeLatest(channel, saga, ...args)`
+
+You can also pass in a channel as argument and the behaviour is the same as [takeLatest(pattern, saga, ...args)](#takelatestpattern-saga-args).
 
 ### `throttle(ms, pattern, saga, ...args)`
 
@@ -712,6 +723,34 @@ function* fetchUsersSaga {
 
 當 resolve `race` 時，middleware 自動的取消所有輸掉的 Effect。
 
+### `race([...effects]) (with Array)`
+
+The same as [`race(effects)`](#raceeffects) but let you to pass in an array of effects.
+
+#### Example
+
+The following example runs a race between two effects:
+
+1. A call to a function `fetchUsers` which returns a Promise
+2. A `CANCEL_FETCH` action which may be eventually dispatched on the Store
+
+```javascript
+import { take, call, race } from `redux-saga/effects`
+import fetchUsers from './path/to/fetchUsers'
+
+function* fetchUsersSaga {
+  const [response, cancel] = yield race([
+    call(fetchUsers),
+    take(CANCEL_FETCH)
+  ])
+}
+```
+
+If `call(fetchUsers)` resolves (or rejects) first, `response` will be an result of `fetchUsers` and `cancel` will be `undefined`.
+
+If an action of type `CANCEL_FETCH` is dispatched on the Store before `fetchUsers` completes, `response` will be
+`undefined` and `cancel` will be the dispatched action.
+
 ### `all([...effects]) - parallel effects`
 
 建立一個 Effect 描述來指示 middleware 在平行情況下執行多個 Effect，並等待它們完成。它相當於 [`Promise#all`](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Promise/all) API 的標準。
@@ -1114,7 +1153,7 @@ test('my oddOrEven saga', assert => {
 | fork                 | No                                                          |
 | spawn                | No                                                          |
 | join                 | Yes                                                         |
-| cancel               | Yes                                                         |
+| cancel               | No                                                          |
 | select               | No                                                          |
 | actionChannel        | No                                                          |
 | flush                | Yes                                                         |

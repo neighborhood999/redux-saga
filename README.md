@@ -129,6 +129,7 @@ sagaMiddleware.run(mySaga)
 - [Traditional Chinese](https://github.com/neighborhood999/redux-saga)
 - [Japanese](https://github.com/redux-saga/redux-saga/blob/master/README_ja.md)
 - [Korean](https://github.com/mskims/redux-saga-in-korean)
+- [Portuguese](https://github.com/joelbarbosa/redux-saga-pt_BR)
 - [Russian](https://github.com/redux-saga/redux-saga/blob/master/README_ru.md)
 
 # 在瀏覽器使用 umd build 版本
@@ -142,10 +143,11 @@ umd 版本在你不使用 Webpack 或 Browserify 相當的有用。你可以從 
 - [https://unpkg.com/redux-saga/dist/redux-saga.js](https://unpkg.com/redux-saga/dist/redux-saga.js)
 - [https://unpkg.com/redux-saga/dist/redux-saga.min.js](https://unpkg.com/redux-saga/dist/redux-saga.min.js)
 
-**重要！**如果你的目標瀏覽器不支援 *ES2015 generators*，你必須提供一個有效的 polyfill，像是 [`babel` 所提供的](https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.25/browser-polyfill.min.js)。polyfill 必須被 import 在 **redux-saga** 之前：
+**重要！**如果你的目標瀏覽器不支援 *ES2015 generators*，你必須 transpile
+它們（[babel plugin](https://github.com/facebook/regenerator/tree/master/packages/regenerator-transform)）和提供一個有效的 runtime，像是[這個](https://unpkg.com/regenerator-runtime/runtime.js)。 Runtime 必須被引入在 **redux-saga** 之前：
 
 ```javascript
-import 'babel-polyfill'
+import 'regenerator-runtime/runtime'
 // 接著
 import sagaMiddleware from 'redux-saga'
 ```
@@ -225,7 +227,7 @@ Redux-Saga 與 TypeScript 需要 `DOM.Iterable` 或 `ES2015.Iterable`。如果�
 
 ### Logo
 
-你可以在 [logo 目錄](logo) 找到不同風格的 Redux-Saga  官方 logo。
+你可以在 [logo 目錄](https://github.com/redux-saga/redux-saga/tree/master/logo) 找到不同風格的 Redux-Saga  官方 logo。
 
 
 ### Backers
