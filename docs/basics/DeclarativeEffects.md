@@ -1,6 +1,6 @@
 # 宣告 Effects
 
-在 `redux-saga` 中，Saga 都是使用 Generator function 實作的。我們從 Generator yield 純 JavaScript 物件來表達 Saga 的邏輯。我們稱這些物件為 *Effects*。一個 Effect 是一個簡單的物件，它包含了一些由 middleware 解譯的資訊。你可以把 Effect 看作是給 middleware 執行一些操作的說明（調用一些非同步的 function，dispatch 一個 action 到 store）。
+在 `redux-saga` 中，Saga 都是使用 Generator function 實作的。我們從 Generator yield 純 JavaScript 物件來表達 Saga 的邏輯。我們稱這些物件為 *Effects*。一個 Effect 是一個簡單的物件，它包含了一些由 middleware 解譯的資訊。你可以把 Effect 看作是給 middleware 執行一些操作的說明（也就是說，調用一些非同步的 function，dispatch 一個 action 到 store）。
 
 你可以使用在 library 內提供的 `redux-saga/effects` package 的 function 來建立 Effect。
 

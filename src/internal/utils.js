@@ -1,20 +1,13 @@
-export const sym = id => `@@redux-saga/${id}`
+import { CANCEL, MULTICAST, SAGA_ACTION, TASK } from './symbols'
 
-export const TASK = sym('TASK')
-export const HELPER = sym('HELPER')
-export const MATCH = sym('MATCH')
-export const CANCEL = sym('CANCEL_PROMISE')
-export const SAGA_ACTION = sym('SAGA_ACTION')
-export const SELF_CANCELLATION = sym('SELF_CANCELLATION')
 export const konst = v => () => v
 export const kTrue = konst(true)
 export const kFalse = konst(false)
 export const noop = () => {}
-export const ident = v => v
+export const identity = v => v
 
 export function check(value, predicate, error) {
   if (!predicate(value)) {
-    log('error', 'uncaught at check', error)
     throw new Error(error)
   }
 }
@@ -38,10 +31,11 @@ export const is = {
   task: t => t && t[TASK],
   observable: ob => ob && is.func(ob.subscribe),
   buffer: buf => buf && is.func(buf.isEmpty) && is.func(buf.take) && is.func(buf.put),
-  pattern: pat => pat && (is.string(pat) || typeof pat === 'symbol' || is.func(pat) || is.array(pat)),
+  pattern: pat => pat && (is.string(pat) || is.symbol(pat) || is.func(pat) || is.array(pat)),
   channel: ch => ch && is.func(ch.take) && is.func(ch.close),
-  helper: it => it && it[HELPER],
   stringableFunc: f => is.func(f) && hasOwn(f, 'toString'),
+  symbol: sym => typeof sym === 'symbol',
+  multicast: ch => is.channel(ch) && ch[MULTICAST],
 }
 
 export const object = {
@@ -73,6 +67,17 @@ export const array = {
   },
 }
 
+export function once(fn) {
+  let called = false
+  return () => {
+    if (called) {
+      return
+    }
+    called = true
+    fn()
+  }
+}
+
 export function deferred(props = {}) {
   let def = { ...props }
   const promise = new Promise((resolve, reject) => {
@@ -83,7 +88,7 @@ export function deferred(props = {}) {
   return def
 }
 
-export function arrayOfDeffered(length) {
+export function arrayOfDeferred(length) {
   const arr = []
   for (let i = 0; i < length; i++) {
     arr.push(deferred())
@@ -128,12 +133,9 @@ const kThrow = err => {
   throw err
 }
 const kReturn = value => ({ value, done: true })
-export function makeIterator(next, thro = kThrow, name = '', isHelper) {
+export function makeIterator(next, thro = kThrow, name = 'iterator') {
   const iterator = { name, next, throw: thro, return: kReturn }
 
-  if (isHelper) {
-    iterator[HELPER] = true
-  }
   if (typeof Symbol !== 'undefined') {
     iterator[Symbol.iterator] = () => iterator
   }

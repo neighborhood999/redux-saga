@@ -4,7 +4,7 @@
 
 ```javascript
 // 錯誤寫法，effect 將按照順序的被執行
-const users  = yield call(fetch, '/users'),
+const users = yield call(fetch, '/users'),
       repos = yield call(fetch, '/repos')
 ```
 
@@ -14,7 +14,7 @@ const users  = yield call(fetch, '/users'),
 import { all, call } from 'redux-saga/effects'
 
 // 正確寫法，effect 將同步被執行
-const [users, repos]  = yield [
+const [users, repos] = yield all([
   call(fetch, '/users'),
   call(fetch, '/repos')
 ])

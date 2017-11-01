@@ -74,7 +74,7 @@ test('middleware options', assert => {
   } catch (e) {
     assert.equal(
       e.message,
-      '`options.onError` passed to the Saga middleware is not a function!',
+      'options.onError passed to the Saga middleware is not a function!',
       'middleware factory must raise an error if `options.onError` is not a function',
     )
   }
@@ -125,6 +125,27 @@ test("middleware's custom emitter", assert => {
   const expected = ['a', 'b', 'c', 'd', 'e']
 
   assert.deepEqual(actual, expected, "saga must be able to take actions emitted by middleware's custom emitter")
+
+  assert.end()
+})
+
+test('middleware.run saga arguments validation', assert => {
+  assert.plan(1)
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
+  try {
+    middleware.run({})
+  } catch (error) {
+    assert.ok(/is not a function/.test(error.message), 'middleware.run must throw if not provided with an iterator')
+  }
+
+  try {
+    middleware.run(function*() {})
+  } catch (error) {
+    assert.fail('middleware.run must not throw if provided with a generator')
+  }
 
   assert.end()
 })

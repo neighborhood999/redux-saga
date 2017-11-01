@@ -1,14 +1,18 @@
 /* eslint-disable no-constant-condition */
-
 import test from 'tape'
-import proc from '../../src/internal/proc'
+import { createStore, applyMiddleware } from 'redux'
+import sagaMiddleware from '../../src'
 import * as io from '../../src/effects'
-import { deferred, arrayOfDeffered } from '../../src/utils'
+import { deferred, arrayOfDeferred } from '../../src/utils'
 
-test('proc cancellation: call effect', assert => {
+test('saga cancellation: call effect', assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let startDef = deferred()
   let cancelDef = deferred()
   let subroutineDef = deferred()
@@ -36,31 +40,38 @@ test('proc cancellation: call effect', assert => {
     }
   }
 
-  const task = proc(main())
+  const task = middleware.run(main)
+
   cancelDef.promise.then(v => {
     actual.push(v)
     task.cancel()
   })
-  task.done.catch(err => assert.fail(err))
 
   const expected = ['start', 'subroutine start', 'cancel', 'subroutine cancelled', 'cancelled']
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'cancelled call effect must throw exception inside called subroutine')
-    assert.end()
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'cancelled call effect must throw exception inside called subroutine')
+      assert.end()
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: forked children', assert => {
+test('saga cancellation: forked children', assert => {
   assert.plan(1)
 
   const actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let cancelDef = deferred()
   const rootDef = deferred()
   const childAdef = deferred()
   const childBdef = deferred()
   const neverDef = deferred()
-  const defs = arrayOfDeffered(4)
+  const defs = arrayOfDeferred(4)
 
   Promise.resolve()
     .then(() => childAdef.resolve('childA resolve'))
@@ -114,9 +125,9 @@ test('proc cancellation: forked children', assert => {
     }
   }
 
-  const task = proc(main())
+  const task = middleware.run(main)
+
   cancelDef.promise.then(() => task.cancel())
-  task.done.catch(err => assert.fail(err))
 
   const expected = [
     'childA resolve',
@@ -132,26 +143,25 @@ test('proc cancellation: forked children', assert => {
     'leaf 3 cancelled',
   ]
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'cancelled main task must cancel all forked substasks')
-    assert.end()
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'cancelled main task must cancel all forked substasks')
+      assert.end()
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: take effect', assert => {
+test('saga cancellation: take effect', assert => {
   assert.plan(1)
 
   let actual = []
+
   let startDef = deferred()
   let cancelDef = deferred()
 
-  const input = cb => {
-    Promise.resolve(1)
-      .then(() => startDef.resolve('start'))
-      .then(() => cancelDef.resolve('cancel'))
-      .then(() => cb({ type: 'action' }))
-    return () => {}
-  }
+  const middleware = sagaMiddleware()
+  const store = applyMiddleware(middleware)(createStore)(() => {})
 
   function* main() {
     actual.push(yield startDef.promise)
@@ -162,29 +172,43 @@ test('proc cancellation: take effect', assert => {
     }
   }
 
-  const task = proc(main(), input)
+  const task = middleware.run(main)
+
   cancelDef.promise.then(v => {
     actual.push(v)
     task.cancel()
   })
-  task.done.catch(err => assert.fail(err))
+
+  Promise.resolve(1)
+    .then(() => startDef.resolve('start'))
+    .then(() => cancelDef.resolve('cancel'))
+    .then(() => store.dispatch({ type: 'action' }))
 
   const expected = ['start', 'cancel', 'cancelled']
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'cancelled take effect must stop waiting for action')
-    assert.end()
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'cancelled take effect must stop waiting for action')
+      assert.end()
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: join effect (joining from a different task)', assert => {
+test('saga cancellation: join effect (joining from a different task)', assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let cancelDef = deferred()
   let subroutineDef = deferred()
 
-  Promise.resolve(1).then(() => cancelDef.resolve('cancel')).then(() => subroutineDef.resolve('subroutine'))
+  Promise.resolve(1)
+    .then(() => cancelDef.resolve('cancel'))
+    .then(() => subroutineDef.resolve('subroutine'))
 
   function* main() {
     actual.push('start')
@@ -231,8 +255,7 @@ test('proc cancellation: join effect (joining from a different task)', assert =>
     }
   }
 
-  const task = proc(main())
-  task.done.catch(err => assert.fail(err))
+  const task = middleware.run(main)
 
   /**
     Breaking change in 10.0:
@@ -249,16 +272,23 @@ test('proc cancellation: join effect (joining from a different task)', assert =>
     'joiner2 cancelled',
   ]
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'cancelled task must cancel foreing joiners')
-    assert.end()
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'cancelled task must cancel foreing joiners')
+      assert.end()
+    })
+    .catch(err => assert.fail(err))
 })
 
-test("proc cancellation: join effect (join from the same task's parent)", assert => {
+test("saga cancellation: join effect (join from the same task's parent)", assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let startDef = deferred()
   let cancelDef = deferred()
   let subroutineDef = deferred()
@@ -287,12 +317,12 @@ test("proc cancellation: join effect (join from the same task's parent)", assert
     }
   }
 
-  const task = proc(main())
+  const task = middleware.run(main)
+
   cancelDef.promise.then(v => {
     actual.push(v)
     task.cancel()
   })
-  task.done.catch(err => assert.fail(err))
 
   /**
     Breaking change in 10.0: Since now attached forks are cancelled when their parent is cancelled
@@ -307,19 +337,26 @@ test("proc cancellation: join effect (join from the same task's parent)", assert
   **/
   const expected = ['start', 'subroutine start', 'cancel', 'cancelled', 'subroutine cancelled']
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'cancelled routine must cancel proper joiners')
-    assert.end()
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'cancelled routine must cancel proper joiners')
+      assert.end()
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: parallel effect', assert => {
+test('saga cancellation: parallel effect', assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let startDef = deferred()
   let cancelDef = deferred()
-  let subroutineDefs = arrayOfDeffered(2)
+  let subroutineDefs = arrayOfDeferred(2)
 
   Promise.resolve(1)
     .then(() => startDef.resolve('start'))
@@ -354,12 +391,12 @@ test('proc cancellation: parallel effect', assert => {
     }
   }
 
-  const task = proc(main())
+  const task = middleware.run(main)
+
   cancelDef.promise.then(v => {
     actual.push(v)
     task.cancel()
   })
-  task.done.catch(err => assert.fail(err))
 
   const expected = [
     'start',
@@ -371,19 +408,26 @@ test('proc cancellation: parallel effect', assert => {
     'cancelled',
   ]
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'cancelled parallel effect must cancel all sub-effects')
-    assert.end()
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'cancelled parallel effect must cancel all sub-effects')
+      assert.end()
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: race effect', assert => {
+test('saga cancellation: race effect', assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let startDef = deferred()
   let cancelDef = deferred()
-  let subroutineDefs = arrayOfDeffered(2)
+  let subroutineDefs = arrayOfDeferred(2)
 
   Promise.resolve(1)
     .then(() => startDef.resolve('start'))
@@ -423,12 +467,12 @@ test('proc cancellation: race effect', assert => {
     }
   }
 
-  const task = proc(main())
+  const task = middleware.run(main)
+
   cancelDef.promise.then(v => {
     actual.push(v)
     task.cancel()
   })
-  task.done.catch(err => assert.fail(err))
 
   const expected = [
     'start',
@@ -440,18 +484,25 @@ test('proc cancellation: race effect', assert => {
     'cancelled',
   ]
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'cancelled race effect must cancel all sub-effects')
-    assert.end()
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'cancelled race effect must cancel all sub-effects')
+      assert.end()
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: automatic parallel effect cancellation', assert => {
+test('saga cancellation: automatic parallel effect cancellation', assert => {
   assert.plan(1)
 
   let actual = []
-  let subtask1Defs = arrayOfDeffered(2),
-    subtask2Defs = arrayOfDeffered(2)
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
+  let subtask1Defs = arrayOfDeferred(2),
+    subtask2Defs = arrayOfDeferred(2)
 
   Promise.resolve(1)
     .then(() => subtask1Defs[0].resolve('subtask_1'))
@@ -481,21 +532,29 @@ test('proc cancellation: automatic parallel effect cancellation', assert => {
     }
   }
 
-  proc(genFn()).done.catch(err => assert.fail(err))
+  const task = middleware.run(genFn)
+
   const expected = ['subtask_1', 'subtask_2', 'subtask 2 cancelled', 'caught subtask_1 rejection']
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'processor must cancel parallel sub-effects on rejection')
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'saga must cancel parallel sub-effects on rejection')
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: automatic race competitor cancellation', assert => {
+test('saga cancellation: automatic race competitor cancellation', assert => {
   assert.plan(1)
 
   let actual = []
-  let winnerSubtaskDefs = arrayOfDeffered(2),
-    loserSubtaskDefs = arrayOfDeffered(2),
-    parallelSubtaskDefs = arrayOfDeffered(2)
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
+  let winnerSubtaskDefs = arrayOfDeferred(2),
+    loserSubtaskDefs = arrayOfDeferred(2),
+    parallelSubtaskDefs = arrayOfDeferred(2)
 
   Promise.resolve(1)
     .then(() => winnerSubtaskDefs[0].resolve('winner_1'))
@@ -542,21 +601,29 @@ test('proc cancellation: automatic race competitor cancellation', assert => {
     ])
   }
 
-  proc(genFn()).done.catch(err => assert.fail(err))
+  const task = middleware.run(genFn)
+
   const expected = ['winner_1', 'loser_1', 'parallel_1', 'winner_2', 'loser subtask cancelled', 'parallel_2']
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'processor must cancel race competitors except for the winner')
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'saga must cancel race competitors except for the winner')
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation:  manual task cancellation', assert => {
+test('saga cancellation:  manual task cancellation', assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let signIn = deferred(),
     signOut = deferred(),
-    expires = arrayOfDeffered(3)
+    expires = arrayOfDeferred(3)
 
   Promise.resolve(1)
     .then(() => signIn.resolve('signIn'))
@@ -582,23 +649,31 @@ test('proc cancellation:  manual task cancellation', assert => {
     yield io.cancel(task)
   }
 
-  proc(genFn()).done.catch(err => assert.fail(err))
+  const task = middleware.run(genFn)
+
   const expected = ['signIn', 'expire_1', 'expire_2', 'signOut', 'task cancelled']
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'proc must cancel forked tasks')
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'saga must cancel forked tasks')
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: nested task cancellation', assert => {
+test('saga cancellation: nested task cancellation', assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let start = deferred(),
     stop = deferred(),
-    subtaskDefs = arrayOfDeffered(2),
-    nestedTask1Defs = arrayOfDeffered(2),
-    nestedTask2Defs = arrayOfDeffered(2)
+    subtaskDefs = arrayOfDeferred(2),
+    nestedTask1Defs = arrayOfDeferred(2),
+    nestedTask2Defs = arrayOfDeferred(2)
 
   Promise.resolve(1)
     .then(() => start.resolve('start'))
@@ -645,7 +720,8 @@ test('proc cancellation: nested task cancellation', assert => {
     yield io.cancel(task)
   }
 
-  proc(genFn()).done.catch(err => assert.fail(err))
+  const task = middleware.run(genFn)
+
   const expected = [
     'start',
     'subtask_1',
@@ -657,19 +733,26 @@ test('proc cancellation: nested task cancellation', assert => {
     'subtask cancelled',
   ]
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'processor must cancel forked task and its nested subtask')
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'saga must cancel forked task and its nested subtask')
+    })
+    .catch(err => assert.fail(err))
 })
 
-test('proc cancellation: nested forked task cancellation', assert => {
+test('saga cancellation: nested forked task cancellation', assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
+
   let start = deferred(),
     stop = deferred(),
-    subtaskDefs = arrayOfDeffered(2),
-    nestedTaskDefs = arrayOfDeffered(2)
+    subtaskDefs = arrayOfDeferred(2),
+    nestedTaskDefs = arrayOfDeferred(2)
 
   Promise.resolve(1)
     .then(() => start.resolve('start'))
@@ -706,19 +789,26 @@ test('proc cancellation: nested forked task cancellation', assert => {
     yield io.cancel(task)
   }
 
-  proc(genFn()).done.catch(err => assert.fail(err))
+  const task = middleware.run(genFn)
+
   const expected = ['start', 'subtask_1', 'nested_task_1', 'stop', 'subtask cancelled', 'nested task cancelled']
 
-  setTimeout(() => {
-    assert.deepEqual(actual, expected, 'proc must cancel forked task and its forked nested subtask')
-  })
+  task
+    .toPromise()
+    .then(() => {
+      assert.deepEqual(actual, expected, 'saga must cancel forked task and its forked nested subtask')
+    })
+    .catch(err => assert.fail(err))
 })
 
 test('cancel should be able to cancel multiple tasks', assert => {
   assert.plan(1)
 
-  const defs = arrayOfDeffered(3)
+  const defs = arrayOfDeferred(3)
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
 
   function* worker(i) {
     try {
@@ -737,9 +827,12 @@ test('cancel should be able to cancel multiple tasks', assert => {
     yield io.cancel(t1, t2, t3)
   }
 
+  const task = middleware.run(genFn)
+
   const expected = [0, 1, 2]
 
-  proc(genFn()).done
+  task
+    .toPromise()
     .then(() => {
       assert.deepEqual(actual, expected, 'it must be possible to cancel multiple tasks at once')
     })
@@ -750,6 +843,9 @@ test('cancel should support for self cancellation', assert => {
   assert.plan(1)
 
   let actual = []
+
+  const middleware = sagaMiddleware()
+  createStore(() => ({}), {}, applyMiddleware(middleware))
 
   function* worker() {
     try {
@@ -765,9 +861,12 @@ test('cancel should support for self cancellation', assert => {
     yield io.fork(worker)
   }
 
+  const task = middleware.run(genFn)
+
   const expected = ['self cancellation']
 
-  proc(genFn()).done
+  task
+    .toPromise()
     .then(() => {
       assert.deepEqual(actual, expected, 'it must be possible to trigger self cancellation')
     })

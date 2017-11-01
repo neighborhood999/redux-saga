@@ -52,7 +52,7 @@ function* watchFetchData() {
 例如：
 
 ```javascript
-import { takeEvery } from 'redux-saga'
+import { takeEvery } from 'redux-saga/effects'
 
 // FETCH_USERS
 function* fetchUsers(action) { ... }
