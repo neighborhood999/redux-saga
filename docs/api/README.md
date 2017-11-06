@@ -200,10 +200,6 @@ const takeEvery = (patternOrChannel, saga, ...args) => fork(function*() {
 
 你也可以傳送一個 channel 作為參數和行為，相同於 [takeEvery(pattern, saga, ...args)](#takeeverypattern-saga-args)。
 
-### `takeEvery(channel, saga, ...args)`
-
-你也可以傳送一個 channel 作為參數和行為，相同於 [takeEvery(pattern, saga, ...args)](#takeeverypattern-saga-args)。
-
 ### `takeLatest(pattern, saga, ...args)`
 
 在每次 dispatch 的 action 和符合 `pattern` 時，產生一個 `saga`，並自動取消先前啟動而且可能在執行的 `saga`。
