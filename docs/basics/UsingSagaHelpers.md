@@ -47,7 +47,7 @@ function* watchFetchData() {
 
 與 `takeEvery` 不同的是，`takeLatest` 在任何時候只允許一個 `fetchData` task 執行，它將啟動最新的 task。如果先前提供的 task 還在執行，當其他的 `fetchData` task 被啟動，先前的 task 會自動被取消。
 
-如果你有多個 Saga 觀察不同的 action，你可以建立多個 watcher 和 `fork`（我們之後將討論關於 `fork`，現在它是一個 Effect 允許我們在背景啟動多個 Saga）。
+如果你有多個 Saga 觀察不同的 action，你可以建立多個 watcher 和 `fork`（我們之後將討論關於 `fork`，現在它是一個 Effect 允許我們在背景啟動多個 Saga。現在，考慮一個 Effect 允許我們在背景中執行多個 saga）。
 
 例如：
 

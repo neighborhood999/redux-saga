@@ -198,7 +198,11 @@ const takeEvery = (patternOrChannel, saga, ...args) => fork(function*() {
 
 ### `takeEvery(channel, saga, ...args)`
 
-You can also pass in a channel as argument and the behaviour is the same as [takeEvery(pattern, saga, ...args)](#takeeverypattern-saga-args).
+你也可以傳送一個 channel 作為參數和行為，相同於 [takeEvery(pattern, saga, ...args)](#takeeverypattern-saga-args)。
+
+### `takeEvery(channel, saga, ...args)`
+
+你也可以傳送一個 channel 作為參數和行為，相同於 [takeEvery(pattern, saga, ...args)](#takeeverypattern-saga-args)。
 
 ### `takeLatest(pattern, saga, ...args)`
 
@@ -725,14 +729,14 @@ function* fetchUsersSaga {
 
 ### `race([...effects]) (with Array)`
 
-The same as [`race(effects)`](#raceeffects) but let you to pass in an array of effects.
+相同於 [`race(effects)`](#raceeffects)，但是讓你可以傳送 Effect 的陣列。
 
-#### Example
+#### 範例
 
-The following example runs a race between two effects:
+以下範例在兩個 Effect 之間執行一個競爭：
 
-1. A call to a function `fetchUsers` which returns a Promise
-2. A `CANCEL_FETCH` action which may be eventually dispatched on the Store
+1. call 調用 `fetchUsers` 函式，回傳一個 Promsie call
+2. 一個 `CANCEL_FETCH` action 最後可能 在 Store 被 dispatch
 
 ```javascript
 import { take, call, race } from `redux-saga/effects`
@@ -746,10 +750,9 @@ function* fetchUsersSaga {
 }
 ```
 
-If `call(fetchUsers)` resolves (or rejects) first, `response` will be an result of `fetchUsers` and `cancel` will be `undefined`.
+如果 `call(fetchUsers)` 最先 resolve（或是 rejects），`response` 將會是 `fetchUsers` 的結果而且 `cancel` 將為 `undefined`。
 
-If an action of type `CANCEL_FETCH` is dispatched on the Store before `fetchUsers` completes, `response` will be
-`undefined` and `cancel` will be the dispatched action.
+在 `fetchUsers` 完成之前，如果一個 type 為 `CANCEL_FETCH` 的 action 在 Store 被 dispatch ，`response` 將為 `undefined` 而且 `cancel` 將會 dispatch action。
 
 ### `all([...effects]) - parallel effects`
 
