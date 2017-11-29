@@ -1,6 +1,6 @@
 {
   "name": "redux-saga",
-  "version": "0.16.0",
+  "version": "1.0.0-beta.0",
   "description": "Saga middleware for Redux to handle Side Effects",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -19,7 +19,8 @@
     "test": "run-s test-**",
     "check": "run-s lint test",
     "test-src": "cross-env BABEL_ENV=cjs babel-node test/index.js | tap-spec",
-    "check:bundlesize": "cross-env BABEL_ENV=es bundlesize",
+    "prebundlesize": "npm run build:umd:prod",
+    "bundlesize": "bundlesize",
     "clean": "rimraf dist es lib",
     "build:umd:dev": "cross-env BABEL_ENV=es NODE_ENV=development rollup -c -i src/index.js -o dist/redux-saga.js",
     "build:umd:prod": "cross-env BABEL_ENV=es NODE_ENV=production rollup -c -i src/index.js -o dist/redux-saga.min.js",
@@ -62,7 +63,7 @@
   "bundlesize": [
     {
       "path": "./dist/redux-saga.min.js",
-      "maxSize": "8 Kb"
+      "maxSize": "7 Kb"
     }
   ],
   "author": "Yassine ELOUAFI <yelouafi@gmail.com>",
@@ -74,7 +75,9 @@
     "url": "https://github.com/redux-saga/redux-saga/issues"
   },
   "homepage": "https://redux-saga.js.org/",
-  "dependencies": {},
+  "dependencies": {
+    "redux": "^3.5.1"
+  },
   "devDependencies": {
     "@babel/cli": "7.0.0-beta.31",
     "@babel/core": "7.0.0-beta.31",
@@ -85,7 +88,7 @@
     "@babel/preset-stage-2": "7.0.0-beta.31",
     "babel-eslint": "^8.0.1",
     "babel-loader": "8.0.0-beta.0",
-    "babel-plugin-annotate-pure-calls": "Andarist/babel-plugin-annotate-pure-calls#babel7",
+    "babel-plugin-annotate-pure-calls": "babel7",
     "bundlesize": "^0.11.0",
     "cross-env": "^1.0.8",
     "eslint": "^2.8.0",
@@ -95,12 +98,12 @@
     "isomorphic-fetch": "^2.2.0",
     "lint-staged": "^3.4.2",
     "lolex": "^1.5.2",
+    "mitt": "^1.1.2",
     "npm-run-all": "^4.0.2",
     "prettier": "^1.4.1",
     "react": "^15.0.0",
     "react-dom": "^15.0.0",
     "react-redux": "^4.4.5",
-    "redux": "^3.5.1",
     "rimraf": "^2.4.3",
     "rollup": "^0.50.0",
     "rollup-plugin-babel": "4.0.0-beta.0",
@@ -109,7 +112,7 @@
     "rollup-plugin-uglify": "^2.0.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.2.2",
-    "typescript": "^2.2.1",
+    "typescript": "~2.6.0",
     "typings-tester": "^0.2.2",
     "webpack": "^3.8.1",
     "webpack-dev-middleware": "^1.12.0",
