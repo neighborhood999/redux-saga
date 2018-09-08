@@ -209,7 +209,7 @@ sagaMiddleware.run(rootSaga)
 
 我們需要測試我們的 `incrementAsync` Saga 以確保它所需要執行的 task。
 
-建立另一個 `saga.spec.js` 檔案：
+建立另一個 `sagas.spec.js` 檔案：
 
 ```javascript
 import test from 'tape';
