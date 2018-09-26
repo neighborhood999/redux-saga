@@ -1,0 +1,797 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>1.1 新手教學 · Redux-Saga</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="../../build/gitbook.css">
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="SagaBackground.html" />
+    
+    
+    <link rel="prev" href="./" />
+    
+
+    
+        <link rel="shortcut icon" href='../../logo/favicon/favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="bookmark" href='../../logo/favicon/favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="apple-touch-icon" href='../../logo/favicon/apple-touch-icon-152x152.png'>
+    
+    
+        
+        <link rel="apple-touch-icon" sizes="120x120" href="../../logo/favicon/apple-touch-icon-120x120.png">
+        
+        <link rel="apple-touch-icon" sizes="180x180" href="../../logo/favicon/apple-touch-icon-180x180.png">
+        
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Read Me
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    1. 介紹
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="1.2.1" data-path="BeginnerTutorial.html">
+            
+                <a href="BeginnerTutorial.html">
+            
+                    
+                    1.1 新手教學
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="SagaBackground.html">
+            
+                <a href="SagaBackground.html">
+            
+                    
+                    1.2 Saga 概念的背景
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../basics/">
+            
+                <a href="../basics/">
+            
+                    
+                    2. 基礎概念
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../basics/UsingSagaHelpers.html">
+            
+                <a href="../basics/UsingSagaHelpers.html">
+            
+                    
+                    2.1 使用 Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../basics/DeclarativeEffects.html">
+            
+                <a href="../basics/DeclarativeEffects.html">
+            
+                    
+                    2.2 宣告 Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../basics/DispatchingActions.html">
+            
+                <a href="../basics/DispatchingActions.html">
+            
+                    
+                    2.3 Dispatch action
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../basics/ErrorHandling.html">
+            
+                <a href="../basics/ErrorHandling.html">
+            
+                    
+                    2.4 錯誤處理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../basics/Effect.html">
+            
+                <a href="../basics/Effect.html">
+            
+                    
+                    2.4 一個常見的抽象概念：Effect
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="../advanced/">
+            
+                <a href="../advanced/">
+            
+                    
+                    3. 進階概念
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="../advanced/FutureActions.html">
+            
+                <a href="../advanced/FutureActions.html">
+            
+                    
+                    3.1 Pull 未來的 action
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="../advanced/NonBlockingCalls.html">
+            
+                <a href="../advanced/NonBlockingCalls.html">
+            
+                    
+                    3.2 非阻塞式的呼叫
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="../advanced/RunningTasksInParallel.html">
+            
+                <a href="../advanced/RunningTasksInParallel.html">
+            
+                    
+                    3.3 同時執行多個任務l
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="../advanced/RacingEffects.html">
+            
+                <a href="../advanced/RacingEffects.html">
+            
+                    
+                    3.4 在多個 Effect 之間啟動一個 race
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="../advanced/SequencingSagas.html">
+            
+                <a href="../advanced/SequencingSagas.html">
+            
+                    
+                    3.5 使用 yield* 對 Saga 做排序
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="../advanced/ComposingSagas.html">
+            
+                <a href="../advanced/ComposingSagas.html">
+            
+                    
+                    3.6 組合 Saga
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="../advanced/TaskCancellation.html">
+            
+                <a href="../advanced/TaskCancellation.html">
+            
+                    
+                    3.7 取消 Task
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="../advanced/ForkModel.html">
+            
+                <a href="../advanced/ForkModel.html">
+            
+                    
+                    3.8 redux-saga 的 fork 模型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="../advanced/Concurrency.html">
+            
+                <a href="../advanced/Concurrency.html">
+            
+                    
+                    3.9 常見的併發模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="../advanced/Testing.html">
+            
+                <a href="../advanced/Testing.html">
+            
+                    
+                    3.10 Saga 測試的範例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="../advanced/UsingRunSaga.html">
+            
+                <a href="../advanced/UsingRunSaga.html">
+            
+                    
+                    3.11 連結 Saga 到外部的輸入和輸出
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="../advanced/Channels.html">
+            
+                <a href="../advanced/Channels.html">
+            
+                    
+                    3.12 使用 Channel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../recipes/">
+            
+                <a href="../recipes/">
+            
+                    
+                    4. Recipes
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../ExternalResources.html">
+            
+                <a href="../ExternalResources.html">
+            
+                    
+                    5. 外部資源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../Troubleshooting.html">
+            
+                <a href="../Troubleshooting.html">
+            
+                    
+                    6. 疑難排解
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../Glossary.html">
+            
+                <a href="../Glossary.html">
+            
+                    
+                    7. 術語表
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../api/">
+            
+                <a href="../api/">
+            
+                    
+                    8. API 參考
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >1.1 新手教學</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x65B0;&#x624B;&#x6559;&#x5B78;">&#x65B0;&#x624B;&#x6559;&#x5B78;</h1><h2 id="&#x9019;&#x500B;&#x6559;&#x5B78;&#x7684;&#x76EE;&#x6A19;">&#x9019;&#x500B;&#x6559;&#x5B78;&#x7684;&#x76EE;&#x6A19;</h2><p>&#x9019;&#x500B;&#x6559;&#x5B78;&#x5617;&#x8A66;&#xFF08;&#x5E0C;&#x671B;&#xFF09;&#x900F;&#x904E;&#x5E73;&#x6613;&#x8FD1;&#x4EBA;&#x7684;&#x65B9;&#x5F0F;&#x4F86;&#x4ECB;&#x7D39; redux-saga&#x3002;</p><p>&#x6211;&#x5011;&#x4F7F;&#x7528; Redux repo &#x4E2D;&#x7C21;&#x55AE;&#x7684; Counter &#x7BC4;&#x4F8B;&#x4F5C;&#x70BA;&#x6211;&#x5011;&#x7684;&#x5165;&#x9580;&#x6559;&#x5B78;&#x3002;&#x9019;&#x500B;&#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#x76F8;&#x5C0D;&#x662F;&#x7C21;&#x55AE;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x5F88;&#x9069;&#x5408;&#x4F86;&#x8AAA;&#x660E; redux-saga &#x7684;&#x57FA;&#x672C;&#x6982;&#x5FF5;&#xFF0C;&#x624D;&#x4E0D;&#x6703;&#x8B93;&#x4F60;&#x8FF7;&#x5931;&#x5728;&#x904E;&#x591A;&#x7684;&#x7D30;&#x7BC0;&#x88E1;&#x3002;</p><h3 id="&#x521D;&#x59CB;&#x6B65;&#x9A5F;">&#x521D;&#x59CB;&#x6B65;&#x9A5F;</h3><p>&#x5728;&#x958B;&#x59CB;&#x4E4B;&#x524D;&#xFF0C;&#x8ACB;&#x5148; clone <a href="https://github.com/redux-saga/redux-saga-beginner-tutorial" target="_blank">&#x6559;&#x5B78;&#x7684; repository</a>.</p><blockquote><p>&#x9019;&#x500B;&#x6559;&#x5B78;&#x6700;&#x7D42;&#x5B8C;&#x6210;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;&#x4F4D;&#x5728; <code>sagas</code> &#x7684; branch&#x3002;</p></blockquote><p>&#x7136;&#x5F8C;&#x5728; command line &#x57F7;&#x884C;&#xFF1A;</p><pre><code class="lang-sh">$ cd redux-saga-beginner-tutorial
+$ npm install</code></pre>
+<p>&#x8981;&#x555F;&#x52D5;&#x9019;&#x500B;&#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#xFF0C;&#x8ACB;&#x57F7;&#x884C;&#xFF1A;</p><pre><code class="lang-sh">$ npm start</code></pre>
+<p>&#x6211;&#x5011;&#x5148;&#x5F9E;&#x6700;&#x7C21;&#x55AE;&#x7684;&#x7BC4;&#x4F8B;&#xFF1A;&#x5169;&#x500B;&#x6309;&#x9215; <code>Increment</code> &#x548C; <code>Decrement</code> &#x7684;&#x8A08;&#x6578;&#x5668;&#x3002;&#x5728;&#x9019;&#x4E4B;&#x5F8C;&#xFF0C;&#x6211;&#x5011;&#x5C07;&#x6703;&#x4ECB;&#x7D39;&#x975E;&#x540C;&#x6B65;&#x7684;&#x547C;&#x53EB;&#x3002;</p><p>&#x5982;&#x679C;&#x4E00;&#x5207;&#x9806;&#x5229;&#x7684;&#x8A71;&#xFF0C;&#x4F60;&#x61C9;&#x8A72;&#x6703;&#x770B;&#x5230;&#x5169;&#x500B;&#x6309;&#x9215; <code>Increment</code> &#x548C; <code>Decrement</code>&#xFF0C;&#x9084;&#x6709;&#x4E00;&#x500B;&#x5728;&#x4E0B;&#x65B9;&#x986F;&#x793A;&#x7684;&#x8A0A;&#x606F; <code>Counter: 0</code>&#x3002;</p><blockquote><p>&#x4F60;&#x5728;&#x57F7;&#x884C;&#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#x5982;&#x679C;&#x9047;&#x5230;&#x4E00;&#x500B;&#x554F;&#x984C;&#xFF0C;&#x8ACB;&#x5728;&#x9019;&#x500B;<a href="https://github.com/redux-saga/redux-saga-beginner-tutorial/issues" target="_blank">&#x6559;&#x5B78; repo</a> &#x5EFA;&#x8B70;&#x4E00;&#x500B; issue&#x3002;</p></blockquote><h2 id="hello-sagas">Hello Sagas!</h2><p>&#x6211;&#x5011;&#x5DF2;&#x7D93;&#x5EFA;&#x7ACB;&#x4E86;&#x6211;&#x5011;&#x7684;&#x7B2C;&#x4E00;&#x500B; Saga&#x3002;&#x6839;&#x64DA;&#x50B3;&#x7D71;&#xFF0C;&#x6211;&#x5011;&#x5C07;&#x64B0;&#x5BEB;&#x6211;&#x5011; Saga &#x7248;&#x672C;&#x7684; &apos;Hello, world&apos;&#x3002;</p><p>&#x5EFA;&#x7ACB;&#x4E00;&#x500B; <code>saga.js</code> &#x7684;&#x6A94;&#x6848;&#xFF0C;&#x7136;&#x5F8C;&#x52A0;&#x5165;&#x4EE5;&#x4E0B;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;&#x7247;&#x6BB5;&#xFF1A;</p><pre><code class="lang-javascript"><span class="token keyword">export</span> <span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">helloSaga</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">&apos;Hello Sagas!&apos;</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>&#x6240;&#x4EE5;&#x9019;&#x6C92;&#x4EC0;&#x9EBC;&#x597D;&#x64D4;&#x5FC3;&#x7684;&#xFF0C;&#x53EA;&#x662F;&#x4E00;&#x500B;&#x6B63;&#x5E38;&#x7684; function&#xFF08;&#x9664;&#x4E86;&#x6709;&#x4E00;&#x500B; <code>*</code>&#xFF09;&#x3002;&#x5B83;&#x6240;&#x505A;&#x7684;&#x5C31;&#x662F;&#x5217;&#x5370;&#x4E00;&#x500B;&#x6B61;&#x8FCE;&#x7684;&#x8A0A;&#x606F;&#x5230; console&#x3002;</p><p>&#x70BA;&#x4E86;&#x57F7;&#x884C;&#x6211;&#x5011;&#x7684; Saga&#xFF0C;&#x6211;&#x5011;&#x9700;&#x8981;&#xFF1A;</p><ul><li>&#x5EFA;&#x7ACB;&#x4E00;&#x500B; Saga middleware &#x8207;&#x6211;&#x5011;&#x8981;&#x57F7;&#x884C;&#x7684; Saga&#xFF08;&#x76EE;&#x524D;&#x6211;&#x5011;&#x53EA;&#x6709;&#x4E00;&#x500B; <code>helloSaga</code>&#xFF09;
+</li>
+<li>&#x9023;&#x7D50; Saga middleware &#x5230; Redux store
+</li></ul>
+<p>&#x6211;&#x5011;&#x5C07;&#x6539;&#x8B8A;&#x6211;&#x5011;&#x7684; <code>main.js</code>&#xFF1A;</p><pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// ...</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> createStore<span class="token punctuation">,</span> applyMiddleware <span class="token punctuation">}</span> from <span class="token string">&apos;redux&apos;</span>
+<span class="token keyword">import</span> createSagaMiddleware from <span class="token string">&apos;redux-saga&apos;</span>
+
+<span class="token comment" spellcheck="true">// ...</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> helloSaga <span class="token punctuation">}</span> from <span class="token string">&apos;./sagas&apos;</span>
+
+<span class="token keyword">const</span> sagaMiddleware <span class="token operator">=</span> <span class="token function">createSagaMiddleware</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token function">createStore</span><span class="token punctuation">(</span>
+  reducer<span class="token punctuation">,</span>
+  <span class="token function">applyMiddleware</span><span class="token punctuation">(</span>sagaMiddleware<span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+sagaMiddleware<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>helloSaga<span class="token punctuation">)</span>
+
+<span class="token keyword">const</span> action <span class="token operator">=</span> type <span class="token operator">=</span><span class="token operator">&gt;</span> store<span class="token punctuation">.</span><span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span>type<span class="token punctuation">}</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">// rest unchanged</span></code></pre>
+<p>&#x9996;&#x5148;&#x6211;&#x5011;&#x5F9E; <code>./sagas</code> import &#x6211;&#x5011;&#x7684; module&#xFF0C;&#x7136;&#x5F8C;&#x4F7F;&#x7528; <code>redux-saga</code> library &#x532F;&#x51FA;&#x7684; <code>createSagaMiddleware</code> factory function &#x5EFA;&#x7ACB;&#x4E00;&#x500B; middleware&#x3002;</p><p>&#x5728;&#x57F7;&#x884C;&#x6211;&#x5011;&#x7684; <code>helloSaga</code> &#x4E4B;&#x524D;&#xFF0C;&#x6211;&#x5011;&#x5FC5;&#x9808;&#x4F7F;&#x7528; <code>applyMiddleware</code> &#x9023;&#x7D50;&#x6211;&#x5011;&#x7684; middleware &#x5230; Store&#x3002;&#x7136;&#x5F8C;&#x6211;&#x5011;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; <code>sagaMiddleware.run(helloSaga)</code> &#x4F86;&#x555F;&#x52D5;&#x6211;&#x5011;&#x7684; Saga&#x3002;</p><p>&#x5230;&#x76EE;&#x524D;&#x70BA;&#x6B62;&#xFF0C;&#x6211;&#x5011;&#x7684; Saga &#x6C92;&#x6709;&#x4EC0;&#x9EBC;&#x7279;&#x5225;&#x7684;&#xFF0C;&#x5B83;&#x53EA;&#x662F; log &#x4E00;&#x500B;&#x8A0A;&#x606F;&#x7136;&#x5F8C;&#x96E2;&#x958B;&#x3002;</p><h2 id="&#x9032;&#x884C;&#x975E;&#x540C;&#x6B65;&#x7684;&#x547C;&#x53EB;">&#x9032;&#x884C;&#x975E;&#x540C;&#x6B65;&#x7684;&#x547C;&#x53EB;</h2><p>&#x73FE;&#x5728;&#x8B93;&#x6211;&#x5011;&#x52A0;&#x5165;&#x4E00;&#x4E9B;&#x6771;&#x897F;&#x4F86;&#x66F4;&#x63A5;&#x8FD1;&#x539F;&#x59CB;&#x7684; Counter &#x7BC4;&#x4F8B;&#x3002;&#x70BA;&#x4E86;&#x8981;&#x8AAA;&#x660E;&#x975E;&#x540C;&#x6B65;&#x7684;&#x547C;&#x53EB;&#xFF0C;&#x6211;&#x5011;&#x5C07;&#x52A0;&#x5165;&#x53E6;&#x4E00;&#x500B;&#x6309;&#x9215;&#xFF0C;&#x5728;&#x6309;&#x4E0B;&#x4E00;&#x79D2;&#x5F8C;&#x4F86;&#x589E;&#x52A0; counter&#x3002;</p><p>&#x9996;&#x5148;&#xFF0C;&#x6211;&#x5011;&#x5C07;&#x63D0;&#x4F9B;&#x4E00;&#x500B;&#x984D;&#x5916;&#x7684;&#x6309;&#x9215;&#x548C;&#x4E00;&#x500B; callback <code>onIncrementAsync</code> &#x5230; UI component&#x3002;</p><pre><code class="lang-javascript"><span class="token keyword">const</span> Counter <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">{</span> value<span class="token punctuation">,</span> onIncrement<span class="token punctuation">,</span> onDecrement<span class="token punctuation">,</span> onIncrementAsync <span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span>div<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>button onClick<span class="token operator">=</span><span class="token punctuation">{</span>onIncrementAsync<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      Increment after <span class="token number">1</span> second
+    <span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">&gt;</span>
+    <span class="token punctuation">{</span><span class="token string">&apos; &apos;</span><span class="token punctuation">}</span>
+    <span class="token operator">&lt;</span>button onClick<span class="token operator">=</span><span class="token punctuation">{</span>onIncrement<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      Increment
+    <span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">&gt;</span>
+    <span class="token punctuation">{</span><span class="token string">&apos; &apos;</span><span class="token punctuation">}</span>
+    <span class="token operator">&lt;</span>button onClick<span class="token operator">=</span><span class="token punctuation">{</span>onDecrement<span class="token punctuation">}</span><span class="token operator">&gt;</span>
+      Decrement
+    <span class="token operator">&lt;</span><span class="token operator">/</span>button<span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>hr <span class="token operator">/</span><span class="token operator">&gt;</span>
+    <span class="token operator">&lt;</span>div<span class="token operator">&gt;</span>
+      Clicked<span class="token punctuation">:</span> <span class="token punctuation">{</span>value<span class="token punctuation">}</span> times
+    <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span>
+  <span class="token operator">&lt;</span><span class="token operator">/</span>div<span class="token operator">&gt;</span></code></pre>
+<p>&#x63A5;&#x4E0B;&#x4F86;&#x6211;&#x5011;&#x61C9;&#x8A72;&#x9023;&#x7D50; Component &#x7684; <code>onIncrementAsync</code> &#x5230; Store action&#x3002;</p><p>&#x6211;&#x5011;&#x5C07;&#x6839;&#x64DA;&#x4EE5;&#x4E0B;&#x4FEE;&#x6539; <code>main.js</code> module&#xFF1A;</p><pre><code class="lang-javascript"><span class="token keyword">function</span> <span class="token function">render</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  ReactDOM<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>
+    <span class="token operator">&lt;</span>Counter
+      value<span class="token operator">=</span><span class="token punctuation">{</span>store<span class="token punctuation">.</span><span class="token function">getState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+      onIncrement<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">action</span><span class="token punctuation">(</span><span class="token string">&apos;INCREMENT&apos;</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+      onDecrement<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">action</span><span class="token punctuation">(</span><span class="token string">&apos;DECREMENT&apos;</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+      onIncrementAsync<span class="token operator">=</span><span class="token punctuation">{</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token function">action</span><span class="token punctuation">(</span><span class="token string">&apos;INCREMENT_ASYNC&apos;</span><span class="token punctuation">)</span><span class="token punctuation">}</span> <span class="token operator">/</span><span class="token operator">&gt;</span><span class="token punctuation">,</span>
+    document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">&apos;root&apos;</span><span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>&#x6CE8;&#x610F;&#xFF0C;&#x9019;&#x4E0D;&#x50CF; redux-thunk&#xFF0C;&#x6211;&#x5011; component dispatch &#x4E00;&#x500B; action &#x7D14;&#x7269;&#x4EF6;&#x3002;</p><p>&#x73FE;&#x5728;&#x6211;&#x5011;&#x5C07;&#x4ECB;&#x7D39;&#x53E6;&#x4E00;&#x500B; Saga &#x4F86;&#x57F7;&#x884C;&#x975E;&#x540C;&#x6B65;&#x547C;&#x53EB;&#x3002;&#x6211;&#x5011;&#x4F7F;&#x7528;&#x7684;&#x65B9;&#x5F0F;&#x5982;&#x4E0B;&#xFF1A;</p><blockquote><p>&#x5728;&#x6BCF;&#x500B; <code>INCREMENT_ASYNC</code> action&#xFF0C;&#x6211;&#x5011;&#x9700;&#x8981;&#x555F;&#x52D5;&#x4E00;&#x500B; task &#x4F86;&#x505A;&#x4EE5;&#x4E0B;&#x7684;&#x4E8B;&#xFF1A;</p><ul><li>&#x7B49;&#x5F85;&#x4E00;&#x79D2;&#x7136;&#x5F8C; counter &#x52A0;&#x4E00;
+</li></ul>
+</blockquote><p>&#x52A0;&#x5165;&#x4EE5;&#x4E0B;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;&#x5230; <code>sagas.js</code> module&#xFF1A;</p><pre><code class="lang-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> delay <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga&apos;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> put<span class="token punctuation">,</span> takeEvery <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga/effects&apos;</span>
+
+<span class="token comment" spellcheck="true">// ...</span>
+
+<span class="token comment" spellcheck="true">// &#x6211;&#x5011;&#x5DE5;&#x4F5C;&#x7684; Saga&#xFF1A;&#x5C07;&#x57F7;&#x884C;&#x975E;&#x540C;&#x6B65;&#x7684; increment task</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">incrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">delay</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span>
+  <span class="token keyword">yield</span> <span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token string">&apos;INCREMENT&apos;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// &#x6211;&#x5011;&#x89C0;&#x5BDF;&#x7684; Saga&#xFF1A;&#x5728;&#x6BCF;&#x500B; INCREMENT_ASYNC &#x7522;&#x751F;&#x4E00;&#x500B;&#x65B0;&#x7684; incrementAsync task</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">watchIncrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">takeEvery</span><span class="token punctuation">(</span><span class="token string">&apos;INCREMENT_ASYNC&apos;</span><span class="token punctuation">,</span> incrementAsync<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>&#x8A72;&#x662F;&#x82B1;&#x4E00;&#x4E9B;&#x6642;&#x9593;&#x89E3;&#x91CB;&#x7684;&#x6642;&#x5019;&#x4E86;&#x3002;</p><p>&#x6211;&#x5011; import &#x4E00;&#x500B; utility funciton <code>delay</code>&#xFF0C;&#x5B83;&#x56DE;&#x50B3;&#x4E00;&#x500B; <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank">Promise</a>&#xFF0C;&#x5728;&#x6307;&#x5B9A;&#x5167;&#x7684;&#x6BEB;&#x79D2;&#x6578;&#x5F8C; resolve&#x3002;&#x6211;&#x5011;&#x5C07;&#x4F7F;&#x7528;&#x9019;&#x500B; function &#x4F86; <em>block</em> Generator&#x3002;</p><p>Saga &#x88AB;&#x5BE6;&#x4F5C;&#x70BA; <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*" target="_blank">Generator function</a>&#xFF0C;<em>yield</em> &#x7269;&#x4EF6;&#x5230; redux-saga middleware&#x3002;&#x88AB; yield &#x7684;&#x7269;&#x4EF6;&#x662F;&#x4E00;&#x7A2E;&#x6307;&#x4EE4;&#xFF0C;&#x900F;&#x904E; middleware &#x88AB;&#x89E3;&#x8B80;&#x3002;&#x7576;&#x4E00;&#x500B; Promise &#x88AB; yield &#x5230; middleware&#xFF0C;middleware &#x5C07;&#x66AB;&#x505C; Saga&#xFF0C;&#x76F4;&#x5230; Promise &#x5B8C;&#x6210;&#x3002;&#x5728;&#x4E0A;&#x9762;&#x7684;&#x7BC4;&#x4F8B;&#x4E2D;&#xFF0C;<code>incrementAsync</code> Saga &#x88AB;&#x66AB;&#x505C;&#xFF0C;&#x76F4;&#x5230; Promise &#x900F;&#x904E; <code>delay</code> &#x56DE;&#x50B3; resolve&#xFF1B;&#x5B83;&#x5C07;&#x767C;&#x751F;&#x5728;&#x4E00;&#x79D2;&#x5F8C;&#x3002;</p><p>&#x4E00;&#x65E6; Promise &#x88AB; resolve&#xFF0C;middleware &#x5C07;&#x6062;&#x5FA9; Saga&#xFF0C;&#x57F7;&#x884C;&#x7A0B;&#x5F0F;&#x78BC;&#x76F4;&#x5230;&#x4E0B;&#x4E00;&#x6B21;&#x7684; yield&#x3002;&#x5728;&#x9019;&#x500B;&#x7BC4;&#x4F8B;&#x4E2D;&#xFF0C;&#x4E0B;&#x4E00;&#x500B; statement &#x662F;&#x53E6;&#x4E00;&#x500B;&#x88AB; yield &#x7684;&#x7269;&#x4EF6;&#xFF1A;&#x547C;&#x53EB; <code>put({type: &apos;INCREMENT&apos;})</code> &#x7684;&#x7D50;&#x679C;&#xFF0C;&#x5B83;&#x8AAA;&#x660E;&#x4E86; middleware dispatch &#x4E00;&#x500B; <code>INCREMENT</code> &#x7684; action&#x3002;</p><p><code>put</code> &#x662F;&#x6211;&#x5011;&#x547C;&#x53EB;&#x4E00;&#x500B; <em>Effect</em> &#x7684;&#x7BC4;&#x4F8B;&#x3002;Effect &#x662F;&#x4E00;&#x4E9B;&#x7C21;&#x55AE;&#x7684; JavaScrpt &#x7269;&#x4EF6;&#xFF0C;&#x5305;&#x542B;&#x7531; middleware &#x5BE6;&#x73FE;&#x7684;&#x8AAA;&#x660E;&#x3002;&#x7576;&#x4E00;&#x500B; middleware &#x900F;&#x904E; Saga &#x53D6;&#x5F97;&#x4E00;&#x500B;&#x88AB; yield &#x7684; Effect&#xFF0C;Saga &#x6703;&#x88AB;&#x66AB;&#x505C;&#xFF0C;&#x76F4;&#x5230; Effect &#x88AB;&#x5B8C;&#x6210;&#x3002;</p><p>&#x6240;&#x4EE5;&#x8B93;&#x6211;&#x5011;&#x7E3D;&#x7D50;&#x4E00;&#x4E0B;&#xFF0C;<code>incrementAsync</code> Saga &#x85C9;&#x7531;&#x547C;&#x53EB; <code>delay(1000)</code> sleep &#x4E00;&#x79D2;&#x5F8C;&#xFF0C;&#x7136;&#x5F8C; dispatch &#x4E00;&#x500B; <code>INCREMENT</code> action&#x3002;</p><p>&#x63A5;&#x4E0B;&#x4F86;&#xFF0C;&#x6211;&#x5011;&#x5EFA;&#x7ACB;&#x53E6;&#x4E00;&#x500B; <code>watchIncrementAsync</code> Saga&#x3002;&#x6211;&#x5011;&#x4F7F;&#x7528;&#x7531; <code>redux-saga</code> &#x63D0;&#x4F9B;&#x7684; <code>takeEvery</code> helper function&#xFF0C;&#x4F86;&#x76E3;&#x807D;&#x88AB; dispatch &#x7684; <code>INCREMENT_ASYNC</code> action &#x4E26;&#x6BCF;&#x6B21;&#x57F7;&#x884C; <code>incrementAsync</code>&#x3002;</p><p>&#x73FE;&#x5728;&#x6211;&#x5011;&#x6709;&#x5169;&#x500B; Saga&#xFF0C;&#x800C;&#x4E14;&#x6211;&#x5011;&#x9700;&#x8981;&#x4E00;&#x6B21;&#x555F;&#x52D5;&#x4ED6;&#x5011;&#x5169;&#x500B;&#x3002;&#x5982;&#x679C;&#x8981;&#x9019;&#x9EBC;&#x505A;&#xFF0C;&#x6211;&#x5011;&#x5C07;&#x52A0;&#x5165;&#x4E00;&#x500B; <code>rootSaga</code> &#x8CA0;&#x8CAC;&#x555F;&#x52D5;&#x6211;&#x5011;&#x5176;&#x4ED6;&#x7684; Saga&#x3002;&#x5728;&#x76F8;&#x540C;&#x7684; <code>sagas.js</code> &#x6A94;&#x6848;&#x88E1;&#xFF0C;&#x52A0;&#x5165;&#x4EE5;&#x4E0B;&#x7A0B;&#x5F0F;&#x78BC;&#xFF1A;</p><pre><code class="lang-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> delay <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga&apos;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> put<span class="token punctuation">,</span> takeEvery<span class="token punctuation">,</span> all <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga/effects&apos;</span>
+
+
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">incrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">delay</span><span class="token punctuation">(</span><span class="token number">1000</span><span class="token punctuation">)</span>
+  <span class="token keyword">yield</span> <span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token string">&apos;INCREMENT&apos;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">watchIncrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">takeEvery</span><span class="token punctuation">(</span><span class="token string">&apos;INCREMENT_ASYNC&apos;</span><span class="token punctuation">,</span> incrementAsync<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+
+<span class="token comment" spellcheck="true">// &#x6CE8;&#x610F;&#x73FE;&#x5728;&#x6211;&#x5011;&#x53EA;&#x80FD; export rootSaga</span>
+<span class="token comment" spellcheck="true">// &#x55AE;&#x4E00;&#x9032;&#x5165;&#x9EDE;&#xFF0C;&#x4E00;&#x6B21;&#x555F;&#x52D5;&#x6240;&#x6709; saga</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">rootSaga</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">all</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token function">helloSaga</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token function">watchIncrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>&#x9019;&#x500B; Saga yield &#x4E00;&#x500B;&#x9663;&#x5217;&#xFF0C;&#x547C;&#x53EB;&#x6211;&#x5011;&#x7684;&#x5169;&#x500B; saga&#xFF1A;<code>helloSaga</code> &#x548C; <code>watchIncrementAsync</code> &#x7684;&#x7D50;&#x679C;&#x3002;&#x610F;&#x601D;&#x8AAA;&#x9019;&#x5169;&#x500B; Generators &#x5C07;&#x6703;&#x88AB;&#x5E73;&#x884C;&#x555F;&#x52D5;&#x3002;&#x73FE;&#x5728;&#x6211;&#x5011;&#x53EA;&#x6709;&#x5728; <code>main.js</code> &#x7684; root Saga &#x8ABF;&#x7528; <code>sagaMiddleware.run</code>&#x3002;</p><pre><code class="lang-javascript"><span class="token comment" spellcheck="true">// ...</span>
+<span class="token keyword">import</span> rootSaga from <span class="token string">&apos;./sagas&apos;</span>
+
+<span class="token keyword">const</span> sagaMiddleware <span class="token operator">=</span> <span class="token function">createSagaMiddleware</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+sagaMiddleware<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>rootSaga<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">// ...</span></code></pre>
+<h2 id="&#x8B93;&#x6211;&#x5011;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;&#x53EF;&#x4EE5;&#x6E2C;&#x8A66;">&#x8B93;&#x6211;&#x5011;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;&#x53EF;&#x4EE5;&#x6E2C;&#x8A66;</h2><p>&#x6211;&#x5011;&#x9700;&#x8981;&#x6E2C;&#x8A66;&#x6211;&#x5011;&#x7684; <code>incrementAsync</code> Saga &#x4EE5;&#x78BA;&#x4FDD;&#x5B83;&#x6240;&#x9700;&#x8981;&#x57F7;&#x884C;&#x7684; task&#x3002;</p><p>&#x5EFA;&#x7ACB;&#x53E6;&#x4E00;&#x500B; <code>sagas.spec.js</code> &#x6A94;&#x6848;&#xFF1A;</p><pre><code class="lang-javascript"><span class="token keyword">import</span> test from <span class="token string">&apos;tape&apos;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> incrementAsync <span class="token punctuation">}</span> from <span class="token string">&apos;./sagas&apos;</span>
+
+<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&apos;incrementAsync Saga test&apos;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>assert<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> gen <span class="token operator">=</span> <span class="token function">incrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  <span class="token comment" spellcheck="true">// &#x600E;&#x9EBC;&#x8FA6;&#x5462;&#xFF1F;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>&#x7531;&#x65BC; <code>incrementAsync</code> &#x662F;&#x4E00;&#x500B; Generator function&#xFF0C;&#x7576;&#x6211;&#x5011;&#x5728; middleware &#x5916;&#x57F7;&#x884C;&#x5B83;&#xFF0C;&#x6BCF;&#x6B21;&#x8ABF;&#x7528; generator &#x7684; <code>next</code>&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x53D6;&#x5F97;&#x4EE5;&#x4E0B;&#x5F62;&#x72C0;&#x7684;&#x7269;&#x4EF6;&#xFF1A;</p><pre><code class="lang-javascript">gen<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// =&gt; { done: boolean, value: any }</span></code></pre>
+<p><code>value</code> &#x6B04;&#x4F4D;&#x5305;&#x542B;&#x88AB; yield &#x5F8C;&#x7684;&#x8868;&#x9054;&#x5F0F;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;&#x8AAA;&#x5728; <code>yield</code> &#x5F8C;&#x7684;&#x8868;&#x9054;&#x5F0F;&#x7D50;&#x679C;&#x3002;<code>done</code> &#x6B04;&#x4F4D;&#x8AAA;&#x660E;&#x5982;&#x679C; generator &#x662F;&#x5426;&#x7D50;&#x675F;&#x6216;&#x662F;&#x9084;&#x6709; <code>yield</code> &#x7684;&#x8868;&#x9054;&#x5F0F;&#x3002;</p><p>&#x5728; <code>incrementAsync</code> &#x7684;&#x60C5;&#x6CC1;&#x4E0B;&#xFF0C;generator &#x9023;&#x7E8C; yield &#x5169;&#x500B;&#x503C;&#xFF1A;</p><ol><li><code>yield delay(1000)</code>
+</li>
+<li><code>yield put({type: &apos;INCREMENT&apos;})</code>
+</li></ol>
+<p>&#x6240;&#x4EE5;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x5011;&#x9023;&#x7E8C;&#x8ABF;&#x7528;&#x4E09;&#x6B21; generator &#x7684; next &#x65B9;&#x6CD5;&#xFF0C;&#x6211;&#x5011;&#x6703;&#x5F97;&#x5230;&#x4EE5;&#x4E0B;&#x7684;&#x7D50;&#x679C;&#xFF1A;</p><pre><code class="lang-javascript">gen<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// =&gt; { done: false, value: &lt;result of calling delay(1000)&gt; }</span>
+gen<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// =&gt; { done: false, value: &lt;result of calling put({type: &apos;INCREMENT&apos;})&gt; }</span>
+gen<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// =&gt; { done: true, value: undefined }</span></code></pre>
+<p>&#x524D;&#x9762;&#x5169;&#x6B21;&#x8ABF;&#x7528;&#x56DE;&#x50B3; yield &#x8868;&#x9054;&#x5F0F;&#x7684;&#x7D50;&#x679C;&#x3002;&#x5728;&#x7B2C;&#x4E09;&#x6B21;&#x7684;&#x8ABF;&#x7528;&#x7531;&#x65BC;&#x6C92;&#x6709;&#x5176;&#x4ED6;&#x7684; yield &#x4E86;&#xFF0C;&#x6240;&#x4EE5; <code>done</code> &#x6B04;&#x4F4D;&#x88AB;&#x8A2D;&#x70BA; true&#x3002;&#x800C;&#x4E14; <code>incrementAsync</code> Generator &#x4E0D;&#x6703;&#x56DE;&#x50B3;&#x4EFB;&#x4F55;&#x6771;&#x897F;&#xFF08;&#x6C92;&#x6709; <code>return</code> &#x8A9E;&#x53E5;&#xFF09;&#xFF0C;<code>value</code> &#x6B04;&#x4F4D;&#x88AB;&#x8A2D;&#x5B9A;&#x70BA; <code>undefined</code>&#x3002;</p><p>&#x6240;&#x4EE5;&#x73FE;&#x5728;&#x5462;&#xFF0C;&#x70BA;&#x4E86;&#x6E2C;&#x8A66; <code>incrementAsync</code> &#x5167;&#x7684;&#x908F;&#x8F2F;&#xFF0C;&#x6211;&#x5011;&#x53EA;&#x9700;&#x8981;&#x5C0D;&#x6BCF;&#x500B;&#x56DE;&#x50B3; Generator &#x505A;&#x7C21;&#x55AE;&#x7684;&#x8FED;&#x4EE3;&#x4E26;&#x6AA2;&#x67E5; yield &#x5F8C;&#x7684;&#x503C;&#x3002;</p><pre><code class="lang-javascript"><span class="token keyword">import</span> test from <span class="token string">&apos;tape&apos;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> incrementAsync <span class="token punctuation">}</span> from <span class="token string">&apos;./sagas&apos;</span>
+
+<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&apos;incrementAsync Saga test&apos;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>assert<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> gen <span class="token operator">=</span> <span class="token function">incrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  assert<span class="token punctuation">.</span><span class="token function">deepEqual</span><span class="token punctuation">(</span>
+    gen<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> done<span class="token punctuation">:</span> <span class="token keyword">false</span><span class="token punctuation">,</span> value<span class="token punctuation">:</span> <span class="token operator">?</span><span class="token operator">?</span><span class="token operator">?</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&apos;incrementAsync should return a Promise that will resolve after 1 second&apos;</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>&#x9019;&#x88E1;&#x6709;&#x500B;&#x554F;&#x984C;&#x662F;&#x6211;&#x5011;&#x8981;&#x600E;&#x9EBC;&#x6E2C;&#x8A66; <code>delay</code> &#x7684;&#x56DE;&#x50B3;&#x503C;&#xFF1F;&#x6211;&#x5011;&#x4E0D;&#x80FD;&#x5728; Promise &#x4E0A;&#x53EA;&#x505A;&#x7C21;&#x55AE;&#x7684;&#x76F8;&#x7B49;&#x6E2C;&#x8A66;&#x3002;&#x5982;&#x679C; <code>delay</code> &#x56DE;&#x50B3;&#x4E00;&#x500B;<em>&#x6A19;&#x6E96;</em>&#x503C;&#xFF0C;&#x9019;&#x6A23;&#x6703;&#x66F4;&#x5BB9;&#x6613;&#x7684;&#x6E2C;&#x8A66;&#x3002;</p><p>&#x597D;&#x5427;&#xFF0C;<code>redux-saga</code> &#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x7A2E;&#x65B9;&#x5F0F;&#x8B93;&#x4E0A;&#x9762;&#x7684;&#x8A9E;&#x53E5;&#x8B8A;&#x5F97;&#x53EF;&#x80FD;&#x3002;&#x4E0D;&#x662F;&#x5728; <code>incrementAsync</code> &#x5167;&#x76F4;&#x63A5;&#x547C;&#x53EB; <code>delay(1000)</code>&#xFF0C;&#x6211;&#x5011;&#x5C07;<em>&#x9593;&#x63A5;</em>&#x7684;&#x547C;&#x53EB;&#x5B83;&#xFF1A;</p><pre><code class="lang-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> delay <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga&apos;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> put<span class="token punctuation">,</span> takeEvery<span class="token punctuation">,</span> all<span class="token punctuation">,</span> call <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga/effects&apos;</span>
+
+<span class="token comment" spellcheck="true">// ...</span>
+
+<span class="token keyword">export</span> <span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">incrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">// &#x4F7F;&#x7528; call Effect</span>
+  <span class="token keyword">yield</span> <span class="token function">call</span><span class="token punctuation">(</span>delay<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+  <span class="token keyword">yield</span> <span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">{</span> type<span class="token punctuation">:</span> <span class="token string">&apos;INCREMENT&apos;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>&#x6211;&#x5011;&#x73FE;&#x5728;&#x505A;&#x7684;&#x662F; <code>yield call(delay, 1000)</code>&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x76F4;&#x63A5; <code>yield delay(1000)</code>&#x3002;&#x9019;&#x6709;&#x4EC0;&#x9EBC;&#x4E0D;&#x540C;&#x5462;&#xFF1F;</p><p>&#x5728;&#x7B2C;&#x4E00;&#x500B;&#x60C5;&#x6CC1;&#x4E0B;&#xFF0C;yield &#x8868;&#x9054;&#x5F0F; <code>delay(1000)</code> &#x88AB;&#x50B3;&#x9001;&#x5230; <code>next</code> &#x7684; caller &#x5DF2;&#x7D93;&#x88AB;&#x57F7;&#x884C;&#x4E86;&#xFF08;&#x7576;&#x57F7;&#x884C;&#x6211;&#x5011;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;&#x6642;&#xFF0C;caller &#x53EF;&#x80FD;&#x662F; middleware&#x3002;&#x5B83;&#x53EF;&#x80FD;&#x662F;&#x6211;&#x5011;&#x57F7;&#x884C;&#x6E2C;&#x8A66;&#x7A0B;&#x5F0F;&#x78BC;&#x7684; Generator function &#x548C;&#x8FED;&#x4EE3;&#x5F8C;&#x56DE;&#x50B3;&#x7684; Generator&#xFF09;&#x3002;&#x6240;&#x4EE5;&#x7576; caller &#x5F97;&#x5230;&#x4E00;&#x500B; Promise&#xFF0C;&#x50CF;&#x662F;&#x4E0A;&#x9762;&#x7684;&#x6E2C;&#x8A66;&#x7A0B;&#x5F0F;&#x78BC;&#x4E00;&#x6A23;&#x3002;</p><p>&#x5728;&#x7B2C;&#x4E8C;&#x500B;&#x60C5;&#x6CC1;&#x4E0B;, yield &#x8868;&#x9054;&#x5F0F; <code>call(delay, 1000)</code> &#x88AB;&#x50B3;&#x9001;&#x5230; <code>next</code> &#x7684; caller&#x3002;<code>call</code> &#x5C31;&#x50CF; <code>put</code>&#xFF0C;&#x56DE;&#x50B3;&#x6307;&#x793A;&#x7D66; middleware &#x53BB;&#x547C;&#x53EB;&#x7D66;&#x5B9A;&#x7684; function &#x8207;&#x7D66;&#x5B9A;&#x7684;&#x53C3;&#x6578;&#x7684; Effect&#x3002;&#x4E8B;&#x5BE6;&#x4E0A;&#xFF0C;<code>put</code> &#x548C; <code>call</code> &#x900F;&#x904E;&#x4ED6;&#x5011;&#x672C;&#x8EAB;&#x57F7;&#x884C;&#x4EFB;&#x4F55; dispatch &#x6216;&#x975E;&#x540C;&#x6B65;&#x7684;&#x547C;&#x53EB;&#xFF0C;&#x5B83;&#x5011;&#x53EA;&#x662F;&#x7C21;&#x55AE;&#x56DE;&#x50B3;&#x7D14; JavaScript &#x7684;&#x7269;&#x4EF6;&#x3002;</p><pre><code class="lang-javascript"><span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">{</span>type<span class="token punctuation">:</span> <span class="token string">&apos;INCREMENT&apos;</span><span class="token punctuation">}</span><span class="token punctuation">)</span> <span class="token comment" spellcheck="true">// =&gt; { PUT: {type: &apos;INCREMENT&apos;} }</span>
+<span class="token function">call</span><span class="token punctuation">(</span>delay<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>        <span class="token comment" spellcheck="true">// =&gt; { CALL: {fn: delay, args: [1000]}}</span></code></pre>
+<p>&#x9019;&#x88E1;&#x7684;&#x60C5;&#x6CC1;&#x662F;&#xFF1A;middleware &#x6AA2;&#x67E5;&#x6BCF;&#x500B; yield Effect &#x7684;&#x985E;&#x578B;&#xFF0C;&#x7136;&#x5F8C;&#x6C7A;&#x5B9A;&#x5BE6;&#x73FE;&#x54EA;&#x500B; Effect&#x3002;&#x5982;&#x679C; Effect &#x7684;&#x985E;&#x578B;&#x662F;&#x4E00;&#x500B; <code>PUT</code>&#xFF0C;&#x7136;&#x5F8C;&#x5B83;&#x5C07; dispatch &#x4E00;&#x500B; action &#x5230; Store&#x3002;&#x5982;&#x679C; Effect &#x662F;&#x4E00;&#x500B; <code>CALL</code>&#xFF0C;&#x5B83;&#x5C07;&#x547C;&#x53EB;&#x7D66;&#x5B9A;&#x7684; function&#x3002;</p><p>&#x9019;&#x7A2E;&#x5C07;&#x5EFA;&#x7ACB; Effect &#x548C;&#x57F7;&#x884C; Effect &#x5206;&#x96E2;&#x7684;&#x4F5C;&#x6CD5;&#xFF0C;&#x4F7F;&#x5F97;&#x6211;&#x5011;&#x7528;&#x4EE4;&#x4EBA;&#x9A5A;&#x8A1D;&#x7684;&#x7C21;&#x55AE;&#x65B9;&#x5F0F;&#x4F86;&#x6E2C;&#x8A66;&#x6211;&#x5011;&#x7684; Generator&#xFF1A;</p><pre><code class="lang-javascript"><span class="token keyword">import</span> test from <span class="token string">&apos;tape&apos;</span><span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> <span class="token punctuation">{</span> put<span class="token punctuation">,</span> call <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga/effects&apos;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> delay <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga&apos;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> incrementAsync <span class="token punctuation">}</span> from <span class="token string">&apos;./sagas&apos;</span>
+
+<span class="token function">test</span><span class="token punctuation">(</span><span class="token string">&apos;incrementAsync Saga test&apos;</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>assert<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> gen <span class="token operator">=</span> <span class="token function">incrementAsync</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+  assert<span class="token punctuation">.</span><span class="token function">deepEqual</span><span class="token punctuation">(</span>
+    gen<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>value<span class="token punctuation">,</span>
+    <span class="token function">call</span><span class="token punctuation">(</span>delay<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token string">&apos;incrementAsync Saga must call delay(1000)&apos;</span>
+  <span class="token punctuation">)</span>
+
+  assert<span class="token punctuation">.</span><span class="token function">deepEqual</span><span class="token punctuation">(</span>
+    gen<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span>value<span class="token punctuation">,</span>
+    <span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">{</span>type<span class="token punctuation">:</span> <span class="token string">&apos;INCREMENT&apos;</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token string">&apos;incrementAsync Saga must dispatch an INCREMENT action&apos;</span>
+  <span class="token punctuation">)</span>
+
+  assert<span class="token punctuation">.</span><span class="token function">deepEqual</span><span class="token punctuation">(</span>
+    gen<span class="token punctuation">.</span><span class="token function">next</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> done<span class="token punctuation">:</span> <span class="token keyword">true</span><span class="token punctuation">,</span> value<span class="token punctuation">:</span> undefined <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token string">&apos;incrementAsync Saga must be done&apos;</span>
+  <span class="token punctuation">)</span>
+
+  assert<span class="token punctuation">.</span><span class="token function">end</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<p>&#x7531;&#x65BC; <code>put</code> &#x548C; <code>call</code> &#x56DE;&#x50B3;&#x7D14;&#x7269;&#x4EF6;&#xFF0C;&#x6211;&#x5011;&#x53EF;&#x4EE5;&#x5728;&#x6211;&#x5011;&#x7684;&#x6E2C;&#x8A66;&#x7A0B;&#x5F0F;&#x91CD;&#x8907;&#x4F7F;&#x7528;&#x76F8;&#x540C;&#x7684; function&#x3002;&#x5728; <code>incrementAsync</code> &#x6E2C;&#x8A66;&#x7684;&#x908F;&#x8F2F;&#xFF0C;&#x6211;&#x5011;&#x53EA;&#x662F;&#x8FED;&#x4EE3; generator &#x4E26;&#x5C0D;&#x4ED6;&#x5011;&#x7684;&#x503C;&#x505A; <code>deepEqual</code> &#x6E2C;&#x8A66;&#x3002;</p><p>&#x70BA;&#x4E86;&#x57F7;&#x884C;&#x4E0A;&#x9762;&#x7684;&#x6E2C;&#x8A66;&#xFF0C;&#x8F38;&#x5165;&#xFF1A;</p><pre><code class="lang-sh">$ npm test</code></pre>
+<p>&#x6E2C;&#x8A66;&#x7D50;&#x679C;&#x6703;&#x5728; console &#x4E0A;&#x3002;</p>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="./" class="navigation navigation-prev " aria-label="Previous page: 1. 介紹">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="SagaBackground.html" class="navigation navigation-next " aria-label="Next page: 1.2 Saga 概念的背景">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"1.1 新手教學","level":"1.2.1","depth":2,"next":{"title":"1.2 Saga 概念的背景","level":"1.2.2","depth":2,"path":"docs/introduction/SagaBackground.md","ref":"docs/introduction/SagaBackground.md","articles":[]},"previous":{"title":"1. 介紹","level":"1.2","depth":1,"path":"docs/introduction/README.md","ref":"docs/introduction/README.md","articles":[{"title":"1.1 新手教學","level":"1.2.1","depth":2,"path":"docs/introduction/BeginnerTutorial.md","ref":"docs/introduction/BeginnerTutorial.md","articles":[]},{"title":"1.2 Saga 概念的背景","level":"1.2.2","depth":2,"path":"docs/introduction/SagaBackground.md","ref":"docs/introduction/SagaBackground.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["prism@1.0.0","-highlight","github","favicon"],"styles":{"website":"build/gitbook.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/redux-saga/redux-saga/"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"build/gitbook.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"favicon":{"shortcut":"logo/favicon/favicon.ico","bookmark":"logo/favicon/favicon.ico","appleTouch":"logo/favicon/apple-touch-icon-152x152.png","appleTouchMore":{"120x120":"logo/favicon/apple-touch-icon-120x120.png","180x180":"logo/favicon/apple-touch-icon-180x180.png"}},"prism":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Redux-Saga","gitbook":"3.2.0"},"file":{"path":"docs/introduction/BeginnerTutorial.md","mtime":"2018-09-26T09:17:38.591Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-09-26T09:20:26.200Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

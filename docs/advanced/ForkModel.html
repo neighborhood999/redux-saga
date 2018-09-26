@@ -1,0 +1,699 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>3.8 redux-saga 的 fork 模型 · Redux-Saga</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="../../build/gitbook.css">
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="Concurrency.html" />
+    
+    
+    <link rel="prev" href="TaskCancellation.html" />
+    
+
+    
+        <link rel="shortcut icon" href='../../logo/favicon/favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="bookmark" href='../../logo/favicon/favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="apple-touch-icon" href='../../logo/favicon/apple-touch-icon-152x152.png'>
+    
+    
+        
+        <link rel="apple-touch-icon" sizes="120x120" href="../../logo/favicon/apple-touch-icon-120x120.png">
+        
+        <link rel="apple-touch-icon" sizes="180x180" href="../../logo/favicon/apple-touch-icon-180x180.png">
+        
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Read Me
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="../introduction/">
+            
+                <a href="../introduction/">
+            
+                    
+                    1. 介紹
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="../introduction/BeginnerTutorial.html">
+            
+                <a href="../introduction/BeginnerTutorial.html">
+            
+                    
+                    1.1 新手教學
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="../introduction/SagaBackground.html">
+            
+                <a href="../introduction/SagaBackground.html">
+            
+                    
+                    1.2 Saga 概念的背景
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="../basics/">
+            
+                <a href="../basics/">
+            
+                    
+                    2. 基礎概念
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="../basics/UsingSagaHelpers.html">
+            
+                <a href="../basics/UsingSagaHelpers.html">
+            
+                    
+                    2.1 使用 Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="../basics/DeclarativeEffects.html">
+            
+                <a href="../basics/DeclarativeEffects.html">
+            
+                    
+                    2.2 宣告 Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="../basics/DispatchingActions.html">
+            
+                <a href="../basics/DispatchingActions.html">
+            
+                    
+                    2.3 Dispatch action
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="../basics/ErrorHandling.html">
+            
+                <a href="../basics/ErrorHandling.html">
+            
+                    
+                    2.4 錯誤處理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="../basics/Effect.html">
+            
+                <a href="../basics/Effect.html">
+            
+                    
+                    2.4 一個常見的抽象概念：Effect
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    3. 進階概念
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="FutureActions.html">
+            
+                <a href="FutureActions.html">
+            
+                    
+                    3.1 Pull 未來的 action
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="NonBlockingCalls.html">
+            
+                <a href="NonBlockingCalls.html">
+            
+                    
+                    3.2 非阻塞式的呼叫
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="RunningTasksInParallel.html">
+            
+                <a href="RunningTasksInParallel.html">
+            
+                    
+                    3.3 同時執行多個任務l
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="RacingEffects.html">
+            
+                <a href="RacingEffects.html">
+            
+                    
+                    3.4 在多個 Effect 之間啟動一個 race
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="SequencingSagas.html">
+            
+                <a href="SequencingSagas.html">
+            
+                    
+                    3.5 使用 yield* 對 Saga 做排序
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="ComposingSagas.html">
+            
+                <a href="ComposingSagas.html">
+            
+                    
+                    3.6 組合 Saga
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="TaskCancellation.html">
+            
+                <a href="TaskCancellation.html">
+            
+                    
+                    3.7 取消 Task
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.4.8" data-path="ForkModel.html">
+            
+                <a href="ForkModel.html">
+            
+                    
+                    3.8 redux-saga 的 fork 模型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="Concurrency.html">
+            
+                <a href="Concurrency.html">
+            
+                    
+                    3.9 常見的併發模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="Testing.html">
+            
+                <a href="Testing.html">
+            
+                    
+                    3.10 Saga 測試的範例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="UsingRunSaga.html">
+            
+                <a href="UsingRunSaga.html">
+            
+                    
+                    3.11 連結 Saga 到外部的輸入和輸出
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="Channels.html">
+            
+                <a href="Channels.html">
+            
+                    
+                    3.12 使用 Channel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="../recipes/">
+            
+                <a href="../recipes/">
+            
+                    
+                    4. Recipes
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="../ExternalResources.html">
+            
+                <a href="../ExternalResources.html">
+            
+                    
+                    5. 外部資源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="../Troubleshooting.html">
+            
+                <a href="../Troubleshooting.html">
+            
+                    
+                    6. 疑難排解
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="../Glossary.html">
+            
+                <a href="../Glossary.html">
+            
+                    
+                    7. 術語表
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="../api/">
+            
+                <a href="../api/">
+            
+                    
+                    8. API 參考
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >3.8 redux-saga 的 fork 模型</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="redux-saga-&#x7684;-fork-&#x6A21;&#x578B;">redux-saga &#x7684; fork &#x6A21;&#x578B;</h1><p>&#x5728; <code>redux-saga</code> &#x4F60;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x5169;&#x7A2E; Effect &#x52D5;&#x614B;&#x7684;&#x5728;&#x80CC;&#x666F;&#x57F7;&#x884C; fork task</p><ul><li><code>fork</code> &#x662F;&#x7528;&#x4F86;&#x5EFA;&#x7ACB;&#x88AB;<em>&#x9644;&#x52A0;&#x7684; fork</em>
+</li>
+<li><code>spawn</code> &#x662F;&#x7528;&#x4F86;&#x5EFA;&#x7ACB;&#x88AB;<em>&#x5206;&#x96E2;&#x7684; fork</em>
+</li></ul>
+<h2 id="&#x88AB;&#x9644;&#x52A0;&#x7684;-fork-&#xFF08;&#x4F7F;&#x7528;-fork&#xFF09;">&#x88AB;&#x9644;&#x52A0;&#x7684; fork &#xFF08;&#x4F7F;&#x7528; <code>fork</code>&#xFF09;</h2><p>&#x88AB;&#x9644;&#x52A0;&#x7684; fork &#x900F;&#x904E;&#x4EE5;&#x4E0B;&#x7684;&#x898F;&#x5247;&#x7E7C;&#x7E8C;&#x9644;&#x52A0;&#x5728;&#x5B83;&#x5011;&#x7684; parent</p><h3 id="&#x7D50;&#x8AD6;">&#x7D50;&#x8AD6;</h3><ul><li>Saga &#x53EA;&#x6703;&#x5728;&#x9019;&#x4E4B;&#x5F8C;&#x7D42;&#x6B62;&#xFF1A;
+<ul><li>body &#x7684;&#x8AAA;&#x660E;&#x5B83;&#x7D42;&#x6B62;&#x4E86;&#x81EA;&#x5DF1;&#x672C;&#x8EAB;
+</li>
+<li>&#x6240;&#x6709;&#x88AB;&#x9644;&#x52A0;&#x7684; fork &#x88AB;&#x7D42;&#x6B62;
+</li></ul>
+</li></ul>
+<p>&#x4F8B;&#x5982;&#x6211;&#x5011;&#x6709;&#x4EE5;&#x4E0B;&#x7684;&#x60C5;&#x5F62;&#xFF1A;</p><pre><code class="lang-js"><span class="token keyword">import</span> <span class="token punctuation">{</span> delay <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga&apos;</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> fork<span class="token punctuation">,</span> call<span class="token punctuation">,</span> put <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga/effects&apos;</span>
+<span class="token keyword">import</span> api from <span class="token string">&apos;./somewhere/api&apos;</span> <span class="token comment" spellcheck="true">// app specific</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> receiveData <span class="token punctuation">}</span> from <span class="token string">&apos;./somewhere/actions&apos;</span> <span class="token comment" spellcheck="true">// app specific</span>
+
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">fetchAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> task1 <span class="token operator">=</span> <span class="token keyword">yield</span> <span class="token function">fork</span><span class="token punctuation">(</span>fetchResource<span class="token punctuation">,</span> <span class="token string">&apos;users&apos;</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> task2 <span class="token operator">=</span> <span class="token keyword">yield</span> <span class="token function">fork</span><span class="token punctuation">(</span>fetchResource<span class="token punctuation">,</span> <span class="token string">&apos;comments&apos;</span><span class="token punctuation">)</span>
+  <span class="token keyword">yield</span> <span class="token function">call</span><span class="token punctuation">(</span>delay<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">fetchResource</span><span class="token punctuation">(</span>resource<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span>data<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">yield</span> <span class="token function">call</span><span class="token punctuation">(</span>api<span class="token punctuation">.</span>fetch<span class="token punctuation">,</span> resource<span class="token punctuation">)</span>
+  <span class="token keyword">yield</span> <span class="token function">put</span><span class="token punctuation">(</span><span class="token function">receiveData</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">call</span><span class="token punctuation">(</span>fetchAll<span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p><code>call(fetchAll)</code> &#x5C07;&#x5728;&#x9019;&#x4E4B;&#x5F8C;&#x7D42;&#x6B62;&#xFF1A;</p><ul><li><p><code>fetchAll</code> &#x672C;&#x8EAB;&#x88AB;&#x7D42;&#x6B62;&#xFF0C;&#x9019;&#x610F;&#x601D;&#x662F;&#x9019;&#x4E09;&#x500B; effect &#x90FD;&#x6703;&#x88AB;&#x57F7;&#x884C;&#x3002;&#x7531;&#x65BC; <code>fork</code> Effect &#x4E0D;&#x662F;&#x975E;&#x963B;&#x585E;&#x7684;&#xFF0C;task &#x5C07;&#x88AB;&#x963B;&#x585E;&#x5728; <code>call(delay, 1000)</code></p></li>
+<li><p>&#x5169;&#x500B;&#x88AB; fork &#x7684; task &#x7D42;&#x6B62;&#xFF0C;&#x610F;&#x601D;&#x662F;&#x5728; fetch &#x6240;&#x9700;&#x7684;&#x8CC7;&#x6E90;&#x4E26;&#x653E;&#x5165;&#x5C0D;&#x61C9;&#x7684; <code>receiveData</code> action</p></li></ul>
+<p>&#x6240;&#x4EE5;&#x6574;&#x500B; task &#x5C07;&#x963B;&#x585E;&#x76F4;&#x5230;&#x4E00;&#x500B; 1000 &#x6BEB;&#x79D2;&#x7684; delay &#x88AB;&#x50B3;&#x9001;&#xFF0C;<em>&#x4E14;</em> <code>task1</code> &#x548C; <code>task2</code> &#x5B8C;&#x6210;&#x4ED6;&#x5011;&#x7684;&#x4EFB;&#x52D9;&#x3002;</p><p>&#x6BD4;&#x65B9;&#x8AAA;&#xFF0C;1000 &#x6BEB;&#x79D2;&#x7684; delay &#x548C;&#x5169;&#x500B; task &#x9084;&#x6C92;&#x6709;&#x5B8C;&#x6210;&#xFF0C;&#x7136;&#x5F8C; <code>fetchAll</code> &#x5728;&#x7D42;&#x6B62;&#x6574;&#x500B; task &#x4E4B;&#x524D;&#xFF0C;&#x5C07;&#x7B49;&#x5F85;&#x76F4;&#x5230;&#x6240;&#x6709;&#x88AB; fork &#x7684; task &#x5B8C;&#x6210;&#x3002;</p><p>&#x7D30;&#x5FC3;&#x7684;&#x8B80;&#x8005;&#x53EF;&#x80FD;&#x6703;&#x6CE8;&#x610F;&#x5230; <code>fetchAll</code> saga &#x4F7F;&#x7528;&#x5E73;&#x884C; Effect &#x88AB;&#x6539;&#x5BEB;</p><pre><code class="lang-js"><span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">fetchAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">all</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+    <span class="token function">call</span><span class="token punctuation">(</span>fetchResource<span class="token punctuation">,</span> <span class="token string">&apos;users&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>     <span class="token comment" spellcheck="true">// task1</span>
+    <span class="token function">call</span><span class="token punctuation">(</span>fetchResource<span class="token punctuation">,</span> <span class="token string">&apos;comments&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>  <span class="token comment" spellcheck="true">// task2,</span>
+    <span class="token function">call</span><span class="token punctuation">(</span>delay<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+  <span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre>
+<p>&#x4E8B;&#x5BE6;&#x4E0A;&#xFF0C;&#x88AB;&#x9644;&#x52A0;&#x7684; fork &#x8207;&#x5E73;&#x884C; Effect &#x5171;&#x4EAB;&#x76F8;&#x540C;&#x7684;&#x8A9E;&#x610F;&#xFF1A;</p><ul><li>&#x5728;&#x5E73;&#x884C;&#x60C5;&#x6CC1;&#x4E0B;&#x6211;&#x5011;&#x57F7;&#x884C; task
+</li>
+<li>&#x5728;&#x6240;&#x6709;&#x88AB; launch &#x7684; task &#x7D42;&#x6B62;&#x5F8C;&#xFF0C;paraent &#x5C07;&#x6703;&#x7D42;&#x6B62;
+</li></ul>
+<p>&#x9019;&#x4E5F;&#x9069;&#x7528;&#x65BC;&#x5176;&#x4ED6;&#x8A9E;&#x610F;&#xFF08;&#x932F;&#x8AA4;&#x548C;&#x53D6;&#x6D88;&#x50B3;&#x64AD;&#xFF09;&#x3002;&#x4F60;&#x53EF;&#x4EE5;&#x7C21;&#x55AE;&#x7684;&#x628A;&#x5B83;&#x8003;&#x616E;&#x4F5C;&#x70BA;&#x4E00;&#x500B;<em>&#x52D5;&#x614B;&#x5E73;&#x884C;</em> Effect&#xFF0C;&#x4E86;&#x89E3;&#x9644;&#x52A0; fork &#x7684;&#x884C;&#x70BA;&#x3002;</p><h2 id="error-&#x50B3;&#x64AD;">Error &#x50B3;&#x64AD;</h2><p>&#x6309;&#x7167;&#x540C;&#x6A23;&#x7684;&#x6BD4;&#x55BB;&#xFF0C;&#x6211;&#x5011;&#x4F86;&#x8A73;&#x7D30;&#x7684;&#x6AA2;&#x67E5;&#x5728;&#x5E73;&#x884C;&#x7684; Effect &#x5982;&#x4F55;&#x8655;&#x7406;&#x932F;&#x8AA4;</p><p>&#x4F8B;&#x5982;&#xFF0C;&#x5047;&#x8A2D;&#x6211;&#x5011;&#x6709;&#x9019;&#x500B; Effect</p><pre><code class="lang-js"><span class="token keyword">yield</span> <span class="token function">all</span><span class="token punctuation">(</span><span class="token punctuation">[</span>
+  <span class="token function">call</span><span class="token punctuation">(</span>fetchResource<span class="token punctuation">,</span> <span class="token string">&apos;users&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token function">call</span><span class="token punctuation">(</span>fetchResource<span class="token punctuation">,</span> <span class="token string">&apos;comments&apos;</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  <span class="token function">call</span><span class="token punctuation">(</span>delay<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+<span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+<p>&#x4E00;&#x65E6;&#x5176;&#x4E2D;&#x4E00;&#x500B;&#x5B50; Effect &#x5931;&#x6557;&#xFF0C;&#x4E0A;&#x65B9;&#x7684; Effect &#x5C31;&#x6703;&#x5931;&#x6557;&#x3002;&#x6B64;&#x5916;&#xFF0C;&#x672A;&#x6355;&#x7372;&#x7684;&#x932F;&#x8AA4;&#x5C07;&#x6703;&#x9020;&#x6210;&#x5E73;&#x884C; Effect &#x53D6;&#x6D88;&#x6240;&#x6709;&#x5176;&#x4ED6; pending &#x7684; Effect&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x5982;&#x679C; <code>call(fetchResource, &apos;users&apos;)</code> &#x767C;&#x51FA;&#x4E86;&#x4E00;&#x500B;&#x672A;&#x6355;&#x7372;&#x7684;&#x932F;&#x8AA4;&#xFF0C;&#x5E73;&#x884C; Effect &#x5C07;&#x6703;&#x53D6;&#x6D88;&#x5176;&#x4ED6;&#x5169;&#x500B; task&#xFF08;&#x5982;&#x679C;&#x4ED6;&#x5011;&#x4ECD;&#x7136;&#x5728; pending&#xFF09;&#xFF0C;&#x4E26;&#x5F9E;&#x5931;&#x6557;&#x7684;&#x547C;&#x53EB;&#x4E2D;&#xFF0C;&#x7D42;&#x6B62;&#x81EA;&#x5DF1;&#x672C;&#x8EAB;&#x7684;&#x932F;&#x8AA4;&#x3002;</p><p>&#x985E;&#x4F3C;&#x65BC;&#x88AB; attach &#x7684; forks&#xFF0C;Saga &#x6703;&#x5728;&#x4EE5;&#x4E0B;&#x60C5;&#x6CC1;&#x99AC;&#x4E0A;&#x7D42;&#x6B62;</p><ul><li><p>&#x5B83;&#x4E3B;&#x8981; body &#x7684;&#x8AAA;&#x660E;&#x62CB;&#x51FA;&#x4E86;&#x4E00;&#x500B;&#x932F;&#x8AA4;</p></li>
+<li><p>&#x4E00;&#x500B;&#x672A;&#x6355;&#x7372;&#x7684;&#x932F;&#x8AA4;&#x900F;&#x904E;&#x5176;&#x4E2D;&#x4E00;&#x500B;&#x88AB; attach &#x7684; forks &#x88AB;&#x767C;&#x51FA;</p></li></ul>
+<p>&#x6240;&#x4EE5;&#x5728;&#x5148;&#x524D;&#x7684;&#x7BC4;&#x4F8B;&#xFF1A;</p><pre><code class="lang-js"><span class="token comment" spellcheck="true">//... imports</span>
+
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">fetchAll</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> task1 <span class="token operator">=</span> <span class="token keyword">yield</span> <span class="token function">fork</span><span class="token punctuation">(</span>fetchResource<span class="token punctuation">,</span> <span class="token string">&apos;users&apos;</span><span class="token punctuation">)</span>
+  <span class="token keyword">const</span> task2 <span class="token operator">=</span> <span class="token keyword">yield</span> <span class="token function">fork</span><span class="token punctuation">(</span>fetchResource<span class="token punctuation">,</span> <span class="token string">&apos;comments&apos;</span><span class="token punctuation">)</span>
+  <span class="token keyword">yield</span> <span class="token function">call</span><span class="token punctuation">(</span>delay<span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">fetchResource</span><span class="token punctuation">(</span>resource<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> <span class="token punctuation">{</span>data<span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">yield</span> <span class="token function">call</span><span class="token punctuation">(</span>api<span class="token punctuation">.</span>fetch<span class="token punctuation">,</span> resource<span class="token punctuation">)</span>
+  <span class="token keyword">yield</span> <span class="token function">put</span><span class="token punctuation">(</span><span class="token function">receiveData</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">try</span> <span class="token punctuation">{</span>
+    <span class="token keyword">yield</span> <span class="token function">call</span><span class="token punctuation">(</span>fetchAll<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">e</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// &#x8655;&#x7406; fetchAll &#x932F;&#x8AA4;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<p>&#x5982;&#x679C;&#x5728;&#x9019;&#x6A23;&#x7684;&#x60C5;&#x6CC1;&#xFF0C;&#x4F8B;&#x5982; <code>fetchAll</code> &#x88AB;&#x963B;&#x585E;&#x5728; <code>call(delay, 1000)</code> Effect&#xFF0C;&#x4E26;&#x8AAA;&#x660E; <code>task1</code> &#x5931;&#x6557;&#xFF0C;&#x7136;&#x5F8C;&#x6574;&#x500B; <code>fetchAll</code> task &#x5C07;&#x6703;&#x56E0;&#x6B64;&#x5931;&#x6557;</p><ul><li><p>&#x53D6;&#x6D88;&#x6240;&#x6709;&#x5176;&#x4ED6;&#x5728; pending &#x7684; task&#x3002;&#x9019;&#x5305;&#x542B;&#xFF1A;</p><ul><li><em>main task</em>&#xFF08;<code>fetchAll</code> &#x7684;&#x672C;&#x8EAB;&#xFF09;&#xFF1A;&#x53D6;&#x6D88;&#x7684;&#x610F;&#x601D;&#x662F;&#xFF0C;&#x53D6;&#x6D88;&#x76EE;&#x524D;&#x7684; <code>call(delay, 1000)</code> &#x7684; Effect
+</li>
+<li>&#x5176;&#x4ED6;&#x88AB; fork &#x7684; task &#x4ECD;&#x7136;&#x5728; pending&#x3002;&#x4F8B;&#x5982;&#x5728;&#x6211;&#x5011;&#x7BC4;&#x4F8B;&#x7684; <code>task2</code>&#x3002;
+</li></ul>
+</li>
+<li><p>&#x5728; <code>main</code> &#x7684; <code>catch</code> &#x5167;&#x5C07;&#x6703;&#x6355;&#x7372;&#x7531; <code>call(fetchAll)</code> &#x767C;&#x51FA;&#x7684;&#x932F;&#x8AA4;</p></li></ul>
+<p>&#x6CE8;&#x610F;&#xFF0C;&#x56E0;&#x70BA;&#x6211;&#x5011;&#x4F7F;&#x7528;&#x4E00;&#x500B;&#x963B;&#x585E;&#x7684; call&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x5011;&#x53EA;&#x80FD;&#x5F9E; <code>main</code> &#x5167;&#x90E8; catch <code>call(fetchAll)</code> &#x7684;&#x932F;&#x8AA4;&#xFF0C;&#x800C;&#x4E14;&#x6211;&#x5011;&#x4E0D;&#x80FD;&#x76F4;&#x7D50;&#x5F9E; <code>fetchAll</code> &#x6355;&#x6349;&#x932F;&#x8AA4;&#x3002;&#x9019;&#x662F;&#x9996;&#x8981;&#x7684;&#x539F;&#x5247;&#xFF0C;<strong>&#x4F60;&#x4E0D;&#x80FD;&#x5F9E;&#x88AB; fork &#x7684; task &#x6355;&#x6349;&#x932F;&#x8AA4;</strong>&#x3002;&#x5728;&#x4E00;&#x500B;&#x88AB;&#x9644;&#x52A0;&#x7684; fork &#x932F;&#x8AA4;&#x5C07;&#x6703;&#x5C0E;&#x81F4;&#x88AB; fork &#x7684; parent &#x88AB;&#x7D42;&#x6B62;&#xFF08;&#x5C31;&#x50CF;&#x6C92;&#x6709;&#x65B9;&#x6CD5;&#x5728;&#x4E00;&#x500B;&#x5E73;&#x884C; Effect <em>&#x5167;</em>&#x6355;&#x6349;&#x932F;&#x8AA4;&#xFF0C;&#x53EA;&#x80FD;&#x5F9E;&#x5916;&#x90E8;&#x900F;&#x904E;&#x88AB;&#x963B;&#x585E;&#x7684;&#x7684;&#x5E73;&#x884C; Effect&#xFF09;&#x3002;</p><h2 id="cancellation">Cancellation</h2><p>&#x53D6;&#x6D88; Saga &#x5C0E;&#x81F4;:</p><ul><li><p><em>main task</em> &#x9019;&#x610F;&#x601D;&#x662F;&#x7576; Saga &#x88AB;&#x963B;&#x585E;&#x6642;&#xFF0C;&#x53D6;&#x6D88;&#x76EE;&#x524D;&#x7684; Effect</p></li>
+<li><p>&#x6240;&#x6709;&#x88AB;&#x9644;&#x52A0;&#x7684; fork &#x4ECD;&#x7136;&#x7E7C;&#x7E8C;&#x57F7;&#x884C;</p></li></ul>
+<p><strong>WIP</strong></p><h2 id="&#x88AB;&#x5206;&#x96E2;&#x7684;-fork&#xFF08;&#x4F7F;&#x7528;-spawn&#xFF09;">&#x88AB;&#x5206;&#x96E2;&#x7684; fork&#xFF08;&#x4F7F;&#x7528; <code>spawn</code>&#xFF09;</h2><p>&#x88AB;&#x5206;&#x96E2;&#x7684; fork &#x5B58;&#x6D3B;&#x5728;&#x5B83;&#x5011;&#x672C;&#x8EAB;&#x57F7;&#x884C;&#x7684; context&#x3002;Parent &#x4E0D;&#x6703;&#x7B49;&#x5F85;&#x88AB;&#x5206;&#x96E2;&#x7684; fork &#x7D42;&#x6B62;&#x3002;&#x5F9E;&#x88AB; spawn &#x7684; task &#x70BA;&#x6355;&#x7372;&#x7684;&#x932F;&#x8AA4;&#x4E0D;&#x6703;&#x88AB;&#x5192;&#x6CE1;&#x5230; parent&#xFF0C;&#x800C;&#x4E14;&#x53D6;&#x6D88;&#x4E00;&#x500B; parent &#x4E26;&#x4E0D;&#x6703;&#x81EA;&#x52D5;&#x7684;&#x53D6;&#x6D88;&#x88AB;&#x5206;&#x96E2;&#x7684; fork&#xFF08;&#x4F60;&#x9700;&#x8981;&#x660E;&#x78BA;&#x7684;&#x53D6;&#x6D88;&#x5B83;&#x5011;&#xFF09;&#x3002;</p><p>&#x7C21;&#x55AE;&#x4F86;&#x8AAA;&#xFF0C;&#x88AB;&#x5206;&#x96E2;&#x7684; fork &#x884C;&#x70BA;&#x50CF;&#x662F;&#x4F7F;&#x7528; <code>middleware.run</code> API &#x76F4;&#x63A5;&#x555F;&#x52D5; root Saga&#x3002;</p><p><strong>WIP</strong></p>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="TaskCancellation.html" class="navigation navigation-prev " aria-label="Previous page: 3.7 取消 Task">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="Concurrency.html" class="navigation navigation-next " aria-label="Next page: 3.9 常見的併發模式">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"3.8 redux-saga 的 fork 模型","level":"1.4.8","depth":2,"next":{"title":"3.9 常見的併發模式","level":"1.4.9","depth":2,"path":"docs/advanced/Concurrency.md","ref":"docs/advanced/Concurrency.md","articles":[]},"previous":{"title":"3.7 取消 Task","level":"1.4.7","depth":2,"path":"docs/advanced/TaskCancellation.md","ref":"docs/advanced/TaskCancellation.md","articles":[]},"dir":"ltr"},"config":{"plugins":["prism@1.0.0","-highlight","github","favicon"],"styles":{"website":"build/gitbook.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/redux-saga/redux-saga/"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"build/gitbook.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"favicon":{"shortcut":"logo/favicon/favicon.ico","bookmark":"logo/favicon/favicon.ico","appleTouch":"logo/favicon/apple-touch-icon-152x152.png","appleTouchMore":{"120x120":"logo/favicon/apple-touch-icon-120x120.png","180x180":"logo/favicon/apple-touch-icon-180x180.png"}},"prism":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Redux-Saga","gitbook":"3.2.0"},"file":{"path":"docs/advanced/ForkModel.md","mtime":"2018-09-26T09:17:38.584Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-09-26T09:20:26.200Z"},"basePath":"../..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../gitbook/gitbook.js"></script>
+    <script src="../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

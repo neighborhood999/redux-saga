@@ -1,0 +1,680 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>5. 外部資源 · Redux-Saga</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="../build/gitbook.css">
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="Troubleshooting.html" />
+    
+    
+    <link rel="prev" href="recipes/" />
+    
+
+    
+        <link rel="shortcut icon" href='../logo/favicon/favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="bookmark" href='../logo/favicon/favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="apple-touch-icon" href='../logo/favicon/apple-touch-icon-152x152.png'>
+    
+    
+        
+        <link rel="apple-touch-icon" sizes="120x120" href="../logo/favicon/apple-touch-icon-120x120.png">
+        
+        <link rel="apple-touch-icon" sizes="180x180" href="../logo/favicon/apple-touch-icon-180x180.png">
+        
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../">
+            
+                <a href="../">
+            
+                    
+                    Read Me
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="introduction/">
+            
+                <a href="introduction/">
+            
+                    
+                    1. 介紹
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="introduction/BeginnerTutorial.html">
+            
+                <a href="introduction/BeginnerTutorial.html">
+            
+                    
+                    1.1 新手教學
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="introduction/SagaBackground.html">
+            
+                <a href="introduction/SagaBackground.html">
+            
+                    
+                    1.2 Saga 概念的背景
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="basics/">
+            
+                <a href="basics/">
+            
+                    
+                    2. 基礎概念
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="basics/UsingSagaHelpers.html">
+            
+                <a href="basics/UsingSagaHelpers.html">
+            
+                    
+                    2.1 使用 Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="basics/DeclarativeEffects.html">
+            
+                <a href="basics/DeclarativeEffects.html">
+            
+                    
+                    2.2 宣告 Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="basics/DispatchingActions.html">
+            
+                <a href="basics/DispatchingActions.html">
+            
+                    
+                    2.3 Dispatch action
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="basics/ErrorHandling.html">
+            
+                <a href="basics/ErrorHandling.html">
+            
+                    
+                    2.4 錯誤處理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="basics/Effect.html">
+            
+                <a href="basics/Effect.html">
+            
+                    
+                    2.4 一個常見的抽象概念：Effect
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="advanced/">
+            
+                <a href="advanced/">
+            
+                    
+                    3. 進階概念
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="advanced/FutureActions.html">
+            
+                <a href="advanced/FutureActions.html">
+            
+                    
+                    3.1 Pull 未來的 action
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="advanced/NonBlockingCalls.html">
+            
+                <a href="advanced/NonBlockingCalls.html">
+            
+                    
+                    3.2 非阻塞式的呼叫
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="advanced/RunningTasksInParallel.html">
+            
+                <a href="advanced/RunningTasksInParallel.html">
+            
+                    
+                    3.3 同時執行多個任務l
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="advanced/RacingEffects.html">
+            
+                <a href="advanced/RacingEffects.html">
+            
+                    
+                    3.4 在多個 Effect 之間啟動一個 race
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="advanced/SequencingSagas.html">
+            
+                <a href="advanced/SequencingSagas.html">
+            
+                    
+                    3.5 使用 yield* 對 Saga 做排序
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="advanced/ComposingSagas.html">
+            
+                <a href="advanced/ComposingSagas.html">
+            
+                    
+                    3.6 組合 Saga
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="advanced/TaskCancellation.html">
+            
+                <a href="advanced/TaskCancellation.html">
+            
+                    
+                    3.7 取消 Task
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="advanced/ForkModel.html">
+            
+                <a href="advanced/ForkModel.html">
+            
+                    
+                    3.8 redux-saga 的 fork 模型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="advanced/Concurrency.html">
+            
+                <a href="advanced/Concurrency.html">
+            
+                    
+                    3.9 常見的併發模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="advanced/Testing.html">
+            
+                <a href="advanced/Testing.html">
+            
+                    
+                    3.10 Saga 測試的範例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="advanced/UsingRunSaga.html">
+            
+                <a href="advanced/UsingRunSaga.html">
+            
+                    
+                    3.11 連結 Saga 到外部的輸入和輸出
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="advanced/Channels.html">
+            
+                <a href="advanced/Channels.html">
+            
+                    
+                    3.12 使用 Channel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="recipes/">
+            
+                <a href="recipes/">
+            
+                    
+                    4. Recipes
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="1.6" data-path="ExternalResources.html">
+            
+                <a href="ExternalResources.html">
+            
+                    
+                    5. 外部資源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="Troubleshooting.html">
+            
+                <a href="Troubleshooting.html">
+            
+                    
+                    6. 疑難排解
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="Glossary.html">
+            
+                <a href="Glossary.html">
+            
+                    
+                    7. 術語表
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="api/">
+            
+                <a href="api/">
+            
+                    
+                    8. API 參考
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href=".." >5. 外部資源</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x5916;&#x90E8;&#x8CC7;&#x6E90;">&#x5916;&#x90E8;&#x8CC7;&#x6E90;</h1><h3 id="generators-&#x76F8;&#x95DC;&#x6587;&#x7AE0;">Generators &#x76F8;&#x95DC;&#x6587;&#x7AE0;</h3><ul><li><a href="http://gajus.com/blog/2/the-definitive-guide-to-the-javascript-generators" target="_blank">JavaScript Generators &#x7684;&#x6B0A;&#x5A01;&#x6307;&#x5357;</a> by Gajus Kuizinas
+</li>
+<li><a href="https://davidwalsh.name/es6-generators" target="_blank">&#x57FA;&#x790E;&#x7684; ES6 Generators</a> by Kyle Simpson
+</li>
+<li><a href="http://www.2ality.com/2015/03/es6-generators.html" target="_blank">&#x6DF1;&#x5165; ES6 generators</a> by Axel Rauschmayer
+</li>
+<li><a href="https://goshakkk.name/javascript-generators-understanding-sample-use-cases/" target="_blank">3 cases where JavaScript generators rock (+ understanding them)</a> by Gosha Arinich
+</li></ul>
+<h3 id="redux-saga-&#x76F8;&#x95DC;&#x6587;&#x7AE0;">redux-saga &#x76F8;&#x95DC;&#x6587;&#x7AE0;</h3><ul><li><a href="http://riadbenguella.com/from-actions-creators-to-sagas-redux-upgraded/" target="_blank">&#x73FE;&#x4ECA;&#x7684; Redux&#xFF1A;&#x5F9E; action creator &#x5230; saga</a> by Riad Benguella
+</li>
+<li><a href="http://jaysoo.ca/2016/01/03/managing-processes-in-redux-using-sagas/" target="_blank">&#x5728; React + Redux &#x4F7F;&#x7528; Saga &#x7BA1;&#x7406; Side Effect</a> by Jack Hsu
+</li>
+<li><a href="https://medium.com/infinite-red/using-redux-saga-to-simplify-your-growing-react-native-codebase-2b8036f650de#.7wl4wr1tk" target="_blank">&#x4F7F;&#x7528; redux-saga &#x4F86;&#x7C21;&#x5316;&#x4F60; React Native &#x589E;&#x9577;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;</a> by Steve Kellock
+</li>
+<li><a href="http://konkle.us/master-complex-redux-workflows-with-sagas/" target="_blank">&#x4F7F;&#x7528; Saga &#x638C;&#x63E1;&#x8907;&#x96DC;&#x7684; Redux Workflows</a> by Brandon Konkle
+</li>
+<li><a href="http://wecodetheweb.com/2016/01/23/handling-async-in-redux-with-sagas/" target="_blank">&#x4F7F;&#x7528; Saga &#x5728; Redux &#x8655;&#x7406;&#x975E;&#x540C;&#x6B65;</a> by Niels Gerritsen
+</li>
+<li><a href="https://medium.com/@MattiaManzati/tips-to-handle-authentication-in-redux-2-introducing-redux-saga-130d6872fbe7#.g49x2gj1g" target="_blank">&#x5728; Redux &#x8655;&#x7406;&#x8A8D;&#x8B49;&#x7684;&#x79D8;&#x8A23;</a> by Mattia Manzati
+</li>
+<li><a href="http://joelhooks.com/blog/2016/03/20/build-an-image-gallery-using-redux-saga/?utm_content=bufferbadc3&amp;utm_medium=social&amp;utm_source=twitter.com&amp;utm_campaign=buffer" target="_blank">&#x4F7F;&#x7528; React&#x3001;Redux  &#x548C; redux-saga &#x4F86;&#x5EFA;&#x7ACB; Image Gallery</a> by Joel Hooks
+</li>
+<li><a href="https://medium.com/@andresmijares25/async-operations-using-redux-saga-2ba02ae077b3#.556ey5blj" target="_blank">&#x4F7F;&#x7528; redux &#x64CD;&#x4F5C;&#x975E;&#x540C;&#x6B65; saga</a> by Andr&#xE9;s Mijares
+</li>
+<li><a href="https://ohyayanotherblog.ghost.io/redux-saga-clock/" target="_blank">&#x4ECB;&#x7D39; Redux Saga</a> by Matt Granmoe
+</li>
+<li><a href="https://medium.com/@xanf/vuex-meets-redux-saga-e9c6b46555e#.d4318am40" target="_blank">Vuex &#x9047;&#x898B; Redux-saga</a> by Illya Klymov
+</li>
+<li><a href="https://goshakkk.name/redux-side-effect-approaches/" target="_blank">Redux &#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#x4E2D; 3 &#x7A2E;&#x5E38;&#x898B;&#x7684; side-effects</a> by Gosha Arinich
+</li>
+<li><a href="https://goshakkk.name/lazy-auth-redux-saga-flow/" target="_blank">Lazy registration &#x8207; Redux &#x548C; Sagas</a> by Gosha Arinich
+</li>
+<li><a href="https://medium.com/grey-frogs/writing-more-testable-code-with-redux-saga-c1561f995225" target="_blank">&#x7528;Redux Saga &#x64B0;&#x5BEB;&#x66F4;&#x591A;&#x53EF;&#x6E2C;&#x8A66;&#x7684;&#x7A0B;&#x5F0F;&#x78BC;</a> by Luiz Guilherme D&#x2019;Abruzzo Pereira
+</li>
+<li><a href="https://decembersoft.com/posts/redux-hero-part-4-every-hero-needs-a-villain-a-fun-introduction-to-redux-saga-js/" target="_blank">Redux Hero Part 4&#xFF1A;Every Hero Needs a Villain&#xFF08;&#x4E00;&#x500B;&#x6709;&#x8DA3;&#x7684;&#x65B9;&#x5F0F;&#x4F86;&#x4ECB;&#x7D39; redux-saga&#xFF09;</a>
+</li>
+<li><a href="https://medium.com/@chanakyabhardwaj/modelling-common-patterns-with-redux-saga-464a380a37ce" target="_blank">&#x4F7F;&#x7528; redux-saga &#x5EFA;&#x7ACB;&#x5E38;&#x898B;&#x7684;&#x6A21;&#x5F0F;</a> by Chanakya Bhardwaj
+</li>
+<li><a href="https://goshakkk.name/analytics-easy-redux-saga/" target="_blank">Analytics on easy mode with Redux-Saga</a> by Gosha Arinich
+</li>
+<li><a href="https://medium.com/shiftgig-blog/redux-saga-common-patterns-48437892e11c" target="_blank">Redux Saga common Patterns</a> by Andres Mijares
+</li></ul>
+<h3 id="addons">Addons</h3><ul><li><a href="https://www.npmjs.com/package/redux-saga-sc" target="_blank">redux-saga-sc</a> &#x2013; &#x5728; SocketCluster websockets &#x63D0;&#x4F9B; saga &#x5BB9;&#x6613;&#x7684; dispatch redux action
+</li>
+<li><a href="https://www.npmjs.com/package/redux-form-saga" target="_blank">redux-form-saga</a> &#x2013; &#x4E00;&#x500B; action creator &#x548C; saga &#x7528;&#x65BC;&#x6574;&#x5408; Redux Form &#x548C; Redux Saga
+</li>
+<li><a href="https://www.npmjs.com/package/redux-electron-enhancer" target="_blank">redux-electron-enhancer</a> &#x2013; &#x5728;&#x591A;&#x500B;&#x7A0B;&#x5E8F;&#x4E2D;&#xFF0C;&#x540C;&#x6B65;&#x6BCF;&#x500B;&#x5BE6;&#x4F8B;&#x4E4B;&#x9593;&#x7684; Redux store
+</li>
+<li><a href="https://www.npmjs.com/package/eslint-plugin-redux-saga" target="_blank">eslint-plugin-redux-saga</a> - ESLint &#x7684; rules&#xFF0C;&#x5E6B;&#x52A9;&#x4F60;&#x64B0;&#x5BEB;&#x6C92;&#x6709;&#x932F;&#x8AA4;&#x7684; saga
+</li>
+<li><a href="https://www.npmjs.com/package/redux-saga-router" target="_blank">redux-saga-router</a> - &#x85C9;&#x7531; route &#x7684;&#x6539;&#x8B8A;&#x5728; response &#x5167;&#x57F7;&#x884C; saga &#x7684; Helper
+</li>
+<li><a href="https://github.com/xanf/vuex-redux-saga" target="_blank">vuex-redux-saga</a> - Vuex &#x548C; Redux-Saga &#x4E4B;&#x9593;&#x7684;&#x6A4B;&#x6A11;
+</li>
+<li><a href="https://www.npmjs.com/package/esdoc-saga-plugin" target="_blank">esdoc-saga-plugin</a> - ESDoc plugin &#x7528;&#x4F86;&#x8A18;&#x9304; sagas effects&#x3002;
+</li>
+<li><a href="https://www.npmjs.com/package/redux-saga-compose" target="_blank">redux-saga-compose</a> - &#x4F7F;&#x7528; koa-compose &#x7684;&#x98A8;&#x683C;&#x4F86; compose saga &#x4F5C;&#x70BA; middleware&#x3002;
+</li></ul>
+
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="recipes/" class="navigation navigation-prev " aria-label="Previous page: 4. Recipes">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="Troubleshooting.html" class="navigation navigation-next " aria-label="Next page: 6. 疑難排解">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"5. 外部資源","level":"1.6","depth":1,"next":{"title":"6. 疑難排解","level":"1.7","depth":1,"path":"docs/Troubleshooting.md","ref":"docs/Troubleshooting.md","articles":[]},"previous":{"title":"4. Recipes","level":"1.5","depth":1,"path":"docs/recipes/README.md","ref":"docs/recipes/README.md","articles":[]},"dir":"ltr"},"config":{"plugins":["prism@1.0.0","-highlight","github","favicon"],"styles":{"website":"build/gitbook.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/redux-saga/redux-saga/"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"build/gitbook.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"favicon":{"shortcut":"logo/favicon/favicon.ico","bookmark":"logo/favicon/favicon.ico","appleTouch":"logo/favicon/apple-touch-icon-152x152.png","appleTouchMore":{"120x120":"logo/favicon/apple-touch-icon-120x120.png","180x180":"logo/favicon/apple-touch-icon-180x180.png"}},"prism":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Redux-Saga","gitbook":"3.2.0"},"file":{"path":"docs/ExternalResources.md","mtime":"2018-09-26T09:17:38.581Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-09-26T09:20:26.200Z"},"basePath":"..","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../gitbook/gitbook.js"></script>
+    <script src="../gitbook/theme.js"></script>
+    
+        
+        <script src="../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

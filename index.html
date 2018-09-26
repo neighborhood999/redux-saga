@@ -1,0 +1,797 @@
+
+<!DOCTYPE HTML>
+<html lang="" >
+    <head>
+        <title>Read Me · Redux-Saga</title>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.0">
+        
+        
+        
+    
+    <link rel="stylesheet" href="gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-prism/prism.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-search/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+        <link rel="stylesheet" href="build/gitbook.css">
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="docs/introduction/" />
+    
+    
+
+    
+        <link rel="shortcut icon" href='logo/favicon/favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="bookmark" href='logo/favicon/favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="apple-touch-icon" href='logo/favicon/apple-touch-icon-152x152.png'>
+    
+    
+        
+        <link rel="apple-touch-icon" sizes="120x120" href="logo/favicon/apple-touch-icon-120x120.png">
+        
+        <link rel="apple-touch-icon" sizes="180x180" href="logo/favicon/apple-touch-icon-180x180.png">
+        
+    
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="Type to search" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+
+    
+
+    
+        
+        
+    
+        <li class="chapter active" data-level="1.1" data-path="./">
+            
+                <a href="./">
+            
+                    
+                    Read Me
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2" data-path="docs/introduction/">
+            
+                <a href="docs/introduction/">
+            
+                    
+                    1. 介紹
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.2.1" data-path="docs/introduction/BeginnerTutorial.html">
+            
+                <a href="docs/introduction/BeginnerTutorial.html">
+            
+                    
+                    1.1 新手教學
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.2.2" data-path="docs/introduction/SagaBackground.html">
+            
+                <a href="docs/introduction/SagaBackground.html">
+            
+                    
+                    1.2 Saga 概念的背景
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3" data-path="docs/basics/">
+            
+                <a href="docs/basics/">
+            
+                    
+                    2. 基礎概念
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.3.1" data-path="docs/basics/UsingSagaHelpers.html">
+            
+                <a href="docs/basics/UsingSagaHelpers.html">
+            
+                    
+                    2.1 使用 Saga Helpers
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.2" data-path="docs/basics/DeclarativeEffects.html">
+            
+                <a href="docs/basics/DeclarativeEffects.html">
+            
+                    
+                    2.2 宣告 Effects
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.3" data-path="docs/basics/DispatchingActions.html">
+            
+                <a href="docs/basics/DispatchingActions.html">
+            
+                    
+                    2.3 Dispatch action
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.4" data-path="docs/basics/ErrorHandling.html">
+            
+                <a href="docs/basics/ErrorHandling.html">
+            
+                    
+                    2.4 錯誤處理
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.3.5" data-path="docs/basics/Effect.html">
+            
+                <a href="docs/basics/Effect.html">
+            
+                    
+                    2.4 一個常見的抽象概念：Effect
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4" data-path="docs/advanced/">
+            
+                <a href="docs/advanced/">
+            
+                    
+                    3. 進階概念
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="1.4.1" data-path="docs/advanced/FutureActions.html">
+            
+                <a href="docs/advanced/FutureActions.html">
+            
+                    
+                    3.1 Pull 未來的 action
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.2" data-path="docs/advanced/NonBlockingCalls.html">
+            
+                <a href="docs/advanced/NonBlockingCalls.html">
+            
+                    
+                    3.2 非阻塞式的呼叫
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.3" data-path="docs/advanced/RunningTasksInParallel.html">
+            
+                <a href="docs/advanced/RunningTasksInParallel.html">
+            
+                    
+                    3.3 同時執行多個任務l
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.4" data-path="docs/advanced/RacingEffects.html">
+            
+                <a href="docs/advanced/RacingEffects.html">
+            
+                    
+                    3.4 在多個 Effect 之間啟動一個 race
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.5" data-path="docs/advanced/SequencingSagas.html">
+            
+                <a href="docs/advanced/SequencingSagas.html">
+            
+                    
+                    3.5 使用 yield* 對 Saga 做排序
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.6" data-path="docs/advanced/ComposingSagas.html">
+            
+                <a href="docs/advanced/ComposingSagas.html">
+            
+                    
+                    3.6 組合 Saga
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.7" data-path="docs/advanced/TaskCancellation.html">
+            
+                <a href="docs/advanced/TaskCancellation.html">
+            
+                    
+                    3.7 取消 Task
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.8" data-path="docs/advanced/ForkModel.html">
+            
+                <a href="docs/advanced/ForkModel.html">
+            
+                    
+                    3.8 redux-saga 的 fork 模型
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.9" data-path="docs/advanced/Concurrency.html">
+            
+                <a href="docs/advanced/Concurrency.html">
+            
+                    
+                    3.9 常見的併發模式
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.10" data-path="docs/advanced/Testing.html">
+            
+                <a href="docs/advanced/Testing.html">
+            
+                    
+                    3.10 Saga 測試的範例
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.11" data-path="docs/advanced/UsingRunSaga.html">
+            
+                <a href="docs/advanced/UsingRunSaga.html">
+            
+                    
+                    3.11 連結 Saga 到外部的輸入和輸出
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.4.12" data-path="docs/advanced/Channels.html">
+            
+                <a href="docs/advanced/Channels.html">
+            
+                    
+                    3.12 使用 Channel
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="1.5" data-path="docs/recipes/">
+            
+                <a href="docs/recipes/">
+            
+                    
+                    4. Recipes
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.6" data-path="docs/ExternalResources.html">
+            
+                <a href="docs/ExternalResources.html">
+            
+                    
+                    5. 外部資源
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.7" data-path="docs/Troubleshooting.html">
+            
+                <a href="docs/Troubleshooting.html">
+            
+                    
+                    6. 疑難排解
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.8" data-path="docs/Glossary.html">
+            
+                <a href="docs/Glossary.html">
+            
+                    
+                    7. 術語表
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="1.9" data-path="docs/api/">
+            
+                <a href="docs/api/">
+            
+                    
+                    8. API 參考
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            Published with GitBook
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="." >Read Me</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <p><img src="https://redux-saga.js.org/logo/0800/Redux-Saga-Logo-Landscape.png" alt="Redux Logo Landscape" width="800px"></p><h1 id="redux-saga">redux-saga</h1><p><a href="https://www.npmjs.com/package/redux-saga" target="_blank"><img alt="npm version" src="https://img.shields.io/npm/v/redux-saga.svg"></a>
+<a href="https://cdnjs.com/libraries/redux-saga" target="_blank"><img alt="CDNJS" src="https://img.shields.io/cdnjs/v/redux-saga.svg"></a>
+<a href="https://www.npmjs.com/package/redux-saga" target="_blank"><img alt="npm" src="https://img.shields.io/npm/dm/redux-saga.svg"></a>
+<a href="https://travis-ci.org/redux-saga/redux-saga" target="_blank"><img alt="Build Status" src="https://travis-ci.org/redux-saga/redux-saga.svg?branch=master"></a>
+<a href="https://gitter.im/yelouafi/redux-saga?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge" target="_blank"><img alt="Join the chat at https://gitter.im/yelouafi/redux-saga" src="https://badges.gitter.im/yelouafi/redux-saga.svg"></a>
+<a href="#backers"><img alt="OpenCollective" src="https://opencollective.com/redux-saga/backers/badge.svg"></a>
+<a href="#sponsors"><img alt="OpenCollective" src="https://opencollective.com/redux-saga/sponsors/badge.svg"></a></p><p><code>redux-saga</code> &#x662F;&#x4E00;&#x500B;&#x91DD;&#x5C0D;&#x5728; React/Redux &#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#x4E2D;&#xFF0C;&#x53EF;&#x4EE5;&#x66F4;&#x5BB9;&#x6613;&#x5EFA;&#x7ACB; side effect &#x7684; library&#xFF08;&#x4F8B;&#x5982;&#xFF1A;&#x975E;&#x540C;&#x6B65;&#x7684;&#x4E8B;&#x4EF6;&#x50CF;&#x662F;&#x8CC7;&#x6599;&#x7684; fetch &#x548C;&#x5B58;&#x53D6;&#x700F;&#x89BD;&#x5668;&#x7684;&#x5FEB;&#x53D6;&#xFF09;&#xFF0C;&#x57F7;&#x884C;&#x6548;&#x7387;&#x66F4;&#x9AD8;&#xFF0C;&#x66F4;&#x5BB9;&#x6613;&#x6E2C;&#x8A66;&#xFF0C;&#x5728;&#x8655;&#x7406;&#x932F;&#x8AA4;&#x6642;&#x66F4;&#x5BB9;&#x6613;&#x3002;</p><p>&#x60F3;&#x6CD5;&#x4E0A;&#xFF0C;redux-saga &#x50CF;&#x662F;&#x4E00;&#x500B;&#x7368;&#x7ACB;&#x7684; thread &#x5728;&#x4F60;&#x7684;&#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#xFF0C;&#x5C08;&#x9580;&#x8CA0;&#x8CAC; side effect&#x3002;<code>redux-saga</code> &#x662F; redux &#x7684; middleware&#xFF0C;&#x610F;&#x601D;&#x8AAA;&#x5F9E;&#x4E3B;&#x8981;&#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#x6A19;&#x6E96;&#x7684; redux action &#x53EF;&#x4EE5;&#x555F;&#x52D5;&#x3001;&#x66AB;&#x505C;&#x548C;&#x53D6;&#x6D88; thread&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x5B58;&#x53D6;&#x6574;&#x500B; redux &#x61C9;&#x7528;&#x7A0B;&#x5F0F;&#x7684; state &#x548C; dispatch redux &#x7684; action&#x3002;</p><p>&#x4F7F;&#x7528; ES6 &#x7684; Generators &#x529F;&#x80FD;&#x8B93;&#x975E;&#x540C;&#x6B65;&#x7684;&#x6D41;&#x7A0B;&#x53EF;&#x4EE5;&#x66F4;&#x5BB9;&#x6613;&#x95B1;&#x8B80;&#x3001;&#x64B0;&#x5BEB;&#x548C;&#x6E2C;&#x8A66;&#xFF0C;<em>&#x5982;&#x679C;&#x4F60;&#x9084;&#x4E0D;&#x719F;&#x6089;&#x7684;&#x8A71;&#xFF0C;<a href="https://redux-saga.js.org/docs/ExternalResources.html" target="_blank">&#x9019;&#x88E1;&#x6709;&#x4E00;&#x4E9B;&#x4ECB;&#x7D39;&#x7684;&#x9023;&#x7D50;</a></em>&#x3002;&#x900F;&#x904E;&#x9019;&#x6A23;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x9019;&#x4E9B;&#x975E;&#x540C;&#x6B65;&#x7684;&#x6D41;&#x7A0B;&#x770B;&#x8D77;&#x4F86;&#x5C31;&#x50CF;&#x6A19;&#x6E96; JavaScript &#x540C;&#x6B65;&#x7A0B;&#x5F0F;&#x78BC;&#xFF08;&#x50CF;&#x662F; <code>async</code>/<code>await</code>&#xFF0C;&#x4F46;&#x662F; generators &#x9084;&#x6709;&#x4E00;&#x4E9B;&#x66F4;&#x68D2;&#x800C;&#x4E14;&#x6211;&#x5011;&#x9700;&#x8981;&#x7684;&#x529F;&#x80FD;&#xFF09;&#x3002;</p><p>&#x4F60;&#x53EF;&#x80FD;&#x5DF2;&#x7D93;&#x4F7F;&#x7528; <code>redux-thunk</code> &#x4F86;&#x8655;&#x7406;&#x4F60;&#x8CC7;&#x6599;&#x7684; fetch&#x3002;&#x4E0D;&#x540C;&#x65BC; redux thunk&#xFF0C;&#x4F60;&#x4E0D;&#x6703;&#x518D;&#x51FA;&#x73FE; callback hell &#x4E86;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x7C21;&#x55AE;&#x6E2C;&#x8A66;&#x975E;&#x540C;&#x6B65;&#x7684;&#x6D41;&#x7A0B;&#x4E26;&#x4FDD;&#x6301;&#x4F60;&#x7684; action &#x662F; pure &#x7684;&#x3002;</p><h1 id="&#x5165;&#x9580;">&#x5165;&#x9580;</h1><h2 id="&#x5B89;&#x88DD;">&#x5B89;&#x88DD;</h2><pre><code class="lang-sh">$ npm install --save redux-saga</code></pre>
+<p>or</p><pre><code class="lang-sh">$ yarn add redux-saga</code></pre>
+<p>&#x6216;&#x8005;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5728; HTML &#x9801;&#x9762; <code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span></code> &#x6A19;&#x7C64;&#x4F7F;&#x7528;&#x63D0;&#x4F9B;&#x7684; UMD build&#xFF0C;&#x8ACB;&#x53C3;&#x8003;<a href="#using-umd-build-in-the-browser">&#x9019;&#x500B;&#x7AE0;&#x7BC0;</a>&#x3002;</p><h2 id="&#x4F7F;&#x7528;&#x7BC4;&#x4F8B;">&#x4F7F;&#x7528;&#x7BC4;&#x4F8B;</h2><p>&#x5047;&#x8A2D;&#x6211;&#x5011;&#x6709;&#x4E00;&#x500B; UI&#xFF0C;&#x7576;&#x6309;&#x4E0B;&#x6309;&#x9215;&#x6642;&#xFF0C;&#x5F9E;&#x9060;&#x7AEF;&#x4F3A;&#x670D;&#x5668;&#x53D6;&#x5F97;&#x4E00;&#x4E9B;&#x4F7F;&#x7528;&#x8005;&#x7684;&#x8CC7;&#x6599;&#xFF08;&#x70BA;&#x4E86;&#x7C21;&#x55AE;&#x8868;&#x793A;&#xFF0C;&#x6211;&#x5011;&#x53EA;&#x662F;&#x986F;&#x793A;&#x89F8;&#x767C; action &#x7684;&#x7A0B;&#x5F0F;&#xFF09;&#x3002;</p><pre><code class="lang-javascript"><span class="token keyword">class</span> <span class="token class-name">UserComponent</span> <span class="token keyword">extends</span> <span class="token class-name">React<span class="token punctuation">.</span>Component</span> <span class="token punctuation">{</span>
+  <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+  <span class="token function">onSomeButtonClicked</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> <span class="token punctuation">{</span> userId<span class="token punctuation">,</span> dispatch <span class="token punctuation">}</span> <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>props
+    <span class="token function">dispatch</span><span class="token punctuation">(</span><span class="token punctuation">{</span>type<span class="token punctuation">:</span> <span class="token string">&apos;USER_FETCH_REQUESTED&apos;</span><span class="token punctuation">,</span> payload<span class="token punctuation">:</span> <span class="token punctuation">{</span>userId<span class="token punctuation">}</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span></code></pre>
+<p>Component dispatch &#x4E00;&#x500B;&#x539F;&#x751F; action &#x7269;&#x4EF6;&#x5230; Store&#x3002;&#x6211;&#x5011;&#x5C07;&#x5EFA;&#x7ACB;&#x4E00;&#x500B; Saga &#x4F86;&#x89C0;&#x5BDF;&#x6240;&#x6709; <code>USER_FETCH_REQUESTED</code> action &#x4E26;&#x89F8;&#x767C;&#x547C;&#x53EB;&#x4E00;&#x500B; API &#x53D6;&#x5F97;&#x4F7F;&#x7528;&#x8005;&#x8CC7;&#x6599;&#x3002;</p><h4 id="sagasjs"><code>sagas.js</code></h4><pre><code class="lang-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> call<span class="token punctuation">,</span> put<span class="token punctuation">,</span> takeEvery<span class="token punctuation">,</span> takeLatest <span class="token punctuation">}</span> from <span class="token string">&apos;redux-saga/effects&apos;</span>
+<span class="token keyword">import</span> Api from <span class="token string">&apos;...&apos;</span>
+
+<span class="token comment" spellcheck="true">// &#x5DE5;&#x4F5C;&#x7684; Saga&#xFF1A;&#x7576; action &#x662F; USER_FETCH_REQUESTED &#x6642;&#x88AB;&#x89F8;&#x767C;</span>
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">fetchUser</span><span class="token punctuation">(</span>action<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+   <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token keyword">const</span> user <span class="token operator">=</span> <span class="token keyword">yield</span> <span class="token function">call</span><span class="token punctuation">(</span>Api<span class="token punctuation">.</span>fetchUser<span class="token punctuation">,</span> action<span class="token punctuation">.</span>payload<span class="token punctuation">.</span>userId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token keyword">yield</span> <span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">{</span>type<span class="token punctuation">:</span> <span class="token string">&quot;USER_FETCH_SUCCEEDED&quot;</span><span class="token punctuation">,</span> user<span class="token punctuation">:</span> user<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">e</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">yield</span> <span class="token function">put</span><span class="token punctuation">(</span><span class="token punctuation">{</span>type<span class="token punctuation">:</span> <span class="token string">&quot;USER_FETCH_FAILED&quot;</span><span class="token punctuation">,</span> message<span class="token punctuation">:</span> e<span class="token punctuation">.</span>message<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">/*
+  &#x5728;&#x6BCF;&#x6B21; dispatch `USER_FETCH_REQUESTED` action &#x6642;&#xFF0C;&#x555F;&#x52D5; fetchUser&#x3002;
+  &#x5141;&#x8A31;&#x540C;&#x6642;&#x53D6;&#x5F97;&#x4F7F;&#x7528;&#x8005;&#x3002;
+*/</span>
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">mySaga</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">takeEvery</span><span class="token punctuation">(</span><span class="token string">&quot;USER_FETCH_REQUESTED&quot;</span><span class="token punctuation">,</span> fetchUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">/*
+  &#x53E6;&#x5916;&#x4F60;&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; takeLatest&#x3002;
+
+  &#x4F46;&#x4E0D;&#x5141;&#x8A31;&#x540C;&#x6642;&#x53D6;&#x5F97;&#x4F7F;&#x7528;&#x8005;&#x3002;&#x7576;&#x4E00;&#x500B; fetch &#x5DF2;&#x7D93;&#x5728; pending &#x6642;&#xFF0C;&#x5982;&#x679C;&#x53D6;&#x5F97; dispatch&#x300C;USER_FETCH_REQUESTED&#x300D;&#xFF0C;
+  &#x6B63;&#x5728;&#x7B49;&#x5F85;&#x7684; fetch &#x6703;&#x88AB;&#x53D6;&#x6D88;&#xFF0C;&#x53EA;&#x57F7;&#x884C;&#x6700;&#x65B0;&#x7684;&#x767C;&#x51FA;&#x7684; USER_FETCH_REQUESTED&#x3002;
+*/</span>
+<span class="token keyword">function</span><span class="token operator">*</span> <span class="token function">mySaga</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">yield</span> <span class="token function">takeLatest</span><span class="token punctuation">(</span><span class="token string">&quot;USER_FETCH_REQUESTED&quot;</span><span class="token punctuation">,</span> fetchUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> mySaga<span class="token punctuation">;</span></code></pre>
+<p>&#x70BA;&#x4E86;&#x8981;&#x57F7;&#x884C; Saga&#xFF0C;&#x6211;&#x5011;&#x5C07;&#x4F7F;&#x7528; <code>redux-saga</code> middleware &#x4F86;&#x9023;&#x7D50; Redux Store&#x3002;</p><h4 id="mainjs"><code>main.js</code></h4><pre><code class="lang-javascript"><span class="token keyword">import</span> <span class="token punctuation">{</span> createStore<span class="token punctuation">,</span> applyMiddleware <span class="token punctuation">}</span> from <span class="token string">&apos;redux&apos;</span>
+<span class="token keyword">import</span> createSagaMiddleware from <span class="token string">&apos;redux-saga&apos;</span>
+
+<span class="token keyword">import</span> reducer from <span class="token string">&apos;./reducers&apos;</span>
+<span class="token keyword">import</span> mySaga from <span class="token string">&apos;./sagas&apos;</span>
+
+<span class="token comment" spellcheck="true">// &#x5EFA;&#x7ACB; saga middleware</span>
+<span class="token keyword">const</span> sagaMiddleware <span class="token operator">=</span> <span class="token function">createSagaMiddleware</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment" spellcheck="true">// &#x5C07; saga middleware mount &#x5728; Store &#x4E0A;</span>
+<span class="token keyword">const</span> store <span class="token operator">=</span> <span class="token function">createStore</span><span class="token punctuation">(</span>
+  reducer<span class="token punctuation">,</span>
+  <span class="token function">applyMiddleware</span><span class="token punctuation">(</span>sagaMiddleware<span class="token punctuation">)</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">// &#x7136;&#x5F8C;&#x57F7;&#x884C; saga</span>
+sagaMiddleware<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span>mySaga<span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">// render &#x61C9;&#x7528;&#x7A0B;&#x5F0F;</span></code></pre>
+<h1 id="&#x6587;&#x4EF6;">&#x6587;&#x4EF6;</h1><ul><li><a href="http://yelouafi.github.io/redux-saga/docs/introduction/index.html" target="_blank">&#x4ECB;&#x7D39;</a>
+</li>
+<li><a href="http://yelouafi.github.io/redux-saga/docs/basics/index.html" target="_blank">&#x57FA;&#x672C;&#x6982;&#x5FF5;</a>
+</li>
+<li><a href="http://yelouafi.github.io/redux-saga/docs/advanced/index.html" target="_blank">&#x9032;&#x968E;&#x6982;&#x5FF5;</a>
+</li>
+<li><a href="http://yelouafi.github.io/redux-saga/docs/recipes/index.html" target="_blank">Recipes</a>
+</li>
+<li><a href="http://yelouafi.github.io/redux-saga/docs/ExternalResources.html" target="_blank">&#x5916;&#x90E8;&#x8CC7;&#x6E90;</a>
+</li>
+<li><a href="http://yelouafi.github.io/redux-saga/docs/Troubleshooting.html" target="_blank">&#x7591;&#x96E3;&#x6392;&#x89E3;</a>
+</li>
+<li><a href="http://yelouafi.github.io/redux-saga/docs/Glossary.html" target="_blank">&#x8853;&#x8A9E;&#x8868;</a>
+</li>
+<li><a href="http://yelouafi.github.io/redux-saga/docs/api/index.html" target="_blank">API &#x53C3;&#x8003;</a>
+</li></ul>
+<h1 id="translation">Translation</h1><ul><li><a href="https://github.com/superRaytin/redux-saga-in-chinese" target="_blank">Chinese</a>
+</li>
+<li><a href="https://github.com/neighborhood999/redux-saga" target="_blank">Traditional Chinese</a>
+</li>
+<li><a href="https://github.com/redux-saga/redux-saga/blob/master/README_ja.md" target="_blank">Japanese</a>
+</li>
+<li><a href="https://github.com/mskims/redux-saga-in-korean" target="_blank">Korean</a>
+</li>
+<li><a href="https://github.com/joelbarbosa/redux-saga-pt_BR" target="_blank">Portuguese</a>
+</li>
+<li><a href="https://github.com/redux-saga/redux-saga/blob/master/README_ru.md" target="_blank">Russian</a>
+</li></ul>
+<h1 id="&#x5728;&#x700F;&#x89BD;&#x5668;&#x4F7F;&#x7528;-umd-build-&#x7248;&#x672C;">&#x5728;&#x700F;&#x89BD;&#x5668;&#x4F7F;&#x7528; umd build &#x7248;&#x672C;</h1><p>&#x5728; <code>dist/</code> &#x8CC7;&#x6599;&#x593E;&#x4E5F;&#x6709;&#x4E00;&#x500B; <code>redux-saga</code> &#x7684; <strong>umd</strong> build &#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x3002;&#x7576;&#x4F7F;&#x7528; umd build &#x7684; <code>redux-saga</code>&#xFF0C;<code>ReduxSaga</code> &#x4F5C;&#x70BA;&#x5728; window &#x7684;&#x5168;&#x57DF;&#x8B8A;&#x6578;&#x3002;&#x9019;&#x80FD;&#x8B93;&#x4F60;&#x5728;&#x5EFA;&#x7ACB; Saga middleware &#x4E0D;&#x9700;&#x8981;&#x4F7F;&#x7528; ES6 &#x7684; <code>import</code> &#x8A9E;&#x6CD5;&#xFF1A;</p><p>umd &#x7248;&#x672C;&#x5728;&#x4F60;&#x4E0D;&#x4F7F;&#x7528; Webpack &#x6216; Browserify &#x76F8;&#x7576;&#x7684;&#x6709;&#x7528;&#x3002;&#x4F60;&#x53EF;&#x4EE5;&#x5F9E; <a href="https://unpkg.com/" target="_blank">unpkg</a> &#x76F4;&#x63A5;&#x5B58;&#x53D6;&#x3002;</p><p>&#x4EE5;&#x4E0B;&#x7684; build &#x90FD;&#x662F;&#x53EF;&#x7528;&#x7684;&#xFF1A;</p><ul><li><a href="https://unpkg.com/redux-saga/dist/redux-saga.js" target="_blank">https://unpkg.com/redux-saga/dist/redux-saga.js</a>
+</li>
+<li><a href="https://unpkg.com/redux-saga/dist/redux-saga.min.js" target="_blank">https://unpkg.com/redux-saga/dist/redux-saga.min.js</a>
+</li></ul>
+<p><strong>&#x91CD;&#x8981;&#xFF01;</strong>&#x5982;&#x679C;&#x4F60;&#x7684;&#x76EE;&#x6A19;&#x700F;&#x89BD;&#x5668;&#x4E0D;&#x652F;&#x63F4; <em>ES2015 generators</em>&#xFF0C;&#x4F60;&#x5FC5;&#x9808; transpile
+&#x5B83;&#x5011;&#xFF08;<a href="https://github.com/facebook/regenerator/tree/master/packages/regenerator-transform" target="_blank">babel plugin</a>&#xFF09;&#x548C;&#x63D0;&#x4F9B;&#x4E00;&#x500B;&#x6709;&#x6548;&#x7684; runtime&#xFF0C;&#x50CF;&#x662F;<a href="https://unpkg.com/regenerator-runtime/runtime.js" target="_blank">&#x9019;&#x500B;</a>&#x3002; Runtime &#x5FC5;&#x9808;&#x88AB;&#x5F15;&#x5165;&#x5728; <strong>redux-saga</strong> &#x4E4B;&#x524D;&#xFF1A;</p><pre><code class="lang-javascript"><span class="token keyword">import</span> <span class="token string">&apos;regenerator-runtime/runtime&apos;</span>
+<span class="token comment" spellcheck="true">// &#x63A5;&#x8457;</span>
+<span class="token keyword">import</span> sagaMiddleware from <span class="token string">&apos;redux-saga&apos;</span></code></pre>
+<h1 id="&#x5F9E;&#x539F;&#x59CB;&#x78BC;&#x4E2D;&#x4F86;&#x5EFA;&#x7ACB;&#x7BC4;&#x4F8B;">&#x5F9E;&#x539F;&#x59CB;&#x78BC;&#x4E2D;&#x4F86;&#x5EFA;&#x7ACB;&#x7BC4;&#x4F8B;</h1><pre><code class="lang-sh">$ git clone https://github.com/redux-saga/redux-saga.git
+$ cd redux-saga
+$ npm install
+$ npm test</code></pre>
+<p>&#x4EE5;&#x4E0B;&#x7684;&#x7BC4;&#x4F8B;&#x90FD;&#x662F;&#x5F9E; Redux repos &#x6240;&#x79FB;&#x690D;&#xFF08;&#x5230;&#x76EE;&#x524D;&#x70BA;&#x6B62;&#xFF09;&#x904E;&#x4F86;&#x7684;&#xFF1A;</p><h3 id="counter-&#x7BC4;&#x4F8B;">Counter &#x7BC4;&#x4F8B;</h3><p>&#x9019;&#x88E1;&#x6709;&#x4E09;&#x500B; counter &#x7684;&#x7BC4;&#x4F8B;&#x3002;</p><h4 id="counter-vanilla">counter-vanilla</h4><p>&#x9019;&#x500B;&#x7BC4;&#x4F8B;&#x4F7F;&#x7528;&#x539F;&#x751F;&#x7684; JavaScript &#x548C; UMD build&#x3002;&#x6240;&#x6709;&#x7684;&#x539F;&#x59CB;&#x78BC;&#x90FD;&#x5728; <code>index.html</code> &#x5167;&#x3002;</p><p>&#x5982;&#x679C;&#x8981;&#x555F;&#x52D5;&#x7BC4;&#x4F8B;&#xFF0C;&#x53EA;&#x8981;&#x5728;&#x4F60;&#x7684;&#x700F;&#x89BD;&#x5668;&#x6253;&#x958B; <code>index.html</code>&#x3002;</p><blockquote><p>&#x91CD;&#x8981;&#xFF1A;&#x4F60;&#x7684;&#x700F;&#x89BD;&#x5668;&#x5FC5;&#x9808;&#x652F;&#x63F4; Generators&#x3002;&#x6700;&#x65B0;&#x7248;&#x672C;&#x7684; Chrome &#x548C; Firefox&#x3001;Edge &#x5DF2;&#x7D93;&#x652F;&#x63F4;&#x3002;</p></blockquote><h4 id="counter">counter</h4><p>&#x9019;&#x500B;&#x7BC4;&#x4F8B;&#x4F7F;&#x7528; <code>webpack</code> &#x548C;&#x9AD8;&#x968E;&#x7684; <code>takeEvery</code> API&#x3002;</p><pre><code class="lang-sh">$ npm run counter
+
+# generators &#x7684;&#x6E2C;&#x8A66; sample
+$ npm run test-counter</code></pre>
+<h4 id="cancellable-counter">cancellable-counter</h4><p>&#x9019;&#x500B;&#x7BC4;&#x4F8B;&#x4F7F;&#x7528;&#x5E95;&#x5C64;&#x7684; API &#x4F86;&#x8B49;&#x660E; task &#x88AB;&#x53D6;&#x6D88;&#x3002;</p><pre><code class="lang-sh">$ npm run cancellable-counter</code></pre>
+<h3 id="shopping-cart-&#x7BC4;&#x4F8B;">Shopping Cart &#x7BC4;&#x4F8B;</h3><pre><code class="lang-sh">$ npm run shop
+
+# generators &#x7684;&#x6E2C;&#x8A66; sample
+$ npm run test-shop</code></pre>
+<h3 id="async-&#x7BC4;&#x4F8B;">async &#x7BC4;&#x4F8B;</h3><pre><code class="lang-sh">$ npm run async
+
+# generators &#x7684;&#x6E2C;&#x8A66; sample
+$ npm run test-async</code></pre>
+<h3 id="real-world-&#x7BC4;&#x4F8B;&#xFF08;&#x4F7F;&#x7528;-webpack-&#x548C;-hot-reloading&#xFF09;">real-world &#x7BC4;&#x4F8B;&#xFF08;&#x4F7F;&#x7528; webpack &#x548C; hot reloading&#xFF09;</h3><pre><code class="lang-sh">$ npm run real-world
+
+# &#x62B1;&#x6B49;&#xFF0C;&#x9084;&#x6C92;&#x6709;&#x6E2C;&#x8A66;&#x3002;</code></pre>
+<h3 id="typescript">TypeScript</h3><p>Redux-Saga &#x8207; TypeScript &#x9700;&#x8981; <code>DOM.Iterable</code> &#x6216; <code>ES2015.Iterable</code>&#x3002;&#x5982;&#x679C;&#x4F60;&#x7684; <code>target</code> &#x662F; <code>ES6</code>&#xFF0C;&#x4F60;&#x6216;&#x8A31;&#x5DF2;&#x7D93;&#x8A2D;&#x5B9A;&#x597D;&#x4E86;&#xFF0C;&#x7136;&#x800C;&#x5C0D;&#x65BC; <code>ES5</code>&#xFF0C;&#x4F60;&#x5C07;&#x9700;&#x8981;&#x81EA;&#x5DF1;&#x628A;&#x5B83;&#x5011;&#x52A0;&#x5165;&#x3002;
+&#x78BA;&#x8A8D;&#x4F60;&#x7684; <code>tsconfig.json</code> &#x6A94;&#x6848;&#xFF0C;&#x548C;&#x5B98;&#x65B9;&#x7684; <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html" target="_blank">compiler &#x9078;&#x9805;</a> &#x6587;&#x4EF6;&#x3002;</p><h3 id="logo">Logo</h3><p>&#x4F60;&#x53EF;&#x4EE5;&#x5728; <a href="https://github.com/redux-saga/redux-saga/tree/master/logo" target="_blank">logo &#x76EE;&#x9304;</a> &#x627E;&#x5230;&#x4E0D;&#x540C;&#x98A8;&#x683C;&#x7684; Redux-Saga  &#x5B98;&#x65B9; logo&#x3002;</p><h3 id="backers">Backers</h3><p>Support us with a monthly donation and help us continue our activities. [<a href="https://opencollective.com/redux-saga#backer" target="_blank">Become a backer</a>]</p><p><a href="https://opencollective.com/redux-saga/backer/0/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/0/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/1/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/1/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/2/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/2/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/3/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/3/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/4/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/4/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/5/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/5/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/6/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/6/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/7/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/7/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/8/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/8/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/9/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/9/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/10/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/10/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/11/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/11/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/12/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/12/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/13/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/13/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/14/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/14/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/15/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/15/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/16/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/16/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/17/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/17/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/18/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/18/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/19/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/19/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/20/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/20/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/21/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/21/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/22/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/22/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/23/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/23/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/24/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/24/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/25/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/25/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/26/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/26/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/27/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/27/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/28/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/28/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/backer/29/website" target="_blank"><img src="https://opencollective.com/redux-saga/backer/29/avatar.svg"></a></p><h3 id="sponsors">Sponsors</h3><p>Become a sponsor and get your logo on our README on Github with a link to your site. [<a href="https://opencollective.com/redux-saga#sponsor" target="_blank">Become a sponsor</a>]</p><p><a href="https://opencollective.com/redux-saga/sponsor/0/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/1/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/2/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/3/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/4/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/5/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/6/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/7/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/8/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/9/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/9/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/10/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/10/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/11/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/11/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/12/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/12/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/13/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/13/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/14/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/14/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/15/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/15/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/16/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/16/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/17/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/17/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/18/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/18/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/19/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/19/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/20/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/20/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/21/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/21/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/22/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/22/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/23/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/23/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/24/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/24/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/25/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/25/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/26/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/26/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/27/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/27/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/28/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/28/avatar.svg"></a>
+<a href="https://opencollective.com/redux-saga/sponsor/29/website" target="_blank"><img src="https://opencollective.com/redux-saga/sponsor/29/avatar.svg"></a></p>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                
+                <a href="docs/introduction/" class="navigation navigation-next navigation-unique" aria-label="Next page: 1. 介紹">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"Read Me","level":"1.1","depth":1,"next":{"title":"1. 介紹","level":"1.2","depth":1,"path":"docs/introduction/README.md","ref":"docs/introduction/README.md","articles":[{"title":"1.1 新手教學","level":"1.2.1","depth":2,"path":"docs/introduction/BeginnerTutorial.md","ref":"docs/introduction/BeginnerTutorial.md","articles":[]},{"title":"1.2 Saga 概念的背景","level":"1.2.2","depth":2,"path":"docs/introduction/SagaBackground.md","ref":"docs/introduction/SagaBackground.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["prism@1.0.0","-highlight","github","favicon"],"styles":{"website":"build/gitbook.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"pluginsConfig":{"github":{"url":"https://github.com/redux-saga/redux-saga/"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"build/gitbook.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"favicon":{"shortcut":"logo/favicon/favicon.ico","bookmark":"logo/favicon/favicon.ico","appleTouch":"logo/favicon/apple-touch-icon-152x152.png","appleTouchMore":{"120x120":"logo/favicon/apple-touch-icon-120x120.png","180x180":"logo/favicon/apple-touch-icon-180x180.png"}},"prism":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2}},"theme":"default","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{},"title":"Redux-Saga","gitbook":"3.2.0"},"file":{"path":"README.md","mtime":"2018-09-26T09:17:38.576Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2018-09-26T09:20:26.200Z"},"basePath":".","book":{"language":""}});
+        });
+    </script>
+</div>
+
+        
+    <script src="gitbook/gitbook.js"></script>
+    <script src="gitbook/theme.js"></script>
+    
+        
+        <script src="gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search-engine.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-search/search.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/lunr.min.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-lunr/search-lunr.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
