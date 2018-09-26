@@ -165,7 +165,7 @@ function* loginFlow() {
 
 如果我們在一個 API 呼叫期間接收一個 `LOGOUT` ，我們必須**取消** `authorize` 的程序，否則我們將會有兩個併發的 task 並行前進： `authorize` task 將持續執行並在成功（或失敗）時 dispatch 一個 `LOGIN_SUCCESS`（或是 `LOGIN_ERROR` action），這會導致 state 不一致。
 
-為了取消一個被 fork 的 task，我們使用一個專屬的 Effec [`cancel`](https://redux-saga.js.org/docs/api/index.html#canceltask)
+為了取消一個被 fork 的 task，我們使用一個專屬的 Effect [`cancel`](https://redux-saga.js.org/docs/api/index.html#canceltask)
 
 ```javascript
 import { take, put, call, fork, cancel } from 'redux-saga/effects'
